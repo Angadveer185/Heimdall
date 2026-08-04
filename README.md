@@ -1,36 +1,294 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Heimdall
 
-## Getting Started
+> Bridging donors and shelters through transparent, item-based donations.
 
-First, run the development server:
+Heimdall is a full-stack web application that connects community donors with verified non-profit shelters through an itemized wishlist system. Instead of anonymous cash donations or unwanted goods, donors can reserve exactly what a shelter needs and receive proof that their donation was delivered.
+
+The project is built with a modern TypeScript stack and emphasizes security, scalability, accessibility, and real-world logistics.
+
+---
+
+## ✨ Features
+
+### 👥 User Management
+- Create, read, update, and delete users
+- Role-based architecture
+- Input validation using Zod
+- Standardized API responses
+- MongoDB + Prisma integration
+
+### 🏠 Shelter Management *(Planned)*
+- Register shelters
+- EIN / 501(c)(3) verification
+- Geo-location support
+- Shelter administrator portal
+
+### 📦 Wishlist Items *(Planned)*
+- Create and manage item requests
+- Categories
+- Urgency levels
+- Quantity tracking
+
+### 🤝 Donation Pledges *(Planned)*
+- Reserve requested items
+- Atomic inventory updates
+- QR code drop-off tickets
+- Delivery confirmation
+- Proof-of-impact photos
+
+### 🛡 Authentication *(Planned)*
+- JWT Authentication
+- HTTP-only Cookies
+- Refresh Token Rotation
+- Role-based Authorization
+
+### 📊 Admin Dashboard *(Planned)*
+- Shelter verification
+- User moderation
+- Analytics
+- Category management
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- Next.js (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- Lucide Icons
+
+## Backend
+
+- Node.js
+- Express
+- TypeScript
+- Prisma ORM
+- MongoDB
+- Zod
+
+## Future Integrations
+
+- Cloudinary / AWS S3
+- QR Code Generation
+- ProPublica Nonprofit Explorer API
+
+---
+
+# Project Structure
+
+```
+src/
+│
+├── app/                # Next.js App Router
+│
+├── server/
+│   ├── controllers/
+│   ├── routes/
+│   ├── services/
+│   ├── middleware/
+│   ├── validators/
+│   ├── utils/
+│   └── api/
+│
+├── lib/
+├── types/
+└── prisma/
+```
+
+---
+
+# Getting Started
+
+## Prerequisites
+
+- Node.js 22+
+- npm
+- MongoDB Atlas (or local MongoDB)
+
+---
+
+## Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/<your-username>/heimdall.git
+```
+
+Enter the project
+
+```bash
+cd heimdall
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Create an environment file
+
+```bash
+cp .env.example .env
+```
+
+Configure your environment variables.
+
+Example:
+
+```env
+DATABASE_URL="mongodb+srv://..."
+JWT_SECRET="your-secret"
+PORT=3000
+```
+
+Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+Push schema to MongoDB
+
+```bash
+npx prisma db push
+```
+
+Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Current implemented endpoints:
 
-## Learn More
+## Users
 
-To learn more about Next.js, take a look at the following resources:
+### Create User
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+POST /api/users
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Get User
 
-## Deploy on Vercel
+```
+GET /api/users/:id
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Update User
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+PATCH /api/users/:id
+```
+
+### Delete User
+
+```
+DELETE /api/users/:id
+```
+
+---
+
+# Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "...",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "role": "DONOR"
+  }
+}
+```
+
+---
+
+# Validation
+
+The API uses **Zod** for request validation.
+
+Examples:
+
+- Empty names rejected
+- Invalid email addresses rejected
+- Invalid ObjectIds rejected
+- Duplicate emails prevented
+- Required fields enforced
+
+---
+
+# Development Roadmap
+
+## ✅ Completed
+
+- Project setup
+- Express server
+- Prisma + MongoDB
+- User CRUD API
+- Validation middleware
+- Error handling
+- Consistent API responses
+
+---
+
+## 🚧 In Progress
+
+- Category CRUD
+- Shelter CRUD
+- Wishlist Items
+- Route organization under `src/server`
+
+---
+
+## 📌 Planned
+
+- Authentication
+- Role middleware
+- QR pledge system
+- Atomic reservation transactions
+- Admin dashboard
+- Shelter verification
+- Image uploads
+- Analytics
+
+---
+
+# Design Philosophy
+
+Heimdall is designed around three core principles:
+
+- **Trust** through transparent donations
+- **Accessibility** with WCAG-focused dark/light themes
+- **Reliability** through transactional inventory management
+
+The interface uses:
+
+- Adaptive Dark/Light mode
+- Tailwind Slate color palette
+- Sky Blue branding
+- Amber "Bifrost" accents
+- Smooth transitions
+- Mobile-first responsive layouts
+
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+---
+
+# Acknowledgements
+
+Inspired by the need for greater transparency in charitable giving, Heimdall aims to eliminate donation waste and ensure that every contribution reaches people who need it most.
