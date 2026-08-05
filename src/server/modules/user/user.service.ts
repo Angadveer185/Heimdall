@@ -1,32 +1,11 @@
-import bcrypt from "bcryptjs";
 import { ApiError } from "@/lib/errors";
-import { UserRepository } from "../repositories/user.repository";
-import {
-  CreateUserInput,
-  UpdateUserInput,
-} from "@/lib/validations/user.validation";
+import { UserRepository } from "./user.repository";
+import { UpdateUserInput } from "@/lib/validations/user.validation";
+import { hashPassword } from "@/lib/password";
 
 const repository = new UserRepository();
 
 export class UserService {
-  async createUser(data: CreateUserInput) {
-    const existingUser = await repository.findByEmail(data.email);
-
-    if (existingUser) {
-      throw new ApiError(409, "Email already exists");
-    }
-
-    // Hash password before passing to repository
-    const passwordHash = await bcrypt.hash(data.password, 10);
-
-    const { password, ...userData } = data;
-
-    return repository.create({
-      ...userData,
-      passwordHash,
-    });
-  }
-
   async getUserById(id: string) {
     const user = await repository.findById(id);
     if (!user) {
@@ -64,7 +43,7 @@ export class UserService {
 
     let passwordHash: string | undefined;
     if (data.password) {
-      passwordHash = await bcrypt.hash(data.password, 10);
+      passwordHash = await hashPassword(data.password);
     }
 
     const { password, ...updateFields } = data;
@@ -83,5 +62,9 @@ export class UserService {
     }
 
     return repository.deleteById(id);
+  }
+
+  async purgeAllUsers() {
+    return repository.purgeAllUsers();
   }
 }

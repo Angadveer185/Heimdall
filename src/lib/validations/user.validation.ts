@@ -1,23 +1,5 @@
 import { z } from "zod";
 
-export const createUserSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Name is required")
-    .max(50, "Name must be at most 50 characters"),
-  email: z
-    .string()
-    .email("Please provide a valid email address")
-    .trim(),
-  password: z
-    .string()
-    .trim()
-    .min(8, "Password must be at least 8 characters")
-    .max(32, "Password must be at most 32 characters"),
-  phone: z.string().optional(),
-});
-
 export const getUserSchema = z.object({
   id: z
     .string()
@@ -64,5 +46,4 @@ export const deleteUserSchema = z.object({
     .trim(),
 });
 
-export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

@@ -26,8 +26,8 @@
 
 ## 🛠️ Tech Stack & Dependencies
 
-* **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, Lucide Icons, Framer Motion[cite: 1, 3, 6, 7]
-* **Backend API:** Express.js (Node.js), TypeScript, Zod, `cookie-parser`, JSON Web Tokens (JWT)[cite: 1, 3, 7]
+* **Frontend:** Next.js, TypeScript, Tailwind CSS, Lucide Icons, Framer Motion[cite: 1, 3, 6, 7]
+* **Backend API:** Express.js (Routing), TypeScript, Zod, `cookie-parser`, JSON Web Tokens (JWT)[cite: 1, 3, 7]
 * **Database & ORM:** MongoDB Atlas, Prisma ORM (`@prisma/client`)[cite: 1, 3, 7]
 * **External Services:** ProPublica Nonprofit Explorer API (EIN validation), Cloudinary/S3 (photo proof)[cite: 1, 3, 4]
 

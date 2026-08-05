@@ -1,9 +1,12 @@
+import { NextResponse } from "next/server";
+import { ZodError } from "zod";
+
 // Base API Error
 export class ApiError extends Error {
   constructor(
     public statusCode: number,
     message: string,
-    public errors?: unknown[]
+    public errors?: unknown[],
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -68,4 +71,30 @@ export class InternalServerError extends ApiError {
   constructor(message = "Internal server error") {
     super(500, message);
   }
+}
+
+export function handleError(error: unknown) {
+  if (error instanceof ZodError) {
+    return NextResponse.json(
+      { success: false, errors: error.issues },
+      { status: 400 },
+    );
+  }
+  if (error instanceof ApiError) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: error.message,
+        ...(error.errors && { errors: error.errors }),
+      },
+      { status: error.statusCode },
+    );
+  }
+
+  // Fallback for unhandled unexpected JS errors (e.g., syntax errors, network drop)
+  console.error("Unhandled Error:", error);
+  return NextResponse.json(
+    { success: false, message: "Something went wrong" },
+    { status: 500 },
+  );
 }

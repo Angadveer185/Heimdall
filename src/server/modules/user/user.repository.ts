@@ -30,12 +30,12 @@ export class UserRepository {
   async findById(id: string) {
     return prisma.user.findUnique({
       where: { id },
-      select: defaultUserSelect,
+      select: { ...defaultUserSelect, refreshTokenHash: true },
     });
   }
 
   /**
-   * Find user by email (MongoDB ObjectId)
+   * Find user by email
    */
   async findByEmail(email: string) {
     return prisma.user.findUnique({
@@ -43,6 +43,7 @@ export class UserRepository {
       select: {
         ...defaultUserSelect,
         passwordHash: true,
+        refreshTokenHash: true,
       },
     });
   }
@@ -64,6 +65,22 @@ export class UserRepository {
     });
   }
 
+  async updateRefreshTokenHash(id: string, refreshTokenHash: string | null) {
+    return prisma.user.update({
+      where: { id },
+      data: { refreshTokenHash },
+      select: defaultUserSelect,
+    });
+  }
+
+  async findRefreshTokenHashById(id: string) {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { refreshTokenHash: true },
+    });
+    return user?.refreshTokenHash;
+  }
+
   /**
    * Delete user by ID
    */
@@ -72,5 +89,9 @@ export class UserRepository {
       where: { id },
       select: defaultUserSelect,
     });
+  }
+
+  async purgeAllUsers() {
+    return prisma.user.deleteMany();
   }
 }
