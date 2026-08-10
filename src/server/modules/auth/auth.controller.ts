@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { registerSchema, loginSchema } from "@/lib/validations/auth.validation";
+import { registerSchema, loginSchema } from "./auth.validation";
 import { AuthService } from "./auth.service";
 import { verifyRefreshToken } from "@/lib/jwt";
 import { ApiError } from "@/lib/errors";

@@ -11,6 +11,7 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   shelterId: true,
   isReported: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export class UserRepository {
@@ -30,7 +31,7 @@ export class UserRepository {
   async findById(id: string) {
     return prisma.user.findUnique({
       where: { id },
-      select: { ...defaultUserSelect, refreshTokenHash: true },
+      select: defaultUserSelect,
     });
   }
 

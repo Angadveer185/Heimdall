@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/errors";
 import { UserRepository } from "../user/user.repository";
-import { RegisterData, LoginData } from "@/lib/validations/auth.validation";
+import { RegisterData, LoginData } from "./auth.validation";
 import { hashPassword, comparePassword } from "@/lib/password";
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 
@@ -85,13 +85,18 @@ export class AuthService {
 
   async refreshTokens(userId: string, refreshToken: string) {
     const existingUser = await this.userRepository.findById(userId);
-    if (!existingUser || !existingUser.refreshTokenHash) {
-      throw new ApiError(401, "User not found or refresh token is missing");
+    if (!existingUser) {
+      throw new ApiError(401, "User not found");
+    }
+
+    const refreshTokenHash = await this.userRepository.findRefreshTokenHashById(userId);
+    if (!refreshTokenHash) {
+      throw new ApiError(401, "Refresh token is missing");
     }
 
     const isMatch = await comparePassword(
       refreshToken,
-      existingUser.refreshTokenHash,
+      refreshTokenHash,
     );
     if (!isMatch) {
       throw new ApiError(401, "Invalid refresh token");

@@ -5,6 +5,7 @@ import { JwtPayload } from "@/lib/auth.constants";
 
 // Extend Express Request interface to include user payload
 declare global {
+  /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Express {
     interface Request {
       user?: JwtPayload;

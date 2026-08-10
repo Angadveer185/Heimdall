@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/errors";
 import { UserRepository } from "./user.repository";
-import { UpdateUserInput } from "@/lib/validations/user.validation";
+import { UpdateUserInput } from "./user.validation";
 import { hashPassword } from "@/lib/password";
 
 const repository = new UserRepository();

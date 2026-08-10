@@ -21,7 +21,7 @@ enum Role {
 
 enum VerificationStatus {
   PENDING
-  VERIFIED_501C3
+  VERIFIED
   REJECTED
 }
 
@@ -46,34 +46,49 @@ enum PledgeStatus {
   EXPIRED
 }
 
+enum OrganizationIdType {
+  EIN
+  NGO_DARPAN
+  SECTION8_CIN
+  SOCIETY_REGISTRATION
+  TRUST_REGISTRATION
+  CHARITY_NUMBER
+  OTHER
+}
+
 model User {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
   name             String
-  email            String   @unique
+  email            String           @unique
   passwordHash     String
 
-  role             Role     @default(DONOR)
+  role             Role             @default(DONOR)
 
   phone            String?
 
   // Only Shelter Admins will have this populated.
-  shelterId        String?  @db.ObjectId
-  shelter          Shelter? @relation(fields: [shelterId], references: [id])
+  shelterId        String?          @db.ObjectId
+  shelter          Shelter?         @relation(fields: [shelterId], references: [id])
 
   refreshTokenHash String?
 
-  isReported       Boolean  @default(false)
+  isReported       Boolean          @default(false)
 
-  createdAt        DateTime @default(now())
+  createdAt        DateTime         @default(now())  
+  updatedAt        DateTime         @updatedAt
 
   pledges          Pledge[]
+
+  @@index([role])
 }
 
 model Shelter {
   id                   String               @id @default(auto()) @map("_id") @db.ObjectId
 
   name                 String
-  ein                  String               @unique
+  country              String
+  organizationIdType   OrganizationIdType
+  organizationId       String               @unique
 
   verificationStatus   VerificationStatus   @default(PENDING)
   rejectionReason      String?
@@ -85,20 +100,26 @@ model Shelter {
   state                String
   zip                  String
 
-  coordinates          Float[]
+  longitude            Float
+  latitude             Float
 
   dropOffHours         String
 
   contactEmail         String
   phone                String?
+  website              String?
 
-  createdAt            DateTime             @default(now())
+  createdAt            DateTime         @default(now())  
+  updatedAt            DateTime         @updatedAt
 
   admins               User[]
 
   items                Item[]
 
   pledges              Pledge[]
+
+  @@index([verificationStatus])
+  @@index([country])
 }
 
 model Category {
@@ -111,6 +132,9 @@ model Category {
   description          String?
 
   items                Item[]
+
+  createdAt            DateTime  @default(now())  
+  updatedAt            DateTime  @updatedAt
 }
 
 model Item {
@@ -138,9 +162,15 @@ model Item {
 
   notes                String?
 
-  createdAt            DateTime    @default(now())
+  createdAt            DateTime     @default(now())  
+  updatedAt            DateTime     @updatedAt
 
   pledges              Pledge[]
+  
+  @@index([shelterId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([urgency])
 }
 
 model Pledge {
@@ -171,5 +201,11 @@ model Pledge {
 
   expiresAt            DateTime
 
-  createdAt            DateTime       @default(now())
+  createdAt            DateTime        @default(now())  
+  updatedAt            DateTime        @updatedAt
+
+  @@index([status])
+  @@index([expiresAt])
+  @@index([donorId])
+  @@index([itemId])
 }

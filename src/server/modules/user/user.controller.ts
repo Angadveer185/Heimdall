@@ -3,7 +3,7 @@ import {
   deleteUserSchema,
   getUserSchema,
   updateUserSchema,
-} from "@/lib/validations/user.validation";
+} from "./user.validation";
 import { UserService } from "./user.service";
 
 const service = new UserService();
@@ -13,7 +13,6 @@ const service = new UserService();
  * Migrated from Next.js endpoints to standard Express request/response format.
  */
 export class UserController {
-
   /**
    * Get a user by ID
    */
@@ -45,7 +44,10 @@ export class UserController {
    */
   async updateById(req: Request, res: Response, next: NextFunction) {
     try {
-      const validatedData = updateUserSchema.parse({ id: req.params.id, ...req.body });
+      const validatedData = updateUserSchema.parse({
+        id: req.params.id,
+        ...req.body,
+      });
       const { id, ...updateFields } = validatedData;
 
       const user = await service.updateUserById(id, updateFields);
@@ -64,7 +66,9 @@ export class UserController {
       const validatedData = deleteUserSchema.parse({ id: req.params.id });
       await service.deleteUserById(validatedData.id);
 
-      res.status(200).json({ success: true, message: "User deleted successfully" });
+      res
+        .status(200)
+        .json({ success: true, message: "User deleted successfully" });
     } catch (error) {
       next(error);
     }
@@ -73,7 +77,9 @@ export class UserController {
   async purgeAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
       await service.purgeAllUsers();
-      res.status(200).json({ success: true, message: "All users purged successfully" });
+      res
+        .status(200)
+        .json({ success: true, message: "All users purged successfully" });
     } catch (error) {
       next(error);
     }
