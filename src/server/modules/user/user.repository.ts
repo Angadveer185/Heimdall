@@ -10,6 +10,8 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   role: true,
   shelterId: true,
   isReported: true,
+  pledgesCompleted: true,
+  pledgesExpired: true,
   createdAt: true,
   updatedAt: true,
 });

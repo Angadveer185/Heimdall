@@ -5,6 +5,12 @@ import { ApiError } from "@/lib/errors";
 import { authRouter } from "./modules/auth/auth.routes";
 import { userRouter } from "./modules/user/user.routes";
 import { shelterRouter } from "./modules/shelter/shelter.routes";
+import { categoryRouter } from "./modules/category/category.routes";
+import { globalItemRouter } from "./modules/globalItem/globalItem.routes";
+import { requestedItemRouter } from "./modules/requestedItem/requestedItem.routes";
+import { shelterRequestRouter } from "./modules/shelterRequest/shelterRequest.routes";
+import { pledgeRouter } from "./modules/pledge/pledge.routes";
+import { pledgedItemRouter } from "./modules/pledgedItem/pledgedItem.routes";
 import { responseFormatter } from "./shared/middlewares/responseFormatter";
 
 const app = express();
@@ -25,6 +31,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/shelters", shelterRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/global-items", globalItemRouter);
+app.use("/api/requested-items", requestedItemRouter);
+app.use("/api/shelter-requests", shelterRequestRouter);
+app.use("/api/pledges", pledgeRouter);
+app.use("/api/pledged-items", pledgedItemRouter);
 
 // Global Error Handling Middleware (replaces next-based handleError)
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {

@@ -30,6 +30,18 @@ export class AuthController {
     }
   }
 
+  async registerSuperAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validatedData = registerSchema.parse(req.body);
+      const result = await this.authService.registerSuperAdmin(validatedData);
+
+      setAuthCookies(res, result.accessToken, result.refreshToken);
+      res.status(201).json({ success: true, data: result.user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   /**
    * Log in an existing user
    */

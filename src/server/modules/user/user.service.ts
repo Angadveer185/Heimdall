@@ -2,11 +2,15 @@ import { ApiError } from "@/lib/errors";
 import { UserRepository } from "./user.repository";
 import { UpdateUserInput } from "./user.validation";
 import { hashPassword } from "@/lib/password";
+import { Role } from "@prisma/client";
 
 const repository = new UserRepository();
 
 export class UserService {
-  async getUserById(id: string) {
+  async getUserById(id: string, currentUserId: string, currentUserRole: Role) {
+    if (currentUserRole !== Role.SUPER_ADMIN && currentUserId !== id) {
+      throw new ApiError(403, "Forbidden access: You can only access your own profile");
+    }
     const user = await repository.findById(id);
     if (!user) {
       throw new ApiError(404, "User not found");
@@ -26,7 +30,16 @@ export class UserService {
     return repository.getAllUsers();
   }
 
-  async updateUserById(id: string, data: Omit<UpdateUserInput, "id">) {
+  async updateUserById(
+    id: string,
+    data: Omit<UpdateUserInput, "id">,
+    currentUserId: string,
+    currentUserRole: Role
+  ) {
+    if (currentUserRole !== Role.SUPER_ADMIN && currentUserId !== id) {
+      throw new ApiError(403, "Forbidden access: You can only update your own profile");
+    }
+
     const existingUser = await repository.findById(id);
 
     if (!existingUser) {
@@ -54,7 +67,11 @@ export class UserService {
     });
   }
 
-  async deleteUserById(id: string) {
+  async deleteUserById(id: string, currentUserId: string, currentUserRole: Role) {
+    if (currentUserRole !== Role.SUPER_ADMIN && currentUserId !== id) {
+      throw new ApiError(403, "Forbidden access: You can only delete your own profile");
+    }
+
     const existingUser = await repository.findById(id);
 
     if (!existingUser) {

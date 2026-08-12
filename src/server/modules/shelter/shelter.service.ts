@@ -2,7 +2,10 @@ import { ApiError } from "@/lib/errors";
 import { ShelterRepository } from "./shelter.repository";
 import { CreateShelterInput, UpdateShelterInput } from "./shelter.validation";
 import { verifyShelter } from "./shelter.verification";
-import { VerificationStatus, OrganizationIdType } from "@prisma/client";
+import { VerificationStatus, OrganizationIdType, Role } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
+import { hashPassword } from "@/lib/password";
 
 export class ShelterService {
   private shelterRepository: ShelterRepository;
@@ -12,6 +15,19 @@ export class ShelterService {
   }
 
   async createShelter(data: CreateShelterInput, userId: string) {
+    // Check if the user is already associated with a shelter or has shelter admin privileges
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { shelterId: true, role: true },
+    });
+
+    if (user && (user.shelterId || user.role === "SHELTER_ADMIN")) {
+      throw new ApiError(
+        400,
+        "You are already associated with a shelter as an admin. Please delete your current shelter before registering a new one."
+      );
+    }
+
     const existingShelter = await this.shelterRepository.findByOrganizationId(
       data.organizationId,
     );
@@ -32,7 +48,22 @@ export class ShelterService {
       console.error(`Background verification error for shelter ${shelter.id}:`, err);
     });
 
-    return shelter;
+    // Generate new session tokens for the promoted shelter admin
+    const payload = { id: userId, role: Role.SHELTER_ADMIN };
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+    const refreshTokenHash = await hashPassword(refreshToken);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { refreshTokenHash },
+    });
+
+    return {
+      shelter,
+      accessToken,
+      refreshToken,
+    };
   }
 
   async verifyShelterBackground(
@@ -79,7 +110,23 @@ export class ShelterService {
     return this.shelterRepository.getAllShelters();
   }
 
-  async updateShelterById(id: string, data: Omit<UpdateShelterInput, "id">) {
+  async updateShelterById(
+    id: string,
+    data: Omit<UpdateShelterInput, "id">,
+    userId: string,
+    userRole: Role
+  ) {
+    // Ownership check
+    if (userRole === Role.SHELTER_ADMIN) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { shelterId: true },
+      });
+      if (!user || user.shelterId !== id) {
+        throw new ApiError(403, "Forbidden access: You can only update your own shelter");
+      }
+    }
+
     const existingShelter = await this.shelterRepository.findById(id);
     if (!existingShelter) {
       throw new ApiError(404, "Shelter not found");
@@ -88,7 +135,18 @@ export class ShelterService {
     return updatedShelter;
   }
 
-  async deleteShelterById(id: string) {
+  async deleteShelterById(id: string, userId: string, userRole: Role) {
+    // Ownership check
+    if (userRole === Role.SHELTER_ADMIN) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { shelterId: true },
+      });
+      if (!user || user.shelterId !== id) {
+        throw new ApiError(403, "Forbidden access: You can only delete your own shelter");
+      }
+    }
+
     const existingShelter = await this.shelterRepository.findById(id);
     if (!existingShelter) {
       throw new ApiError(404, "Shelter not found");

@@ -5,6 +5,7 @@ import {
   updateUserSchema,
 } from "./user.validation";
 import { UserService } from "./user.service";
+import { ApiError } from "@/lib/errors";
 
 const service = new UserService();
 
@@ -18,8 +19,11 @@ export class UserController {
    */
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       const validatedData = getUserSchema.parse({ id: req.params.id });
-      const user = await service.getUserById(validatedData.id);
+      const user = await service.getUserById(validatedData.id, req.user.id, req.user.role);
 
       res.status(200).json({ success: true, data: user });
     } catch (error) {
@@ -44,13 +48,16 @@ export class UserController {
    */
   async updateById(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       const validatedData = updateUserSchema.parse({
         id: req.params.id,
         ...req.body,
       });
       const { id, ...updateFields } = validatedData;
 
-      const user = await service.updateUserById(id, updateFields);
+      const user = await service.updateUserById(id, updateFields, req.user.id, req.user.role);
 
       res.status(200).json({ success: true, data: user });
     } catch (error) {
@@ -63,8 +70,11 @@ export class UserController {
    */
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       const validatedData = deleteUserSchema.parse({ id: req.params.id });
-      await service.deleteUserById(validatedData.id);
+      await service.deleteUserById(validatedData.id, req.user.id, req.user.role);
 
       res
         .status(200)

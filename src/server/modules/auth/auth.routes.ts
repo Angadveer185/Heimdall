@@ -12,6 +12,7 @@ const controller = new AuthController(authService);
 
 // Public Routes
 authRouter.post("/register", (req, res, next) => controller.register(req, res, next));
+authRouter.post("/register-super-admin", (req, res, next) => controller.registerSuperAdmin(req, res, next));
 authRouter.post("/login", (req, res, next) => controller.login(req, res, next));
 authRouter.post("/refresh", (req, res, next) => controller.refresh(req, res, next));
 

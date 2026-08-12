@@ -42,6 +42,38 @@ export class AuthService {
     };
   }
 
+  async registerSuperAdmin(data: RegisterData) {
+    const existingUser = await this.userRepository.findByEmail(data.email);
+
+    if (existingUser) {
+      throw new ApiError(409, "User already exists");
+    }
+
+    const passwordHash = await hashPassword(data.password);
+    const { password, ...userData } = data;
+
+    const user = await this.userRepository.create({
+      ...userData,
+      passwordHash,
+      role: "SUPER_ADMIN",
+    });
+
+    const payload = { id: user.id, role: user.role };
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    const refreshTokenHash = await hashPassword(refreshToken);
+
+    // Update the user with the refresh token
+    await this.userRepository.updateRefreshTokenHash(user.id, refreshTokenHash);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
+  }
+
   async login(data: LoginData) {
     const existingUser = await this.userRepository.findByEmail(data.email);
 

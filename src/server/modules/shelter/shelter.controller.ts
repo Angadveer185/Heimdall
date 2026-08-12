@@ -8,6 +8,7 @@ import {
   updateShelterSchema,
   deleteShelterSchema,
 } from "./shelter.validation";
+import { setAuthCookies } from "@/lib/cookies";
 
 export class ShelterController {
   private shelterService: ShelterService;
@@ -21,8 +22,12 @@ export class ShelterController {
         throw new ApiError(401, "Unauthorized");
       }
       const validatedData = createShelterSchema.parse(req.body);
-      const shelter = await this.shelterService.createShelter(validatedData, req.user.id);
-      res.status(201).json({ success: true, data: shelter });
+      const result = await this.shelterService.createShelter(validatedData, req.user.id);
+      
+      // Set updated session cookies representing the user's new SHELTER_ADMIN role
+      setAuthCookies(res, result.accessToken, result.refreshToken);
+
+      res.status(201).json({ success: true, data: result.shelter });
     } catch (error) {
       next(error);
     }
@@ -70,6 +75,9 @@ export class ShelterController {
 
   async updateById(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       const validatedData = updateShelterSchema.parse({
         id: req.params.id,
         ...req.body,
@@ -78,6 +86,8 @@ export class ShelterController {
       const shelter = await this.shelterService.updateShelterById(
         id,
         updateFields,
+        req.user.id,
+        req.user.role
       );
       res.status(200).json({ success: true, data: shelter });
     } catch (error) {
@@ -87,8 +97,11 @@ export class ShelterController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       const validatedData = deleteShelterSchema.parse({ id: req.params.id });
-      await this.shelterService.deleteShelterById(validatedData.id);
+      await this.shelterService.deleteShelterById(validatedData.id, req.user.id, req.user.role);
       res
         .status(200)
         .json({ success: true, message: "Shelter deleted successfully" });
