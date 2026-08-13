@@ -18,6 +18,17 @@ export class UserService {
     return user;
   }
 
+  async getPublicProfileById(id: string) {
+    const user = await repository.findPublicProfileById(id);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+    if (user.role === Role.SUPER_ADMIN) {
+      throw new ApiError(403, "Forbidden access: Cannot view public profile of an administrator");
+    }
+    return user;
+  }
+
   async getUserByEmail(email: string) {
     const user = await repository.findByEmail(email);
     if (!user) {

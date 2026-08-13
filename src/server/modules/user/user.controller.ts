@@ -32,6 +32,20 @@ export class UserController {
   }
 
   /**
+   * Get a user's public profile by ID
+   */
+  async getPublicProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validatedData = getUserSchema.parse({ id: req.params.id });
+      const user = await service.getPublicProfileById(validatedData.id);
+
+      res.status(200).json({ success: true, data: user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Get all users
    */
   async getAllUsers(req: Request, res: Response, next: NextFunction) {

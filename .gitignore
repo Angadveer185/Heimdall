@@ -13,6 +13,10 @@
 # testing
 /coverage
 
+# scripts
+/scripts
+/testing/test_run.log
+
 # next.js
 /.next/
 /out/

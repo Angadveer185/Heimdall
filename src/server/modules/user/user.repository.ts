@@ -16,6 +16,25 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   updatedAt: true,
 });
 
+const publicUserSelect = Prisma.validator<Prisma.UserSelect>()({
+  id: true,
+  name: true,
+  email: true,
+  role: true,
+  phone: true,
+  createdAt: true,
+  pledgesCompleted: true,
+  pledgesExpired: true,
+  isReported: true,
+  shelterId: true,
+  shelter: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+});
+
 export class UserRepository {
   /**
    * Create a new user with Prisma's auto-generated create input
@@ -34,6 +53,16 @@ export class UserRepository {
     return prisma.user.findUnique({
       where: { id },
       select: defaultUserSelect,
+    });
+  }
+
+  /**
+   * Find public profile of a user by unique ID
+   */
+  async findPublicProfileById(id: string) {
+    return prisma.user.findUnique({
+      where: { id },
+      select: { ...publicUserSelect },
     });
   }
 

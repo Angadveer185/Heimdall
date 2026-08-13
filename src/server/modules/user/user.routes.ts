@@ -9,6 +9,7 @@ const controller = new UserController();
 
 // User Routes
 userRouter.get("/", authenticate, authorize(Role.SUPER_ADMIN), (req, res, next) => controller.getAllUsers(req, res, next));
+userRouter.get("/:id/public", authenticate, authorize(Role.DONOR), (req, res, next) => controller.getPublicProfile(req, res, next));
 userRouter.get("/:id", authenticate, authorize(Role.DONOR), (req, res, next) => controller.getById(req, res, next));
 userRouter.patch("/:id", authenticate, authorize(Role.DONOR), (req, res, next) => controller.updateById(req, res, next));
 userRouter.delete("/:id", authenticate, authorize(Role.DONOR), (req, res, next) => controller.deleteById(req, res, next));
