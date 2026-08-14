@@ -71,6 +71,7 @@ model User {
   passwordHash     String
   role             Role     @default(DONOR)
   phone            String?
+  profileImageUrl  String?
 
   shelterId        String?  @db.ObjectId
   shelter          Shelter? @relation(fields: [shelterId], references: [id])
@@ -111,6 +112,8 @@ model Shelter {
   contactEmail        String
   phone               String?
   website             String?
+  profileImageUrl     String?
+  shelterImages       String[]
 
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt

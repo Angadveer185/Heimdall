@@ -2,11 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import { LoginForm } from "@/components/auth/login-form";
+import { RegisterForm } from "@/components/auth/super-register-form";
 import { useTheme } from "@/components/theme/theme-context";
 import { Sun, Moon } from "lucide-react";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -19,27 +19,15 @@ export default function LoginPage() {
         {/* Left Interactive Vibe Panel (hidden on mobile, visible on desktop) */}
         <div className="relative hidden lg:flex lg:col-span-5 flex-col justify-between p-8 lg:p-12 overflow-hidden text-[#faf6ec] bg-neo-night lg:border-r border-neo-line/20">
           
-          {/* Custom Eclipse Keyhole Graphic */}
+          {/* Agenda Background Glow & Sun Disk */}
           <div className="absolute inset-0 pointer-events-none z-0">
             {/* Soft Radial Ambient */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--color-neo-gold),transparent_24rem)] opacity-40" />
-            {/* Outer Concentric Ring */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--color-neo-gold),transparent_20rem)]" />
+            {/* The Sun / Crimson Disk */}
             <div 
-              className="absolute -right-20 top-8 w-80 h-80 rounded-full border-[1px] border-neo-gold/20 flex items-center justify-center"
+              className="absolute -right-32 top-0 w-80 h-80 rounded-full bg-gradient-to-b from-neo-gold to-neo-sun mix-blend-multiply opacity-80 filter blur-[1px]" 
               style={{ transform: "translate3d(0,0,0)" }}
-            >
-              {/* Mid Ring */}
-              <div className="w-64 h-64 rounded-full border-[1.5px] border-neo-gold/35 flex items-center justify-center">
-                {/* Inner Ring */}
-                <div className="w-48 h-48 rounded-full border-[2.5px] border-neo-gold/45 bg-neo-night flex items-center justify-center relative">
-                  {/* Glowing Eclipse Center */}
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-b from-neo-gold to-neo-sun opacity-85 shadow-[0_0_25px_rgba(204,163,82,0.4)]" />
-                  {/* Crosshair lines for technical feel */}
-                  <div className="absolute w-[220px] h-[1px] bg-neo-gold/20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-                  <div className="absolute w-[1px] h-[220px] bg-neo-gold/20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-              </div>
-            </div>
+            />
           </div>
 
           {/* Header Area */}
@@ -127,13 +115,13 @@ export default function LoginPage() {
         {/* Right Form Panel */}
         <div className="lg:col-span-7 flex flex-col justify-between p-6 lg:px-12 neo-grid-bg relative w-full">
           
-          {/* Header Action Button (Theme & Register redirect) */}
+          {/* Header Action Button (Theme & Login redirect) */}
           <div className="flex justify-end gap-3 items-center z-20">
             <Link 
-              href="/register" 
+              href="/login" 
               className="font-label text-xs font-semibold uppercase tracking-wider text-neo-ink border border-neo-ink px-4 py-2 hover:bg-neo-ink hover:text-neo-rice transition-colors"
             >
-              Sign Up →
+              Sign In →
             </Link>
             
             <button
@@ -150,32 +138,32 @@ export default function LoginPage() {
           </div>
 
           {/* Form wrapper */}
-          <div className="my-auto py-6 z-10 w-full flex items-center justify-center">
+          <div className="my-auto py-2 z-10 w-full flex items-center justify-center">
             <div className="max-w-xl w-full">
               
               {/* Form title */}
               <div className="mb-6">
                 <span className="font-label text-xs uppercase tracking-widest text-neo-sun font-bold block mb-1">
-                  // SECURE AUTHENTICATION
+                  // REGISTER SUPER ADMIN ACCOUNT
                 </span>
                 <h1 className="font-heading text-4xl lg:text-5xl font-light text-neo-ink tracking-tight uppercase leading-none">
-                  ACCESS SYSTEM
+                  JOIN THE NETWORK
                 </h1>
                 <p className="text-sm font-body text-neo-ink/70 mt-2">
-                  Enter your credentials below to access your donor workspace.
+                  Create a secure operational profile to pledge, track, and verify drop-offs.
                 </p>
               </div>
 
-              {/* Render the actual Next.js LoginForm component */}
+              {/* Render the actual Next.js register form component */}
               <div className="w-full">
-                <LoginForm />
+                <RegisterForm />
               </div>
             </div>
           </div>
 
           {/* Bottom metadata details */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-label text-neo-ink/60 tracking-wider pt-6 border-t border-neo-line/35 z-10">
-            <div>SECURITY: STRICT SAMEDATE COOKIE AUTH // RBAC LOGIN</div>
+            <div>SECURITY: STRICT SAMEDATE COOKIE AUTH // RBAC REGISTER</div>
             <div>STATUS: ACTIVE NODE</div>
           </div>
         </div>

@@ -1,26 +1,230 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Neo-Mirai Colors */
+  --color-neo-bg: #f4eee1;
+  --color-neo-ink: #2c251e;
+  --color-neo-night: #0f171e;
+  --color-neo-sun: #cc4b2e;
+  --color-neo-gold: #cca352;
+  --color-neo-rice: #faf6ec;
+  --color-neo-line: #c2b29a;
+  --color-neo-ash: #8c8273;
+
+  --font-heading: var(--font-chakra-petch), "Chakra Petch", sans-serif;
+  --font-body: var(--font-zen-old-mincho), "Zen Old Mincho", serif;
+  --font-label: var(--font-azeret-mono), "Azeret Mono", monospace;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  /* Neo-Mirai Colors for Dark Theme */
+  --color-neo-bg: #0f171e;
+  --color-neo-ink: #faf6ec;
+  --color-neo-night: #080f14;
+  --color-neo-sun: #e57850;
+  --color-neo-gold: #dfc07b;
+  --color-neo-rice: #17242d;
+  --color-neo-line: #424e58;
+  --color-neo-ash: #73808b;
+
+
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
+
+  /* Neo-Mirai Theme Colors */
+  --color-neo-bg: var(--color-neo-bg);
+  --color-neo-ink: var(--color-neo-ink);
+  --color-neo-night: var(--color-neo-night);
+  --color-neo-sun: var(--color-neo-sun);
+  --color-neo-gold: var(--color-neo-gold);
+  --color-neo-rice: var(--color-neo-rice);
+  --color-neo-line: var(--color-neo-line);
+  --color-neo-ash: var(--color-neo-ash);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-label: var(--font-label);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-neutral);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply font-mono;
+  }
+}
+
+/* Neo-Mirai Custom Design Styles */
+.neo-grid-bg {
+  background:
+    radial-gradient(circle at 66% 7%, color-mix(in srgb, var(--color-neo-gold) 15%, transparent), transparent 24rem),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-neo-ink) 3.5%, transparent) 1px, transparent 1px),
+    linear-gradient(0deg, color-mix(in srgb, var(--color-neo-ink) 2.8%, transparent) 1px, transparent 1px),
+    var(--color-neo-bg);
+  background-size: auto, 112px 112px, 112px 112px, auto;
+}
+
+.film-grain::before {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  content: "";
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(circle at 18% 21%, rgba(255, 255, 255, 0.6), transparent 0.08rem),
+    radial-gradient(circle at 76% 63%, rgba(36, 50, 70, 0.15), transparent 0.07rem),
+    radial-gradient(circle at 48% 88%, rgba(38, 70, 35, 0.12), transparent 0.06rem);
+  background-size: 0.7rem 0.85rem, 1.1rem 1.3rem, 0.95rem 1.05rem;
+}
+
+/* Custom Scrollbar Styles matching the Neo-Mirai theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neo-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neo-line);
+  border: 2px solid var(--color-neo-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neo-sun);
+}
+
+/* Firefox scrollbar support */
+html {
+  scrollbar-color: var(--color-neo-line) var(--color-neo-bg);
+  scrollbar-width: thin;
 }

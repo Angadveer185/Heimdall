@@ -38,14 +38,18 @@
 When generating queries or data mutations, align with this canonical Prisma schema structure:
 
 ```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
+// ==========================================
+// ENUMS
+// ==========================================
 
 enum Role {
   DONOR
@@ -55,7 +59,7 @@ enum Role {
 
 enum VerificationStatus {
   PENDING
-  VERIFIED_501C3
+  VERIFIED
   REJECTED
 }
 
@@ -66,7 +70,7 @@ enum Urgency {
   CRITICAL
 }
 
-enum ItemStatus {
+enum RequestStatus {
   ACTIVE
   FULFILLED
   ARCHIVED
@@ -80,6 +84,20 @@ enum PledgeStatus {
   EXPIRED
 }
 
+enum OrganizationIdType {
+  EIN
+  NGO_DARPAN
+  SECTION8_CIN
+  SOCIETY_REGISTRATION
+  TRUST_REGISTRATION
+  CHARITY_NUMBER
+  OTHER
+}
+
+// ==========================================
+// CORE & USER MODELS
+// ==========================================
+
 model User {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   name             String
@@ -87,76 +105,184 @@ model User {
   passwordHash     String
   role             Role     @default(DONOR)
   phone            String?
+  profileImageUrl  String?
+
   shelterId        String?  @db.ObjectId
   shelter          Shelter? @relation(fields: [shelterId], references: [id])
+
   refreshTokenHash String?
   isReported       Boolean  @default(false)
+
   createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
   pledges          Pledge[]
+  pledgesCompleted Int      @default(0)
+  pledgesExpired   Int      @default(0)
+
+  @@index([role])
 }
 
 model Shelter {
-  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
-  name               String
-  ein                String             @unique
-  verificationStatus VerificationStatus @default(PENDING)
-  rejectionReason    String?
-  description        String?
-  street             String
-  city               String
-  state              String
-  zip                String
-  coordinates        Float[]            // [longitude, latitude]
-  dropOffHours       String
-  contactEmail       String
-  phone              String?
-  createdAt          DateTime           @default(now())
-  admins             User[]
-  items              Item[]
-  pledges            Pledge[]
+  id                  String             @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  country             String
+  organizationIdType  OrganizationIdType
+  organizationId      String             @unique
+
+  verificationStatus  VerificationStatus @default(PENDING)
+  rejectionReason     String?
+
+  description         String?
+  street              String
+  city                String
+  state               String
+  zip                 String
+
+  longitude           Float
+  latitude            Float
+
+  dropOffHours        String
+  contactEmail        String
+  phone               String?
+  website             String?
+  profileImageUrl     String?
+  shelterImages       String[]
+
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  admins              User[]
+  requests            ShelterRequest[]
+  pledges             Pledge[]
+
+  @@index([verificationStatus])
+  @@index([country])
 }
+
+// ==========================================
+// GLOBAL CATALOG (Decoupled & Standardized)
+// ==========================================
 
 model Category {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique
   icon        String
   description String?
-  items       Item[]
+
+  items       GlobalItem[]
+  requests    ShelterRequest[] @relation(fields: [requestIds], references: [id])
+  requestIds  String[]         @db.ObjectId
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Item {
-  id                String     @id @default(auto()) @map("_id") @db.ObjectId
-  shelterId         String     @db.ObjectId
-  shelter           Shelter    @relation(fields: [shelterId], references: [id])
-  categoryId        String     @db.ObjectId
-  category          Category   @relation(fields: [categoryId], references: [id])
-  title             String
+model GlobalItem {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  title          String          @unique
+  description    String?
+  defaultUnit    String          @default("units")
+
+  categoryId     String?         @db.ObjectId
+  category       Category?       @relation(fields: [categoryId], references: [id])
+
+  requestedItems RequestedItem[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([categoryId])
+}
+
+// ==========================================
+// SHELTER REQUESTS & PLEDGES
+// ==========================================
+
+model ShelterRequest {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+
+  shelterId      String          @db.ObjectId
+  shelter        Shelter         @relation(fields: [shelterId], references: [id])
+
+  title          String
+  description    String?
+  urgency        Urgency         @default(MEDIUM)
+  status         RequestStatus   @default(ACTIVE)
+
+  categoryIds    String[]        @db.ObjectId
+  categories     Category[]      @relation(fields: [categoryIds], references: [id])
+
+  items          RequestedItem[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([shelterId])
+  @@index([status])
+  @@index([urgency])
+}
+
+model RequestedItem {
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+
+  requestId         String         @db.ObjectId
+  request           ShelterRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  globalItemId      String         @db.ObjectId
+  globalItem        GlobalItem     @relation(fields: [globalItemId], references: [id])
+
   quantityNeeded    Int
-  quantityReserved  Int        @default(0)
-  quantityDelivered Int        @default(0)
-  unit              String     @default("units")
-  urgency           Urgency    @default(MEDIUM)
-  status            ItemStatus @default(ACTIVE)
+  quantityReserved  Int            @default(0)
+  quantityDelivered Int            @default(0)
+  unit              String         @default("units")
+
   notes             String?
-  createdAt         DateTime   @default(now())
-  pledges           Pledge[]
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  pledges           PledgedItem[]
+
+  @@index([requestId])
+  @@index([globalItemId])
 }
 
 model Pledge {
-  id                   String       @id @default(auto()) @map("_id") @db.ObjectId
-  pledgeCode           String       @unique
-  itemId               String       @db.ObjectId
-  item                 Item         @relation(fields: [itemId], references: [id])
-  shelterId            String       @db.ObjectId
-  shelter              Shelter      @relation(fields: [shelterId], references: [id])
-  donorId              String       @db.ObjectId
-  donor                User         @relation(fields: [donorId], references: [id])
-  quantityPledged      Int
+  id                   String        @id @default(auto()) @map("_id") @db.ObjectId
+  pledgeCode           String        @unique
+
+  donorId              String        @db.ObjectId
+  donor                User          @relation(fields: [donorId], references: [id])
+
+  shelterId            String        @db.ObjectId
+  shelter              Shelter       @relation(fields: [shelterId], references: [id])
+
+  items                PledgedItem[]
   scheduledDropOffDate DateTime
-  status               PledgeStatus @default(RESERVED)
+  status               PledgeStatus  @default(RESERVED)
+
   impactPhotoUrl       String?
   shelterThankYouNote  String?
   fulfilledAt          DateTime?
   expiresAt            DateTime
-  createdAt            DateTime     @default(now())
+
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([status])
+  @@index([expiresAt])
+  @@index([donorId])
 }
+
+model PledgedItem {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  pledgeId        String        @db.ObjectId
+  pledge          Pledge        @relation(fields: [pledgeId], references: [id], onDelete: Cascade)
+  requestedItemId String        @db.ObjectId
+  requestedItem   RequestedItem @relation(fields: [requestedItemId], references: [id])
+  quantityPledged Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+```
