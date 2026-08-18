@@ -11,6 +11,7 @@ import { requestedItemRouter } from "./modules/requestedItem/requestedItem.route
 import { shelterRequestRouter } from "./modules/shelterRequest/shelterRequest.routes";
 import { pledgeRouter } from "./modules/pledge/pledge.routes";
 import { pledgedItemRouter } from "./modules/pledgedItem/pledgedItem.routes";
+import { uploadRouter } from "./modules/upload/upload.routes";
 import { responseFormatter } from "./shared/middlewares/responseFormatter";
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/api/requested-items", requestedItemRouter);
 app.use("/api/shelter-requests", shelterRequestRouter);
 app.use("/api/pledges", pledgeRouter);
 app.use("/api/pledged-items", pledgedItemRouter);
+app.use("/api/upload", uploadRouter);
 
 // Global Error Handling Middleware (replaces next-based handleError)
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {

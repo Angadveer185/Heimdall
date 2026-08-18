@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Sparkles
 } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 export function LoginForm() {
   const router = useRouter();
@@ -78,7 +79,9 @@ export function LoginForm() {
         throw new Error(resData.message || "Failed to log in.");
       }
 
-      router.push("/");
+      useUserStore.getState().setUser(resData.data.user); // Update Zustand store with the logged-in user
+
+      router.push("/profile");
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof Error) {

@@ -18,12 +18,27 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { useUserStore } from "@/store/useUserStore";
+
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const user = useUserStore((state) => state.user);
+  const clearUser = useUserStore((state) => state.clearUser);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Logout failed", err);
+    } finally {
+      clearUser();
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -119,22 +134,47 @@ export function Navbar() {
               )}
             </button>
 
-            {/* Login Link */}
-            <Link
-              href="/login"
-              className="px-4 py-2 text-xs font-label uppercase tracking-wider text-neo-ink border border-neo-line/60 bg-neo-rice/50 hover:bg-neo-rice hover:border-neo-sun hover:text-neo-sun transition-all"
-            >
-              Sign In
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 px-3 py-1.5 border border-neo-line bg-neo-rice hover:border-neo-sun transition-all group"
+                  title="View Profile Dossier"
+                >
+                  <div className="w-5 h-5 rounded-full bg-neo-sun/15 border border-neo-sun/40 text-neo-sun flex items-center justify-center font-heading text-[10px] uppercase font-bold">
+                    {user.name ? user.name.charAt(0) : "U"}
+                  </div>
+                  <span className="text-xs font-label text-neo-ink font-semibold group-hover:text-neo-sun transition-colors">
+                    {user.name} ({user.role})
+                  </span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-xs font-label uppercase tracking-wider text-neo-sun border border-neo-sun bg-neo-rice hover:bg-neo-sun hover:text-neo-rice transition-all cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Login Link */}
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-xs font-label uppercase tracking-wider text-neo-ink border border-neo-line/60 bg-neo-rice/50 hover:bg-neo-rice hover:border-neo-sun hover:text-neo-sun transition-all"
+                >
+                  Sign In
+                </Link>
 
-            {/* Register / Pledge Button */}
-            <Link
-              href="/register"
-              className="px-4 py-2 text-xs font-label uppercase tracking-wider bg-neo-sun text-neo-rice font-semibold border border-neo-sun hover:bg-neo-sun/90 active:translate-y-0.5 transition-all flex items-center gap-1.5 shadow-sm"
-            >
-              <span>Get Started</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-neo-rice" />
-            </Link>
+                {/* Register / Pledge Button */}
+                <Link
+                  href="/register"
+                  className="px-4 py-2 text-xs font-label uppercase tracking-wider bg-neo-sun text-neo-rice font-semibold border border-neo-sun hover:bg-neo-sun/90 active:translate-y-0.5 transition-all flex items-center gap-1.5 shadow-sm"
+                >
+                  <span>Get Started</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-neo-rice" />
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

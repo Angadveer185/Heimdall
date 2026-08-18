@@ -11,18 +11,20 @@ export function setAuthCookies(
   accessToken: string,
   refreshToken: string
 ) {
+  const SIXTY_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
+
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: isProduction,
     sameSite: "strict",
-    maxAge: 15 * 60 * 1000, // 15 minutes
+    maxAge: SIXTY_DAYS_MS,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: isProduction,
     sameSite: "strict",
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    maxAge: SIXTY_DAYS_MS,
   });
 }
 

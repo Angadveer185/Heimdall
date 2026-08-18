@@ -7,6 +7,13 @@ export const defaultGlobalItemSelect = Prisma.validator<Prisma.GlobalItemSelect>
   description: true,
   defaultUnit: true,
   categoryId: true,
+  category: {
+    select: {
+      id: true,
+      name: true,
+      icon: true,
+    },
+  },
   createdAt: true,
   updatedAt: true,
 });

@@ -17,6 +17,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -117,7 +118,11 @@ export function RegisterForm() {
         throw new Error(resData.message || "Failed to register account.");
       }
 
-      router.push("/");
+      if (resData.data) {
+        useUserStore.getState().setUser(resData.data);
+      }
+
+      router.push("/profile");
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof Error) {

@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/errors";
 import { UserRepository } from "./user.repository";
-import { UpdateUserInput } from "./user.validation";
+import { CreateUserInput, UpdateUserInput } from "./user.validation";
 import { hashPassword } from "@/lib/password";
 import { Role } from "@prisma/client";
 
@@ -39,6 +39,21 @@ export class UserService {
 
   async getAllUsers() {
     return repository.getAllUsers();
+  }
+
+  async createUser(data: CreateUserInput) {
+    const existing = await repository.findByEmail(data.email);
+    if (existing) {
+      throw new ApiError(409, "User with this email already exists");
+    }
+
+    const passwordHash = await hashPassword(data.password);
+    const { password, ...fields } = data;
+
+    return repository.create({
+      ...fields,
+      passwordHash,
+    });
   }
 
   async updateUserById(
