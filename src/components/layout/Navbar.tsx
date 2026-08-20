@@ -11,10 +11,9 @@ import {
   X,
   ShieldCheck,
   ArrowUpRight,
-  Activity,
   Heart,
   QrCode,
-  Layers,
+  ListChecks,
   Sparkles,
 } from "lucide-react";
 
@@ -61,9 +60,9 @@ export function Navbar() {
 
   const navLinks = [
     { name: "Live Wishlists", href: "#hero-wishlists", icon: Heart },
-    { name: "3-Stage Protocol", href: "#about-protocol", icon: Layers },
-    { name: "Features", href: "#features", icon: Sparkles },
-    { name: "Transparency Reviews", href: "#reviews", icon: QrCode },
+    { name: "How It Works", href: "#about-protocol", icon: ListChecks },
+    { name: "Why Heimdall", href: "#features", icon: Sparkles },
+    { name: "Community Stories", href: "#reviews", icon: QrCode },
   ];
 
   return (
@@ -75,15 +74,16 @@ export function Navbar() {
     >
       {/* Main Navbar */}
       <nav
-        className={`w-full transition-all duration-200 border-b ${scrolled
+        className={`w-full transition-all duration-200 border-b ${
+          scrolled
             ? "bg-neo-bg/95 backdrop-blur-md border-neo-line/60 shadow-md py-3"
             : "bg-neo-bg/85 backdrop-blur-sm border-neo-line/40 py-4"
-          }`}
+        }`}
       >
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="relative flex items-center justify-center w-10 h-10 bg-neo-rice border border-neo-line group-hover:border-neo-sun transition-colors duration-200 shadow-sm">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-neo-rice border border-neo-line/60 group-hover:border-neo-sun transition-colors duration-200 shadow-sm">
               <ShieldCheck className="w-6 h-6 text-neo-sun" />
             </div>
             <div className="flex flex-col">
@@ -91,25 +91,22 @@ export function Navbar() {
                 <span className="font-heading font-bold text-xl tracking-tight text-neo-ink group-hover:text-neo-sun transition-colors">
                   HEIMDALL
                 </span>
-                <span className="text-[10px] font-label px-1.5 py-0.5 border border-neo-line bg-neo-rice text-neo-ink">
-                  501(c)(3)
-                </span>
               </div>
-              <span className="text-[10px] font-label tracking-widest text-neo-ash uppercase">
-                Donation Logistics
+              <span className="text-[11px] font-body text-neo-ash">
+                Community Donation Platform
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1.5 border border-neo-line/40 bg-neo-rice/70 p-1 rounded-sm">
+          <div className="hidden lg:flex items-center gap-1 border border-neo-line/40 bg-neo-rice/70 p-1.5 rounded-xl shadow-xs">
             {navLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="px-3 py-1.5 text-xs font-label uppercase tracking-wider text-neo-ink hover:text-neo-sun hover:bg-neo-bg transition-colors flex items-center gap-2"
+                  className="px-3.5 py-1.5 text-xs font-heading font-semibold text-neo-ink hover:text-neo-sun hover:bg-neo-bg rounded-lg transition-colors flex items-center gap-1.5"
                 >
                   <Icon className="w-3.5 h-3.5 text-neo-sun" />
                   {link.name}
@@ -119,12 +116,12 @@ export function Navbar() {
           </div>
 
           {/* Action CTAs & Theme Toggle */}
-          <div className="hidden sm:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-3">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
               aria-label="Toggle Theme"
-              className="p-2.5 border border-neo-line bg-neo-rice text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all cursor-pointer shadow-sm"
+              className="p-2.5 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all cursor-pointer shadow-sm"
               title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
             >
               {theme === "light" ? (
@@ -138,19 +135,19 @@ export function Navbar() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/profile"
-                  className="flex items-center gap-2 px-3 py-1.5 border border-neo-line bg-neo-rice hover:border-neo-sun transition-all group"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-neo-line/60 bg-neo-rice hover:border-neo-sun transition-all group shadow-sm"
                   title="View Profile Dossier"
                 >
                   <div className="w-5 h-5 rounded-full bg-neo-sun/15 border border-neo-sun/40 text-neo-sun flex items-center justify-center font-heading text-[10px] uppercase font-bold">
                     {user.name ? user.name.charAt(0) : "U"}
                   </div>
-                  <span className="text-xs font-label text-neo-ink font-semibold group-hover:text-neo-sun transition-colors">
-                    {user.name} ({user.role})
+                  <span className="text-xs font-heading font-semibold text-neo-ink group-hover:text-neo-sun transition-colors">
+                    {user.name}
                   </span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 text-xs font-label uppercase tracking-wider text-neo-sun border border-neo-sun bg-neo-rice hover:bg-neo-sun hover:text-neo-rice transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-heading font-semibold text-neo-sun border border-neo-sun/40 bg-neo-rice hover:bg-neo-sun hover:text-neo-rice transition-all cursor-pointer shadow-sm"
                 >
                   Logout
                 </button>
@@ -160,7 +157,7 @@ export function Navbar() {
                 {/* Login Link */}
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-xs font-label uppercase tracking-wider text-neo-ink border border-neo-line/60 bg-neo-rice/50 hover:bg-neo-rice hover:border-neo-sun hover:text-neo-sun transition-all"
+                  className="px-4 py-2 rounded-xl text-xs font-heading font-semibold text-neo-ink border border-neo-line/60 bg-neo-rice/60 hover:bg-neo-rice hover:border-neo-sun hover:text-neo-sun transition-all shadow-sm"
                 >
                   Sign In
                 </Link>
@@ -168,7 +165,7 @@ export function Navbar() {
                 {/* Register / Pledge Button */}
                 <Link
                   href="/register"
-                  className="px-4 py-2 text-xs font-label uppercase tracking-wider bg-neo-sun text-neo-rice font-semibold border border-neo-sun hover:bg-neo-sun/90 active:translate-y-0.5 transition-all flex items-center gap-1.5 shadow-sm"
+                  className="px-4 py-2 rounded-xl text-xs font-heading font-semibold bg-neo-sun text-neo-rice border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center gap-1.5 shadow-md shadow-neo-sun/20"
                 >
                   <span>Get Started</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-neo-rice" />
@@ -178,16 +175,16 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex sm:hidden items-center gap-3">
+          <div className="flex sm:hidden items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="p-2 border border-neo-line bg-neo-rice text-neo-ink"
+              className="p-2 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink"
             >
               {theme === "light" ? <Moon className="w-4 h-4 text-neo-sun" /> : <Sun className="w-4 h-4 text-neo-sun" />}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 border border-neo-line bg-neo-rice text-neo-ink"
+              className="p-2 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 text-neo-sun" /> : <Menu className="w-5 h-5 text-neo-sun" />}
@@ -203,9 +200,9 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="sm:hidden border-b border-neo-line bg-neo-bg px-4 py-4 space-y-3 shadow-lg"
+            className="sm:hidden border-b border-neo-line/60 bg-neo-bg px-4 py-4 space-y-3 shadow-lg"
           >
-            <div className="flex flex-col space-y-2 font-label text-xs uppercase">
+            <div className="flex flex-col space-y-2 font-heading text-xs font-semibold">
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 return (
@@ -213,7 +210,7 @@ export function Navbar() {
                     key={link.name}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="p-2.5 border border-neo-line/40 bg-neo-rice/60 flex items-center gap-2.5 text-neo-ink hover:text-neo-sun hover:border-neo-sun"
+                    className="p-3 rounded-xl border border-neo-line/40 bg-neo-rice flex items-center gap-2.5 text-neo-ink hover:text-neo-sun hover:border-neo-sun transition-all"
                   >
                     <Icon className="w-4 h-4 text-neo-sun" />
                     {link.name}
@@ -221,18 +218,18 @@ export function Navbar() {
                 );
               })}
             </div>
-            <div className="pt-2 flex flex-col gap-2 font-label text-xs uppercase">
+            <div className="pt-2 flex flex-col gap-2 font-heading text-xs font-semibold">
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 border border-neo-line text-neo-ink hover:bg-neo-rice"
+                className="w-full text-center py-2.5 rounded-xl border border-neo-line/60 text-neo-ink hover:bg-neo-rice"
               >
                 Sign In
               </Link>
               <Link
                 href="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 bg-neo-sun text-neo-rice font-bold"
+                className="w-full text-center py-2.5 rounded-xl bg-neo-sun text-neo-rice shadow-md shadow-neo-sun/20"
               >
                 Get Started / Register
               </Link>

@@ -11,6 +11,7 @@ import {
   Loader2,
   AlertCircle,
   Tag,
+  Edit3,
 } from "lucide-react";
 
 export interface GlobalItemData {
@@ -136,35 +137,32 @@ export function GlobalItemFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="w-full max-w-lg bg-neo-rice border border-neo-line p-6 space-y-5 shadow-xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto">
+      <div className="relative w-full max-w-lg border border-neo-line/60 rounded-2xl bg-neo-rice shadow-2xl p-6 md:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-neo-line pb-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun shrink-0">
-              <Package className="w-5 h-5" />
+        <div className="flex items-center justify-between border-b border-neo-line/40 pb-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
+              <Edit3 className="w-3.5 h-3.5" />
+              {item ? "Update Item" : "Create Item"}
             </div>
-            <div>
-              <span className="text-[10px] font-label tracking-widest text-neo-sun uppercase font-bold block">
-                GLOBAL CATALOG // {item ? "UPDATE" : "CREATE"}
-              </span>
-              <h3 className="font-heading font-bold text-xl text-neo-ink">
-                {item ? "Edit Global Item Entry" : "Add New Global Item"}
-              </h3>
-            </div>
+            <h3 className="font-heading font-bold text-xl md:text-2xl text-neo-ink">
+              {item ? "Edit Global Item Entry" : "Add New Global Item"}
+            </h3>
           </div>
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1 text-neo-ash hover:text-neo-ink transition-colors"
+            aria-label="Close Modal"
+            className="p-2 rounded-full border border-neo-line/60 bg-neo-bg text-neo-ink hover:text-neo-sun hover:border-neo-sun transition-all cursor-pointer shadow-sm"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="p-3 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun text-xs font-label flex items-start gap-2.5">
+          <div className="p-4 rounded-xl bg-neo-sun/15 text-neo-sun border border-neo-sun/30 text-xs font-body flex items-start gap-2 shadow-sm font-medium">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
@@ -174,7 +172,7 @@ export function GlobalItemFormModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Item Title */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Item Title <span className="text-neo-sun">*</span>
             </label>
             <div className="relative">
@@ -188,15 +186,15 @@ export function GlobalItemFormModal({
                 placeholder="e.g. Canned Beans (400g), Thermal Blanket..."
                 maxLength={100}
                 required
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors placeholder:text-neo-ash/60"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
           </div>
 
           {/* Category Select */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
-              Classification Category <span className="text-neo-ash text-[10px] lowercase">(optional)</span>
+            <label className="block text-xs font-body font-semibold text-neo-ink">
+              Classification Category <span className="text-neo-ash text-xs font-normal">(optional)</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neo-ash">
@@ -205,7 +203,7 @@ export function GlobalItemFormModal({
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors appearance-none cursor-pointer"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm cursor-pointer"
               >
                 <option value="">-- No Category (Uncategorized) --</option>
                 {categories.map((cat) => (
@@ -219,7 +217,7 @@ export function GlobalItemFormModal({
 
           {/* Default Unit */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Default Measurement Unit <span className="text-neo-sun">*</span>
             </label>
             <div className="relative">
@@ -233,13 +231,13 @@ export function GlobalItemFormModal({
                 placeholder="e.g. units, kg, boxes, pairs"
                 maxLength={50}
                 required
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
 
             {/* Preset Unit Badges */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              <span className="text-[10px] font-label text-neo-ash py-0.5">
+            <div className="flex flex-wrap gap-1.5 pt-1.5">
+              <span className="text-[11px] font-body text-neo-ash py-0.5">
                 Common units:
               </span>
               {COMMON_UNITS.map((u) => (
@@ -247,10 +245,10 @@ export function GlobalItemFormModal({
                   key={u}
                   type="button"
                   onClick={() => setDefaultUnit(u)}
-                  className={`px-2 py-0.5 text-[10px] font-label border transition-all ${
+                  className={`px-2.5 py-0.5 text-xs font-heading font-semibold rounded-full border transition-all cursor-pointer ${
                     defaultUnit.toLowerCase() === u
-                      ? "bg-neo-sun text-neo-rice border-neo-sun font-bold"
-                      : "bg-neo-bg text-neo-ash border-neo-line hover:border-neo-sun hover:text-neo-ink"
+                      ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                      : "bg-neo-bg text-neo-ash border-neo-line/60 hover:border-neo-sun hover:text-neo-ink"
                   }`}
                 >
                   {u}
@@ -261,8 +259,8 @@ export function GlobalItemFormModal({
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
-              Description <span className="text-neo-ash text-[10px] lowercase">(optional)</span>
+            <label className="block text-xs font-body font-semibold text-neo-ink">
+              Description <span className="text-neo-ash text-xs font-normal">(optional)</span>
             </label>
             <div className="relative">
               <div className="absolute top-3 left-0 pl-3.5 pointer-events-none text-neo-ash">
@@ -274,21 +272,21 @@ export function GlobalItemFormModal({
                 placeholder="Standardized details, size requirements, or donor instructions..."
                 rows={3}
                 maxLength={500}
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors placeholder:text-neo-ash/60"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
-            <span className="text-[10px] font-label text-neo-ash text-right block">
+            <span className="text-[11px] font-body text-neo-ash text-right block">
               {description.length}/500 chars
             </span>
           </div>
 
           {/* Submit Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-neo-line">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-neo-line/40">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2.5 bg-neo-bg text-neo-ink font-label text-xs uppercase border border-neo-line hover:border-neo-ink transition-all disabled:opacity-50"
+              className="px-5 py-2.5 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun transition-colors cursor-pointer shadow-sm disabled:opacity-50"
             >
               Cancel
             </button>
@@ -296,7 +294,7 @@ export function GlobalItemFormModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 bg-neo-sun text-neo-rice font-label text-xs uppercase tracking-wider border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-md shadow-neo-sun/20 disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <>

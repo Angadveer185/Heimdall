@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { OrganizationIdType } from "@prisma/client";
+import { OrganizationIdType, VerificationStatus } from "@prisma/client";
 
 export const getShelterSchema = z.object({
   id: z
@@ -162,6 +162,14 @@ export const updateShelterSchema = z.object({
     .string()
     .trim()
     .max(200, "Website must be at most 200 characters")
+    .optional(),
+  verificationStatus: z.enum(VerificationStatus, {
+    message: "Invalid Verification Status",
+  }).optional(),
+  rejectionReason: z
+    .string()
+    .trim()
+    .max(200, "Rejection reason must be at most 200 characters")
     .optional(),
 });
 

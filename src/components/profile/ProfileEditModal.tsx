@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Camera,
   Trash2,
+  Edit3,
 } from "lucide-react";
 
 interface ProfileEditModalProps {
@@ -147,14 +148,15 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="relative w-full max-w-3xl border border-neo-line bg-neo-rice shadow-2xl p-6 md:p-8 my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="relative w-full max-w-3xl border border-neo-line/60 rounded-2xl bg-neo-rice shadow-2xl p-6 md:p-8 my-8">
         {/* Header Bar */}
-        <div className="flex items-center justify-between border-b border-neo-line pb-4 mb-6">
+        <div className="flex items-center justify-between border-b border-neo-line/40 pb-4 mb-6">
           <div>
-            <span className="text-[10px] font-label tracking-widest text-neo-ash uppercase block">
-              USER MODIFICATION // PROFILE DOSSIER
-            </span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
+              <Edit3 className="w-3.5 h-3.5" />
+              Edit Profile & Credentials
+            </div>
             <h2 className="font-heading font-bold text-xl md:text-2xl text-neo-ink">
               Update Profile Information
             </h2>
@@ -162,47 +164,39 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
           <button
             onClick={onClose}
             aria-label="Close Modal"
-            className="p-1.5 border border-neo-line bg-neo-bg text-neo-ink hover:text-neo-sun hover:border-neo-sun transition-all cursor-pointer"
+            className="p-2 rounded-full border border-neo-line/60 bg-neo-bg text-neo-ink hover:text-neo-sun hover:border-neo-sun transition-all cursor-pointer shadow-sm"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Notice Card */}
-        <div className="p-3 bg-neo-ash/10 border border-neo-line flex items-start gap-3 mb-5">
-          <ShieldAlert className="w-5 h-5 text-neo-sun shrink-0 mt-0.5" />
-          <p className="text-xs font-body text-neo-ink">
-            Update your personal contact details on the left, and your profile photo or password on the right.
-          </p>
-        </div>
-
         {/* Alerts */}
         {errorMsg && (
-          <div className="p-3 bg-red-900/10 border border-red-500/40 text-red-600 dark:text-red-400 text-xs font-label mb-4 flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 shrink-0" />
+          <div className="p-4 rounded-xl bg-neo-sun/15 text-neo-sun border border-neo-sun/30 text-xs font-body mb-4 flex items-center gap-2 shadow-sm font-medium">
+            <ShieldAlert className="w-4 h-4 shrink-0 text-neo-sun" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="p-3 bg-emerald-900/10 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 text-xs font-label mb-4 flex items-center gap-2">
+          <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-body mb-4 flex items-center gap-2 shadow-sm font-medium">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{successMsg}</span>
           </div>
         )}
 
-        {/* Form Container: 1x2 Grid on Desktop, Vertical Stack on Mobile */}
+        {/* Form Container: Grid on Desktop, Vertical Stack on Mobile */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* LEFT COLUMN: Name, Email, Phone */}
-            <div className="space-y-4 md:border-r md:border-neo-line md:pr-6 lg:pr-8">
-              <span className="text-xs font-label uppercase text-neo-sun tracking-wider font-semibold block border-b border-neo-line/40 pb-2">
+            <div className="space-y-4 md:border-r md:border-neo-line/40 md:pr-6 lg:pr-8">
+              <span className="text-xs font-heading uppercase text-neo-sun tracking-wide font-semibold block border-b border-neo-line/40 pb-2">
                 Personal Contact Details
               </span>
 
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-label uppercase text-neo-ink mb-1.5">
+                <label className="block text-xs font-body font-semibold text-neo-ink mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
@@ -214,7 +208,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line text-neo-ink font-body text-sm focus:outline-none focus:border-neo-sun transition-colors"
+                    className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink font-body text-sm focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                     placeholder="Jane Doe"
                   />
                 </div>
@@ -222,7 +216,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
 
               {/* Email Address */}
               <div>
-                <label className="block text-xs font-label uppercase text-neo-ink mb-1.5">
+                <label className="block text-xs font-body font-semibold text-neo-ink mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
@@ -234,7 +228,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line text-neo-ink font-body text-sm focus:outline-none focus:border-neo-sun transition-colors"
+                    className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink font-body text-sm focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                     placeholder="jane@example.com"
                   />
                 </div>
@@ -242,7 +236,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
 
               {/* Phone Number */}
               <div>
-                <label className="block text-xs font-label uppercase text-neo-ink mb-1.5">
+                <label className="block text-xs font-body font-semibold text-neo-ink mb-1.5">
                   Phone Number
                 </label>
                 <div className="relative">
@@ -253,7 +247,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line text-neo-ink font-body text-sm focus:outline-none focus:border-neo-sun transition-colors"
+                    className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink font-body text-sm focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                     placeholder="+1 (555) 000-0000"
                   />
                 </div>
@@ -262,19 +256,19 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
 
             {/* RIGHT COLUMN: Profile Photo & Password */}
             <div className="space-y-4">
-              <span className="text-xs font-label uppercase text-neo-sun tracking-wider font-semibold block border-b border-neo-line/40 pb-2">
+              <span className="text-xs font-heading uppercase text-neo-sun tracking-wide font-semibold block border-b border-neo-line/40 pb-2">
                 Profile Photo & Security
               </span>
 
               {/* Profile Photo Upload Area */}
               <div>
-                <label className="block text-xs font-label uppercase text-neo-ink mb-2">
+                <label className="block text-xs font-body font-semibold text-neo-ink mb-2">
                   Profile Photo (Device Upload)
                 </label>
 
-                <div className="flex items-center gap-4 p-3 bg-neo-bg border border-neo-line">
-                  {/* Preview Box */}
-                  <div className="w-16 h-16 border border-neo-line bg-neo-rice flex items-center justify-center overflow-hidden shrink-0 relative">
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-neo-bg border border-neo-line/60 shadow-sm">
+                  {/* Circular Preview Box */}
+                  <div className="w-16 h-16 rounded-full border border-neo-line/60 bg-neo-rice flex items-center justify-center overflow-hidden shrink-0 relative shadow-sm">
                     {profileImageUrl ? (
                       /* eslint-disable-next-next/no-img-element */
                       <img
@@ -308,7 +302,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                         type="button"
                         disabled={isUploadingImage}
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-3 py-1.5 bg-neo-sun text-neo-rice font-label text-xs uppercase border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        className="px-3.5 py-1.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-sm"
                       >
                         {isUploadingImage ? (
                           <>
@@ -327,30 +321,26 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                         <button
                           type="button"
                           onClick={() => setProfileImageUrl("")}
-                          className="px-2.5 py-1.5 border border-neo-line bg-neo-rice text-neo-ink font-label text-xs uppercase hover:border-red-500 hover:text-red-500 transition-colors flex items-center gap-1 cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun hover:text-neo-sun transition-colors flex items-center gap-1 cursor-pointer shadow-sm"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>Remove</span>
                         </button>
                       )}
                     </div>
-
-                    <p className="text-[11px] font-label text-neo-ash">
-                      Direct device upload to Cloudinary storage.
-                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Password Section */}
-              <div className="pt-2 border-t border-neo-line/60 space-y-3">
-                <span className="text-[11px] font-label tracking-widest text-neo-ash uppercase block">
+              <div className="pt-2 border-t border-neo-line/40 space-y-3">
+                <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
                   Change Password (Optional)
                 </span>
 
                 {/* New Password */}
                 <div>
-                  <label className="block text-xs font-label uppercase text-neo-ink mb-1">
+                  <label className="block text-xs font-body font-semibold text-neo-ink mb-1">
                     New Password
                   </label>
                   <div className="relative">
@@ -362,7 +352,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       minLength={8}
-                      className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line text-neo-ink font-body text-sm focus:outline-none focus:border-neo-sun transition-colors"
+                      className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink font-body text-sm focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                       placeholder="At least 8 characters"
                     />
                   </div>
@@ -370,7 +360,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-xs font-label uppercase text-neo-ink mb-1">
+                  <label className="block text-xs font-body font-semibold text-neo-ink mb-1">
                     Confirm Password
                   </label>
                   <div className="relative">
@@ -382,7 +372,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       minLength={8}
-                      className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line text-neo-ink font-body text-sm focus:outline-none focus:border-neo-sun transition-colors"
+                      className="w-full pl-11 pr-4 py-2.5 bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink font-body text-sm focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                       placeholder="Repeat new password"
                     />
                   </div>
@@ -392,11 +382,11 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
           </div>
 
           {/* Action Buttons Footer */}
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-neo-line">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-neo-line/40">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 border border-neo-line bg-neo-bg text-neo-ink font-label text-xs uppercase hover:border-neo-sun transition-colors cursor-pointer"
+              className="px-5 py-2.5 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun transition-colors cursor-pointer shadow-sm"
             >
               Cancel
             </button>
@@ -404,7 +394,7 @@ export function ProfileEditModal({ user, isOpen, onClose }: ProfileEditModalProp
             <button
               type="submit"
               disabled={isSubmitting || isUploadingImage}
-              className="px-6 py-2.5 bg-neo-sun text-neo-rice font-label text-xs uppercase tracking-wider border border-neo-sun hover:bg-neo-sun/90 active:translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer shadow-md shadow-neo-sun/20"
             >
               {isSubmitting ? (
                 <>

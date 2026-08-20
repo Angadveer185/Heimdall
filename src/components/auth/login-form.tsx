@@ -98,10 +98,10 @@ export function LoginForm() {
     <div className="w-full max-w-xl mx-auto">
       {/* Donor Badge */}
       <div 
-        className="mb-4 inline-flex items-center gap-1.5 border border-neo-ink bg-neo-rice text-neo-ink px-3 py-1.5 shadow-[2px_2px_0px_0px_var(--color-neo-ink)] font-label text-xs tracking-wider uppercase"
+        className="mb-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neo-rice border border-neo-line/60 shadow-sm text-neo-ink font-body text-xs font-medium"
       >
         <Heart className="w-3.5 h-3.5 fill-neo-sun text-neo-sun" />
-        Donor Portal // Security Portal
+        <span>Donor Portal & Direct Giving</span>
       </div>
 
       {/* Error Alert Block */}
@@ -111,11 +111,11 @@ export function LoginForm() {
             initial={{ opacity: 0, height: 0, y: -10 }}
             animate={{ opacity: 1, height: "auto", y: 0 }}
             exit={{ opacity: 0, height: 0, y: -10 }}
-            className="mb-4 overflow-hidden"
+            className="mb-5 overflow-hidden"
           >
-            <div className="bg-neo-sun/10 text-neo-sun border border-neo-sun p-3 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <div className="text-xs font-label font-semibold">
+            <div className="bg-neo-sun/15 text-neo-sun border border-neo-sun/30 rounded-xl p-4 flex items-start gap-3 shadow-sm">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-neo-sun" />
+              <div className="text-xs font-medium leading-relaxed font-body">
                 {errorMsg}
               </div>
             </div>
@@ -124,11 +124,11 @@ export function LoginForm() {
       </AnimatePresence>
 
       {/* Login Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         
         {/* Email Address */}
-        <div className="space-y-1">
-          <label className="block text-xs uppercase tracking-wider text-neo-ink font-semibold font-label">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold tracking-wide text-neo-ink font-body">
             Email Address
           </label>
           <div className="relative group">
@@ -142,20 +142,20 @@ export function LoginForm() {
               placeholder="you@example.com"
               style={{ paddingLeft: "2.75rem", paddingRight: "1rem", paddingTop: "0.75rem", paddingBottom: "0.75rem" }}
               className={`w-full font-body text-sm bg-neo-rice border ${
-                validationErrors.email ? "border-neo-sun" : "border-neo-line"
-              } text-neo-ink placeholder-neo-ink/40 focus:outline-none focus:border-neo-sun focus:ring-1 focus:ring-neo-sun transition-colors`}
+                validationErrors.email ? "border-neo-sun focus:ring-neo-sun/30" : "border-neo-line/70 focus:border-neo-sun focus:ring-neo-sun/20"
+              } text-neo-ink placeholder-neo-ink/40 rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
             />
           </div>
           {validationErrors.email && (
-            <p className="text-xs font-label font-semibold text-neo-sun flex items-center gap-1 mt-1">
-              <AlertCircle className="w-3 h-3" /> {validationErrors.email}
+            <p className="text-xs font-medium text-neo-sun flex items-center gap-1.5 mt-1.5 font-body">
+              <AlertCircle className="w-3.5 h-3.5" /> {validationErrors.email}
             </p>
           )}
         </div>
 
         {/* Password */}
-        <div className="space-y-1">
-          <label className="block text-xs uppercase tracking-wider text-neo-ink font-semibold font-label">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold tracking-wide text-neo-ink font-body">
             Password
           </label>
           <div className="relative group">
@@ -169,14 +169,14 @@ export function LoginForm() {
               placeholder="••••••••"
               style={{ paddingLeft: "2.75rem", paddingRight: "2.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem" }}
               className={`w-full font-body text-sm bg-neo-rice border ${
-                validationErrors.password ? "border-neo-sun" : "border-neo-line"
-              } text-neo-ink placeholder-neo-ink/40 focus:outline-none focus:border-neo-sun focus:ring-1 focus:ring-neo-sun transition-colors`}
+                validationErrors.password ? "border-neo-sun focus:ring-neo-sun/30" : "border-neo-line/70 focus:border-neo-sun focus:ring-neo-sun/20"
+              } text-neo-ink placeholder-neo-ink/40 rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               style={{ top: "50%", transform: "translateY(-50%)" }}
-              className="absolute right-3.5 flex items-center text-neo-ink/45 hover:text-neo-ink transition-colors cursor-pointer select-none"
+              className="absolute right-3.5 flex items-center text-neo-ink/50 hover:text-neo-ink p-1 rounded-md transition-colors cursor-pointer select-none"
             >
               {showPassword ? (
                 <EyeOff className="w-4 h-4" />
@@ -186,30 +186,30 @@ export function LoginForm() {
             </button>
           </div>
           {validationErrors.password && (
-            <p className="text-xs font-label font-semibold text-neo-sun flex items-center gap-1 mt-1">
-              <AlertCircle className="w-3 h-3" /> {validationErrors.password}
+            <p className="text-xs font-medium text-neo-sun flex items-center gap-1.5 mt-1.5 font-body">
+              <AlertCircle className="w-3.5 h-3.5" /> {validationErrors.password}
             </p>
           )}
         </div>
 
         {/* Submit Button */}
-        <div className="pt-1">
+        <div className="pt-2">
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 font-label font-semibold py-3 text-xs tracking-wider uppercase bg-neo-sun hover:opacity-90 text-neo-rice border border-neo-sun transition-all duration-150 cursor-pointer disabled:opacity-65"
+            className="w-full flex items-center justify-center gap-2 font-heading font-semibold py-3.5 px-6 text-sm text-neo-rice bg-neo-sun hover:bg-neo-sun/90 rounded-xl shadow-md shadow-neo-sun/20 hover:shadow-lg hover:shadow-neo-sun/25 transition-all duration-200 cursor-pointer disabled:opacity-65"
           >
             {isLoading ? (
               <span className="flex items-center gap-2">
-                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-neo-rice" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-neo-rice" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Verifying Credentials...
+                Signing in...
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Access System
+                Sign In to Donor Portal
                 <ArrowRight className="w-4 h-4" />
               </span>
             )}
@@ -218,14 +218,14 @@ export function LoginForm() {
       </form>
 
       {/* Switch to Register */}
-      <div className="mt-6 text-center text-xs font-label text-neo-ink/60">
+      <div className="mt-6 text-center text-xs font-body text-neo-ink/70">
         New to Heimdall?{" "}
         <Link
           href="/register"
-          className="text-neo-sun font-bold hover:underline cursor-pointer inline-flex items-center gap-0.5"
+          className="text-neo-sun font-semibold hover:underline cursor-pointer inline-flex items-center gap-1 ml-0.5"
         >
-          Create an account here
-          <Sparkles className="w-3.5 h-3.5 fill-neo-sun/10" />
+          Create an account
+          <Sparkles className="w-3.5 h-3.5 text-neo-sun" />
         </Link>
       </div>
     </div>

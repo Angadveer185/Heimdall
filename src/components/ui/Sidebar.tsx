@@ -9,7 +9,6 @@ import {
   ArrowLeft,
   User,
   LayoutDashboard,
-  HeartHandshake,
   Shield,
   LogOut,
   Menu,
@@ -21,7 +20,6 @@ import {
   ChevronDown,
   ChevronRight,
   Layers,
-  Sparkles,
   Sun,
   Moon,
 } from "lucide-react";
@@ -64,19 +62,19 @@ export function Sidebar({ user }: SidebarProps) {
   return (
     <>
       {/* Mobile Top Navigation Bar */}
-      <div className="md:hidden bg-neo-rice border-b border-neo-line px-4 py-3 flex items-center justify-between z-30 shrink-0 text-neo-ink transition-colors duration-200">
+      <div className="md:hidden bg-neo-rice border-b border-neo-line/60 px-4 py-3 flex items-center justify-between z-30 shrink-0 text-neo-ink transition-colors duration-200">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
               window.history.back();
               setMobileOpen(false);
             }}
-            className="p-1.5 border border-neo-line bg-neo-bg text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-colors"
+            className="p-2 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all shadow-sm cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 text-neo-sun" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 border border-neo-line bg-neo-bg text-neo-sun flex items-center justify-center font-heading font-bold text-xs uppercase shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full border border-neo-line/60 bg-gradient-to-br from-neo-gold to-neo-sun text-neo-night flex items-center justify-center font-heading font-bold text-xs shadow-sm">
               {user.name ? user.name.charAt(0) : "U"}
             </div>
             <span className="font-heading font-semibold text-sm truncate max-w-[140px] text-neo-ink">
@@ -87,7 +85,7 @@ export function Sidebar({ user }: SidebarProps) {
 
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 border border-neo-line bg-neo-bg text-neo-ink hover:border-neo-sun"
+          className="p-2 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-ink hover:border-neo-sun shadow-sm cursor-pointer"
           aria-label="Toggle Navigation Menu"
         >
           {mobileOpen ? (
@@ -102,26 +100,28 @@ export function Sidebar({ user }: SidebarProps) {
       <aside
         className={`${
           mobileOpen ? "flex" : "hidden"
-        } md:flex flex-col justify-between w-full md:w-64 lg:w-72 bg-neo-rice text-neo-ink border-r border-neo-line p-5 h-auto md:h-full shrink-0 z-20 overflow-y-auto transition-colors duration-200`}
+        } md:flex flex-col justify-between w-full md:w-64 lg:w-72 bg-neo-rice text-neo-ink border-r border-neo-line/60 p-5 h-auto md:h-full shrink-0 z-20 overflow-y-auto transition-colors duration-200`}
       >
         {/* Top Area: Logo Header & User Profile Header */}
         <div className="space-y-6">
           {/* Back Button & Logo Header */}
-          <div className="flex items-center justify-between border-b border-neo-line pb-4">
+          <div className="flex items-center justify-between border-b border-neo-line/40 pb-4">
             <button
               onClick={() => {
                 window.history.back();
                 setMobileOpen(false);
               }}
-              className="flex items-center gap-2 p-2 border border-neo-line bg-neo-bg hover:border-neo-sun hover:text-neo-sun transition-all text-xs font-label uppercase tracking-wider text-neo-ink cursor-pointer"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl border border-neo-line/60 bg-neo-bg hover:border-neo-sun hover:text-neo-sun transition-all text-xs font-heading font-semibold text-neo-ink cursor-pointer shadow-sm"
             >
               <ArrowLeft className="w-4 h-4 text-neo-sun" />
+              <span>Back</span>
             </button>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={toggleTheme}
-                className="p-2 border border-neo-line bg-neo-rice text-neo-ink cursor-pointer"
+                className="p-2.5 rounded-full border border-neo-line/60 bg-neo-rice text-neo-ink hover:shadow transition-all cursor-pointer"
+                aria-label="Toggle theme"
               >
                 {theme === "light" ? (
                   <Moon className="w-4 h-4 text-neo-sun" />
@@ -131,7 +131,7 @@ export function Sidebar({ user }: SidebarProps) {
               </button>
               <Link
                 href="/"
-                className="p-2 border border-neo-line text-neo-sun bg-neo-bg hover:border-neo-sun hover:text-neo-sun transition-all"
+                className="p-2.5 rounded-full border border-neo-line/60 text-neo-sun bg-neo-bg hover:border-neo-sun hover:shadow transition-all flex items-center justify-center"
               >
                 <ShieldCheck className="w-4 h-4 text-neo-sun" />
               </Link>
@@ -139,8 +139,8 @@ export function Sidebar({ user }: SidebarProps) {
           </div>
 
           {/* User Profile Card Summary */}
-          <div className="p-3.5 bg-neo-bg border border-neo-line flex items-center gap-3">
-            <div className="w-10 h-10 border border-neo-line bg-neo-rice text-neo-sun flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+          <div className="p-3.5 rounded-2xl bg-neo-bg border border-neo-line/60 flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-full border border-neo-line/60 bg-neo-rice text-neo-sun flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
               {user.profileImageUrl ? (
                 /* eslint-disable-next-next/no-img-element */
                 <img
@@ -155,18 +155,18 @@ export function Sidebar({ user }: SidebarProps) {
               )}
             </div>
 
-            <div className="space-y-0.5 overflow-hidden">
+            <div className="space-y-1 overflow-hidden">
               <h3 className="font-heading font-semibold text-sm text-neo-ink truncate">
                 {user.name}
               </h3>
               <div className="flex items-center gap-1.5">
                 <span
-                  className={`text-[10px] font-label px-1.5 py-0.5 border uppercase font-semibold ${
+                  className={`text-[10px] font-body px-2.5 py-0.5 rounded-full border uppercase font-medium ${
                     isSuperAdmin
-                      ? "bg-neo-sun/15 border-neo-sun text-neo-sun font-bold"
+                      ? "bg-neo-sun/15 border-neo-sun/30 text-neo-sun font-semibold"
                       : isShelterAdmin
-                        ? "bg-amber-900/20 border-amber-500/40 text-amber-600 dark:text-amber-400 font-bold"
-                        : "bg-neo-ash/10 border-neo-line text-neo-ash"
+                        ? "bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400 font-semibold"
+                        : "bg-neo-ash/15 border-neo-line/60 text-neo-ash"
                   }`}
                 >
                   {user.role}
@@ -176,35 +176,35 @@ export function Sidebar({ user }: SidebarProps) {
           </div>
 
           {/* Role-Aware Navigation Menu */}
-          <nav className="space-y-1 pt-1">
-            <span className="text-[10px] font-label text-neo-ash uppercase tracking-widest px-2 block mb-2 font-bold">
-              NAVIGATION MENU
+          <nav className="space-y-1.5 pt-1">
+            <span className="text-[10px] font-heading text-neo-ash uppercase tracking-wider px-2 block mb-2 font-bold">
+              Navigation Menu
             </span>
 
             {/* Profile Dossier Link */}
             <Link
               href="/profile"
               onClick={() => setMobileOpen(false)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-label uppercase tracking-wider transition-all border ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
                 pathname === "/profile"
-                  ? "bg-neo-sun/15 text-neo-sun border-neo-sun font-semibold"
-                  : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                  ? "bg-neo-sun/15 text-neo-sun border-neo-sun/30 shadow-sm"
+                  : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
               }`}
             >
               <User
                 className={`w-4 h-4 ${pathname === "/profile" ? "text-neo-sun" : "text-neo-ash"}`}
               />
-              <span>Profile Dossier</span>
+              <span>Profile & Account</span>
             </Link>
 
             {/* Overview / Home */}
             <Link
               href="/"
               onClick={() => setMobileOpen(false)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-label uppercase tracking-wider transition-all border ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
                 pathname === "/"
-                  ? "bg-neo-sun/15 text-neo-sun border-neo-sun font-semibold"
-                  : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                  ? "bg-neo-sun/15 text-neo-sun border-neo-sun/30 shadow-sm"
+                  : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
               }`}
             >
               <LayoutDashboard
@@ -218,10 +218,10 @@ export function Sidebar({ user }: SidebarProps) {
               <Link
                 href="/shelter/manage"
                 onClick={() => setMobileOpen(false)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-label uppercase tracking-wider transition-all border ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
                   pathname.startsWith("/shelter/manage")
-                    ? "bg-amber-900/20 text-amber-500 border-amber-500/50 font-semibold"
-                    : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30 shadow-sm"
+                    : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
                 }`}
               >
                 <Building2
@@ -233,15 +233,15 @@ export function Sidebar({ user }: SidebarProps) {
 
             {/* SUPER ADMIN NESTED ACCORDION ROUTE GROUP */}
             {isSuperAdmin && (
-              <div className="pt-3 space-y-1">
+              <div className="pt-2 space-y-1.5">
                 {/* Accordion Parent Toggle Button */}
                 <button
                   type="button"
                   onClick={() => setAdminMenuOpen(!adminMenuOpen)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-label uppercase tracking-wider transition-all border ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
                     pathname.startsWith("/admin")
-                      ? "bg-neo-sun/10 text-neo-sun border-neo-sun/50 font-bold"
-                      : "text-neo-ink bg-neo-bg/60 border-neo-line hover:border-neo-sun"
+                      ? "bg-neo-sun/10 text-neo-sun border-neo-sun/30 shadow-sm"
+                      : "text-neo-ink bg-neo-bg/60 border-neo-line/60 hover:border-neo-sun"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -257,57 +257,57 @@ export function Sidebar({ user }: SidebarProps) {
 
                 {/* Nested Sub-routes */}
                 {adminMenuOpen && (
-                  <div className="pl-3 space-y-1 border-l-2 border-neo-sun/40 ml-3 pt-1">
+                  <div className="pl-3.5 space-y-1 border-l-2 border-neo-sun/30 ml-3.5 pt-1">
                     {/* Admin Dashboard */}
                     <Link
                       href="/admin"
                       onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-label uppercase tracking-wider transition-all border ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
                         pathname === "/admin"
-                          ? "bg-neo-sun text-neo-rice border-neo-sun font-bold"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
                       }`}
                     >
                       <Layers className="w-3.5 h-3.5" />
                       <span>Overview Panel</span>
                     </Link>
 
-                    {/* /admin/users -> User Roster (ONLY) */}
+                    {/* /admin/users -> User Roster */}
                     <Link
                       href="/admin/users"
                       onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-label uppercase tracking-wider transition-all border ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
                         pathname.startsWith("/admin/users")
-                          ? "bg-neo-sun text-neo-rice border-neo-sun font-bold"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
                       }`}
                     >
                       <UsersIcon className="w-3.5 h-3.5" />
                       <span>User Roster</span>
                     </Link>
 
-                    {/* /admin/pools -> Catalog Pools (ONLY) */}
+                    {/* /admin/pools -> Catalog Pools */}
                     <Link
                       href="/admin/pools"
                       onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-label uppercase tracking-wider transition-all border ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
                         pathname.startsWith("/admin/pools")
-                          ? "bg-neo-sun text-neo-rice border-neo-sun font-bold"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
                       }`}
                     >
                       <FolderTree className="w-3.5 h-3.5" />
                       <span>Catalog Pools</span>
                     </Link>
 
-                    {/* /admin/shelter -> Shelter Registry (ONLY) */}
+                    {/* /admin/shelters -> Shelter Registry */}
                     <Link
-                      href="/admin/shelter"
+                      href="/admin/shelters"
                       onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-label uppercase tracking-wider transition-all border ${
-                        pathname.startsWith("/admin/shelter")
-                          ? "bg-neo-sun text-neo-rice border-neo-sun font-bold"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line"
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
+                        pathname.startsWith("/admin/shelters")
+                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
                       }`}
                     >
                       <Building2 className="w-3.5 h-3.5" />
@@ -321,10 +321,10 @@ export function Sidebar({ user }: SidebarProps) {
         </div>
 
         {/* Bottom Area: Logout Button */}
-        <div className="pt-6 border-t border-neo-line mt-6 md:mt-0">
+        <div className="pt-6 border-t border-neo-line/40 mt-6 md:mt-0">
           <button
             onClick={handleLogout}
-            className="w-full py-2.5 px-4 bg-neo-rice text-neo-sun border border-neo-sun hover:bg-neo-sun hover:text-neo-rice font-label text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+            className="w-full py-3 px-4 rounded-xl bg-neo-rice text-neo-sun border border-neo-sun/40 hover:bg-neo-sun hover:text-neo-rice font-heading font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
           >
             <LogOut className="w-4 h-4" />
             <span>Logout</span>

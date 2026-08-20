@@ -4,87 +4,80 @@ import React from "react";
 import { motion } from "framer-motion";
 import {
   ShieldCheck,
-  Lock,
   QrCode,
   Building2,
   MapPin,
   Camera,
-  Cookie,
-  Activity,
+  Heart,
   CheckCircle2,
   ArrowUpRight,
   Sparkles,
-  Zap,
+  RefreshCw,
+  Users,
 } from "lucide-react";
 
 export function FeaturesSection() {
   const features = [
     {
-      id: "atomic-lock",
-      title: "Atomic Concurrency Lock",
-      subtitle: "DATABASE TRANSACTION INTEGRITY",
+      id: "ein-verification",
+      title: "Verified Non-Profit Shelters",
+      subtitle: "TRUSTED COMMUNITY ORGANIZATIONS",
       description:
-        "Guarantees that two donors attempting to pledge the last sleeping bag simultaneously will never cause over-allocation or corrupt inventory balances.",
-      icon: Lock,
-      badge: "PRISMA $TRANSACTION",
-      color: "text-neo-sun border-neo-sun",
+        "Every shelter facility is officially verified before posting wishlists, so you can be 100% confident your donation reaches a legitimate non-profit.",
+      icon: Building2,
+      badge: "VERIFIED ORGANIZATIONS",
     },
     {
       id: "qr-tickets",
-      title: "Encrypted QR Drop-Off Pass",
-      subtitle: "VERIFIABLE DONOR TICKETS",
+      title: "Digital Drop-Off Pass",
+      subtitle: "FAST & EASY DROP-OFFS",
       description:
-        "Generates a unique QR ticket upon pledge. Donors scan their pass directly at shelter drop-off points for instant confirmation.",
+        "When you pledge items, a digital pass with a simple QR code is saved to your account. Shelter staff scan it in 5 seconds when you drop off.",
       icon: QrCode,
-      badge: "EXPIRED PASS HANDLER",
-      color: "text-neo-gold border-neo-gold",
-    },
-    {
-      id: "ein-verification",
-      title: "501(c)(3) EIN Verification Queue",
-      subtitle: "PROPUBLICA API INTEGRATION",
-      description:
-        "Super Admins verify shelter legitimacy by cross-referencing official IRS tax-exempt registration data before wishlists go live.",
-      icon: Building2,
-      badge: "PROPUBLICA LIVE",
-      color: "text-neo-ink border-neo-ink",
-    },
-    {
-      id: "urgency-radar",
-      title: "Urgency Radar & Geo-Filtering",
-      subtitle: "REAL-TIME LOGISTICS PRIORITIZATION",
-      description:
-        "Sort demands by urgency tags (CRITICAL, HIGH, MEDIUM) and distance, directing help where it's needed most in emergency situations.",
-      icon: MapPin,
-      badge: "CRITICAL ALERT RADAR",
-      color: "text-neo-sun border-neo-sun",
+      badge: "DIGITAL PASS",
     },
     {
       id: "impact-photo",
-      title: "Impact Photo Receipts",
-      subtitle: "PROOF-OF-FULFILLMENT LEDGER",
+      title: "Photo Proof & Thank-You Notes",
+      subtitle: "SEE YOUR REAL IMPACT",
       description:
-        "Shelter staff snap and attach proof photos upon scanning the drop-off QR pass, closing the loop and showing donors their real impact.",
+        "Shelter staff snap a photo confirmation when receiving your items and send a personal thank-you note directly to your donor profile.",
       icon: Camera,
-      badge: "PHOTO AUDIT TRAIL",
-      color: "text-neo-gold border-neo-gold",
+      badge: "PHOTO CONFIRMATION",
     },
     {
-      id: "http-security",
-      title: "Strict Cookie RBAC Security",
-      subtitle: "SECURE HTTPONLY AUTH",
+      id: "zero-waste",
+      title: "Zero Waste & Duplicate Control",
+      subtitle: "SMART INVENTORY MANAGEMENT",
       description:
-        "Tokens are stored strictly in httpOnly, Secure, SameSite=Strict cookies. Role-based access protects Donor, Shelter, and Admin desks.",
-      icon: Cookie,
-      badge: "httpOnly COOKIES",
-      color: "text-neo-ink border-neo-ink",
+        "Real-time item reservation prevents shelters from receiving 50 extra coats while remaining completely out of infant diapers and food.",
+      icon: RefreshCw,
+      badge: "BALANCED SUPPLY",
+    },
+    {
+      id: "urgency-radar",
+      title: "Urgent Local Demands",
+      subtitle: "CRITICAL HELP WHERE NEEDED MOST",
+      description:
+        "Easily view urgent needs near you tagged by priority (Critical, High, Medium) so you can respond quickly to emergency situations.",
+      icon: MapPin,
+      badge: "LOCAL MAP",
+    },
+    {
+      id: "privacy-secure",
+      title: "Safe & Private Account",
+      subtitle: "PROTECTED PERSONAL INFORMATION",
+      description:
+        "Your contact information and donation history are kept strictly secure and private. You control what you share with shelters.",
+      icon: ShieldCheck,
+      badge: "PRIVACY FIRST",
     },
   ];
 
   return (
     <section
       id="features"
-      className="w-full py-20 bg-neo-rice text-neo-ink border-b border-neo-line/40 relative overflow-hidden"
+      className="w-full py-16 lg:py-24 bg-neo-rice text-neo-ink border-b border-neo-line/40 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -96,17 +89,17 @@ export function FeaturesSection() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto space-y-4 mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-neo-line bg-neo-bg text-neo-ash font-label text-xs uppercase tracking-wider">
-            <Zap className="w-3.5 h-3.5 text-neo-sun" />
-            <span>OPERATIONAL CAPABILITIES</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neo-line/60 bg-neo-bg text-neo-sun font-heading text-xs font-semibold shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-neo-sun" />
+            <span>WHY COMMUNITIES TRUST HEIMDALL</span>
           </div>
 
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight text-neo-ink">
-            Built for Extreme Logistics Precision
+            Built for Trust, Ease & Community Impact
           </h2>
 
           <p className="font-body text-base sm:text-lg text-neo-ash leading-relaxed">
-            Every layer of Heimdall is engineered to enforce accountability, protect non-profit integrity, and give community donors absolute peace of mind.
+            Every feature in Heimdall is designed to make giving simple for donors and inventory management stress-free for local shelters.
           </p>
         </motion.div>
 
@@ -121,22 +114,22 @@ export function FeaturesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-neo-bg border border-neo-line p-6 flex flex-col justify-between hover:border-neo-sun transition-all duration-300 group hover:-translate-y-1 shadow-sm"
+                className="rounded-2xl bg-neo-bg border border-neo-line/60 p-6 flex flex-col justify-between hover:border-neo-sun/60 transition-all duration-300 group hover:-translate-y-1 shadow-sm hover:shadow-md"
               >
                 <div className="space-y-4">
                   {/* Top Bar Icon & Badge */}
-                  <div className="flex items-center justify-between border-b border-neo-line/30 pb-3">
-                    <div className="w-10 h-10 bg-neo-rice border border-neo-line text-neo-sun flex items-center justify-center group-hover:bg-neo-sun group-hover:text-neo-rice transition-colors">
+                  <div className="flex items-center justify-between border-b border-neo-line/40 pb-3">
+                    <div className="w-10 h-10 rounded-xl bg-neo-rice border border-neo-line/60 text-neo-sun flex items-center justify-center group-hover:bg-neo-sun group-hover:text-neo-rice transition-colors shadow-sm">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="font-label text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 border bg-neo-rice text-neo-ink">
+                    <span className="font-heading text-xs font-semibold px-2.5 py-0.5 rounded-full bg-neo-sun/10 text-neo-sun border border-neo-sun/30">
                       {feat.badge}
                     </span>
                   </div>
 
                   {/* Subtitle & Title */}
                   <div className="space-y-1">
-                    <span className="font-label text-[10px] text-neo-ash tracking-widest uppercase">
+                    <span className="font-heading text-[10px] text-neo-ash uppercase font-semibold tracking-wider block">
                       {feat.subtitle}
                     </span>
                     <h3 className="font-heading font-bold text-xl text-neo-ink group-hover:text-neo-sun transition-colors">
@@ -150,12 +143,12 @@ export function FeaturesSection() {
                 </div>
 
                 {/* Card Footnote Action */}
-                <div className="mt-6 pt-3 border-t border-neo-line/30 flex items-center justify-between font-label text-[11px] text-neo-ash">
-                  <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-neo-sun" /> VERIFIED MODULE
+                <div className="mt-6 pt-3 border-t border-neo-line/40 flex items-center justify-between font-body text-xs text-neo-ash">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Community Verified
                   </span>
-                  <span className="text-neo-ink font-bold group-hover:text-neo-sun flex items-center gap-0.5">
-                    DETAILS <ArrowUpRight className="w-3 h-3" />
+                  <span className="text-neo-ink font-heading font-semibold group-hover:text-neo-sun flex items-center gap-0.5">
+                    Learn More <ArrowUpRight className="w-3.5 h-3.5 text-neo-sun" />
                   </span>
                 </div>
               </motion.div>

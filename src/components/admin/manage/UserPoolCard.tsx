@@ -15,7 +15,6 @@ import {
   ShieldCheck,
   CheckCircle2,
   AlertTriangle,
-  HeartHandshake,
   Filter,
   UserCheck,
 } from "lucide-react";
@@ -92,14 +91,14 @@ export function UserPoolCard({
     switch (role) {
       case "SUPER_ADMIN":
         return (
-          <span className="px-2 py-0.5 text-[10px] font-label bg-neo-sun/15 border border-neo-sun text-neo-sun font-bold uppercase tracking-wider flex items-center gap-1 w-fit">
+          <span className="px-2.5 py-0.5 text-xs font-heading font-semibold bg-neo-sun/15 border border-neo-sun/30 text-neo-sun rounded-full flex items-center gap-1 w-fit">
             <Shield className="w-3 h-3 text-neo-sun" />
             <span>Super Admin</span>
           </span>
         );
       case "SHELTER_ADMIN":
         return (
-          <span className="px-2 py-0.5 text-[10px] font-label bg-amber-900/20 border border-amber-500/40 text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1 w-fit">
+          <span className="px-2.5 py-0.5 text-xs font-heading font-semibold bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 rounded-full flex items-center gap-1 w-fit">
             <Building2 className="w-3 h-3 text-amber-500" />
             <span>Shelter Admin</span>
           </span>
@@ -107,8 +106,8 @@ export function UserPoolCard({
       case "DONOR":
       default:
         return (
-          <span className="px-2 py-0.5 text-[10px] font-label bg-neo-ash/10 border border-neo-line text-neo-ink font-semibold uppercase tracking-wider flex items-center gap-1 w-fit">
-            <UserCheck className="w-3 h-3 text-neo-ash" />
+          <span className="px-2.5 py-0.5 text-xs font-heading font-semibold bg-neo-sun/10 text-neo-sun rounded-full flex items-center gap-1 w-fit">
+            <UserCheck className="w-3 h-3 text-neo-sun" />
             <span>Donor</span>
           </span>
         );
@@ -116,21 +115,16 @@ export function UserPoolCard({
   };
 
   return (
-    <div className="border border-neo-line bg-neo-rice p-5 md:p-6 space-y-6 shadow-sm">
+    <div className="border border-neo-line/60 rounded-2xl bg-neo-rice p-5 md:p-6 space-y-6 shadow-sm">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neo-line pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neo-line/40 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun shrink-0">
+          <div className="p-2.5 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-sun shrink-0 shadow-sm">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-label tracking-widest text-neo-sun uppercase font-bold">
-                USER ROSTER DIRECTORY
-              </span>
-              <span className="px-2 py-0.5 text-[10px] font-label bg-neo-bg border border-neo-line text-neo-ink font-semibold">
-                {users.length} TOTAL USERS
-              </span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
+              User Roster Directory
             </div>
             <h2 className="font-heading font-bold text-xl md:text-2xl text-neo-ink">
               User Accounts Directory
@@ -141,7 +135,7 @@ export function UserPoolCard({
         {/* Action Button */}
         <button
           onClick={onAddUser}
-          className="px-4 py-2.5 bg-neo-sun text-neo-rice font-label text-xs uppercase tracking-wider border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-sm shrink-0"
+          className="px-4.5 py-2.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-md shadow-neo-sun/20 shrink-0 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add New User</span>
@@ -149,28 +143,28 @@ export function UserPoolCard({
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-neo-bg p-3 border border-neo-line">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-neo-bg p-3.5 rounded-xl border border-neo-line/60 shadow-sm">
         {/* Search Input */}
         <div className="relative sm:col-span-1">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neo-ash">
-            <Search className="w-3.5 h-3.5" />
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neo-ash">
+            <Search className="w-4 h-4" />
           </div>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, email, phone..."
-            className="w-full bg-neo-rice border border-neo-line text-neo-ink pl-9 pr-3 py-2 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors placeholder:text-neo-ash/60"
+            placeholder="Search name, email, phone..."
+            className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-10 pr-3 py-2 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
           />
         </div>
 
         {/* Role Filter */}
         <div className="flex items-center gap-2">
-          <Filter className="w-3.5 h-3.5 text-neo-ash shrink-0" />
+          <Filter className="w-4 h-4 text-neo-ash shrink-0" />
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="w-full bg-neo-rice border border-neo-line text-neo-ink px-3 py-2 text-xs font-label uppercase focus:outline-none focus:border-neo-sun"
+            className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink px-3 py-2 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm cursor-pointer"
           >
             <option value="ALL">All Roles ({users.length})</option>
             <option value="DONOR">
@@ -187,11 +181,11 @@ export function UserPoolCard({
 
         {/* Status Filter */}
         <div className="flex items-center gap-2">
-          <ShieldAlert className="w-3.5 h-3.5 text-neo-ash shrink-0" />
+          <ShieldAlert className="w-4 h-4 text-neo-ash shrink-0" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full bg-neo-rice border border-neo-line text-neo-ink px-3 py-2 text-xs font-label uppercase focus:outline-none focus:border-neo-sun"
+            className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink px-3 py-2 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm cursor-pointer"
           >
             <option value="ALL">All Account Statuses</option>
             <option value="ACTIVE">
@@ -206,8 +200,8 @@ export function UserPoolCard({
 
       {/* User Table / Empty State */}
       {filteredUsers.length === 0 ? (
-        <div className="p-8 text-center bg-neo-bg border border-dashed border-neo-line space-y-3">
-          <Users className="w-10 h-10 text-neo-ash/50 mx-auto" />
+        <div className="p-8 rounded-xl text-center bg-neo-bg border border-dashed border-neo-line/60 space-y-3">
+          <Users className="w-10 h-10 text-neo-ash mx-auto opacity-50" />
           <p className="font-heading font-semibold text-sm text-neo-ink">
             No matching user entries found
           </p>
@@ -218,31 +212,31 @@ export function UserPoolCard({
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto border border-neo-line bg-neo-bg">
+        <div className="overflow-x-auto rounded-xl border border-neo-line/60 bg-neo-bg shadow-sm">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
-              <tr className="bg-neo-rice border-b border-neo-line text-[10px] font-label text-neo-ash uppercase tracking-wider">
-                <th className="py-3 px-4">User Info</th>
-                <th className="py-3 px-4">Contact</th>
-                <th className="py-3 px-4">Role</th>
-                <th className="py-3 px-4">Shelter</th>
-                <th className="py-3 px-4">Pledges</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+              <tr className="bg-neo-rice border-b border-neo-line/60 text-xs font-heading font-semibold text-neo-ash uppercase">
+                <th className="py-3.5 px-4">User Info</th>
+                <th className="py-3.5 px-4">Contact</th>
+                <th className="py-3.5 px-4">Role</th>
+                <th className="py-3.5 px-4">Shelter</th>
+                <th className="py-3.5 px-4">Pledges</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neo-line/60 text-xs">
+            <tbody className="divide-y divide-neo-line/40 text-xs font-body">
               {filteredUsers.map((u) => (
                 <tr
                   key={u.id}
                   className={`hover:bg-neo-rice/60 transition-colors ${
-                    u.isReported ? "bg-red-950/10" : ""
+                    u.isReported ? "bg-neo-sun/10" : ""
                   }`}
                 >
                   {/* User Info (Avatar, Name, ID) */}
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 border border-neo-line bg-neo-rice text-neo-sun flex items-center justify-center overflow-hidden shrink-0 shadow-xs font-heading font-bold text-sm">
+                      <div className="w-9 h-9 rounded-full border border-neo-line/60 bg-neo-rice text-neo-sun flex items-center justify-center overflow-hidden shrink-0 shadow-sm font-heading font-bold text-sm">
                         {u.profileImageUrl ? (
                           /* eslint-disable-next-next/no-img-element */
                           <img
@@ -258,7 +252,7 @@ export function UserPoolCard({
                         <div className="font-heading font-semibold text-sm text-neo-ink">
                           {u.name}
                         </div>
-                        <div className="text-[10px] font-label text-neo-ash">
+                        <div className="text-[11px] font-body text-neo-ash">
                           ID: {u.id.substring(u.id.length - 6)}
                         </div>
                       </div>
@@ -266,13 +260,13 @@ export function UserPoolCard({
                   </td>
 
                   {/* Contact (Email, Phone) */}
-                  <td className="py-3 px-4 space-y-1">
+                  <td className="py-3.5 px-4 space-y-1">
                     <div className="flex items-center gap-1.5 font-body text-neo-ink text-xs">
                       <Mail className="w-3.5 h-3.5 text-neo-sun shrink-0" />
                       <span className="truncate max-w-[180px]">{u.email}</span>
                     </div>
                     {u.phone && (
-                      <div className="flex items-center gap-1.5 text-[11px] font-label text-neo-ash">
+                      <div className="flex items-center gap-1.5 text-[11px] font-body text-neo-ash">
                         <Phone className="w-3 h-3 text-neo-ash shrink-0" />
                         <span>{u.phone}</span>
                       </div>
@@ -280,10 +274,10 @@ export function UserPoolCard({
                   </td>
 
                   {/* Role */}
-                  <td className="py-3 px-4">{getRoleBadge(u.role)}</td>
+                  <td className="py-3.5 px-4">{getRoleBadge(u.role)}</td>
 
                   {/* Shelter */}
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4">
                     {u.shelter ? (
                       <div className="flex items-center gap-1.5 text-xs font-body text-neo-ink">
                         <Building2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
@@ -292,24 +286,24 @@ export function UserPoolCard({
                         </span>
                       </div>
                     ) : (
-                      <span className="text-[10px] font-label text-neo-ash italic">
+                      <span className="text-[11px] font-body text-neo-ash/70 italic">
                         Unattached
                       </span>
                     )}
                   </td>
 
                   {/* Pledge Stats */}
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2 text-[11px] font-label">
+                  <td className="py-3.5 px-4">
+                    <div className="flex items-center gap-2 text-xs font-body">
                       <span
-                        className="px-1.5 py-0.5 border border-emerald-500/30 bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 font-semibold"
+                        className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/30"
                         title="Pledges Completed"
                       >
                         ✓ {u.pledgesCompleted}
                       </span>
                       {u.pledgesExpired > 0 && (
                         <span
-                          className="px-1.5 py-0.5 border border-red-500/30 bg-red-900/10 text-red-600 dark:text-red-400 font-semibold"
+                          className="px-2 py-0.5 rounded-full bg-neo-sun/15 text-neo-sun font-semibold border border-neo-sun/30"
                           title="Pledges Expired"
                         >
                           ✕ {u.pledgesExpired}
@@ -319,14 +313,14 @@ export function UserPoolCard({
                   </td>
 
                   {/* Status (Reported / Active) */}
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4">
                     {u.isReported ? (
-                      <span className="px-2 py-0.5 text-[10px] font-label bg-red-900/20 border border-red-500/40 text-red-500 font-bold uppercase tracking-wider flex items-center gap-1 w-fit">
-                        <AlertTriangle className="w-3 h-3 text-red-500" />
+                      <span className="px-2.5 py-0.5 text-xs font-heading font-semibold bg-neo-sun/15 border border-neo-sun/30 text-neo-sun rounded-full flex items-center gap-1 w-fit">
+                        <AlertTriangle className="w-3 h-3 text-neo-sun" />
                         <span>Reported</span>
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 text-[10px] font-label bg-emerald-900/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider flex items-center gap-1 w-fit">
+                      <span className="px-2.5 py-0.5 text-xs font-heading font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center gap-1 w-fit">
                         <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                         <span>Active</span>
                       </span>
@@ -334,15 +328,15 @@ export function UserPoolCard({
                   </td>
 
                   {/* Actions */}
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       {/* Flag / Unflag Reported Status */}
                       <button
                         onClick={() => onToggleReported(u)}
-                        className={`p-1.5 text-xs font-label border transition-all ${
+                        className={`p-2 rounded-xl text-xs font-heading font-semibold border transition-all cursor-pointer ${
                           u.isReported
-                            ? "bg-emerald-900/20 border-emerald-500/40 text-emerald-500 hover:bg-emerald-900/40"
-                            : "bg-neo-rice border-neo-line text-neo-ash hover:border-neo-sun hover:text-neo-sun"
+                            ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25"
+                            : "bg-neo-rice border-neo-line/60 text-neo-ash hover:border-neo-sun hover:text-neo-sun shadow-sm"
                         }`}
                         title={
                           u.isReported ? "Unflag / Clear Reported Status" : "Flag as Reported"
@@ -358,7 +352,7 @@ export function UserPoolCard({
                       {/* Edit User */}
                       <button
                         onClick={() => onEditUser(u)}
-                        className="p-1.5 text-xs font-label bg-neo-rice border border-neo-line text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all"
+                        className="p-2 rounded-xl text-xs font-heading font-semibold bg-neo-rice border border-neo-line/60 text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all shadow-sm cursor-pointer"
                         title="Edit User Details"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
@@ -367,7 +361,7 @@ export function UserPoolCard({
                       {/* Delete User */}
                       <button
                         onClick={() => onDeleteUser(u)}
-                        className="p-1.5 text-xs font-label bg-neo-rice border border-neo-line text-neo-sun/80 hover:bg-neo-sun hover:text-neo-rice hover:border-neo-sun transition-all"
+                        className="p-2 rounded-xl text-xs font-heading font-semibold bg-neo-rice border border-neo-line/60 text-neo-sun hover:bg-neo-sun hover:text-neo-rice hover:border-neo-sun transition-all shadow-sm cursor-pointer"
                         title="Delete User"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

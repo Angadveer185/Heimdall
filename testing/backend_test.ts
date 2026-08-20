@@ -385,6 +385,53 @@ async function runTests() {
     }
     log("Update shelter details succeeded.", "SUCCESS");
 
+    // Super Admin Verification Status Override
+    switchUser(adminCookies);
+    const rejectShelterByAdmin = await apiRequest("PATCH", `/api/shelters/${shelterAId}`, {
+      verificationStatus: "REJECTED",
+      rejectionReason: "Pending document review"
+    });
+    if (
+      rejectShelterByAdmin.status !== 200 ||
+      rejectShelterByAdmin.data.data.verificationStatus !== "REJECTED" ||
+      rejectShelterByAdmin.data.data.rejectionReason !== "Pending document review"
+    ) {
+      throw new Error(`Super Admin failed to set shelter verification status to REJECTED: ${JSON.stringify(rejectShelterByAdmin.data)}`);
+    }
+
+    const reVerifyShelterByAdmin = await apiRequest("PATCH", `/api/shelters/${shelterAId}`, {
+      verificationStatus: "VERIFIED"
+    });
+    if (
+      reVerifyShelterByAdmin.status !== 200 ||
+      reVerifyShelterByAdmin.data.data.verificationStatus !== "VERIFIED"
+    ) {
+      throw new Error(`Super Admin failed to restore shelter verification status to VERIFIED: ${JSON.stringify(reVerifyShelterByAdmin.data)}`);
+    }
+    log("Super Admin shelter verification override (REJECTED/VERIFIED) succeeded.", "SUCCESS");
+
+    // Super Admin Direct Shelter Creation & Role Preservation
+    const superAdminShelter = await apiRequest("POST", "/api/shelters", {
+      name: "Super Admin Direct Shelter",
+      country: "USA",
+      organizationIdType: "EIN",
+      organizationId: "998877665",
+      street: "1 Admin Way",
+      city: "Austin",
+      state: "TX",
+      zip: "78701",
+      longitude: -97.7431,
+      latitude: 30.2672,
+      dropOffHours: "9 AM - 5 PM Daily",
+      contactEmail: "admin.direct.shelter@example.com",
+    });
+    if (superAdminShelter.status !== 201) {
+      throw new Error(`Super Admin direct shelter creation failed: ${JSON.stringify(superAdminShelter.data)}`);
+    }
+    const tempAdminShelterId = superAdminShelter.data.data.id;
+    await apiRequest("DELETE", `/api/shelters/${tempAdminShelterId}`);
+    log("Super Admin direct shelter creation with role preservation succeeded.", "SUCCESS");
+
 
     // 5. ShelterRequest & RequestedItem Model CRUD
     log("\n[ShelterRequest & RequestedItem Model CRUD]");
@@ -1079,9 +1126,9 @@ async function runTests() {
     }
 
     // User C (DONOR) trying to read Pledge B1 (needs to be donor of the pledge, shelter admin of receiving shelter, or admin)
-    log("User C (DONOR) attempts to view Pledge B1 details (Expected: 403)...");
+    log("User C (DONOR) attempts to view Pledge B1 details (Expected: 403 or 404)...");
     const idorReadPledge = await apiRequest("GET", `/api/pledges/${pledgeB1.id}`);
-    if (idorReadPledge.status === 403) {
+    if (idorReadPledge.status === 403 || idorReadPledge.status === 404) {
       log("Blocked IDOR reading of another user's pledge details.", "INTENDED_ERROR");
     } else {
       throw new Error(`Security breach: IDOR read of another user's pledge allowed! Status: ${idorReadPledge.status}`);

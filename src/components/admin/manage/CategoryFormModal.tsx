@@ -23,6 +23,7 @@ import {
   Stethoscope,
   Gift,
   Apple,
+  Edit3,
 } from "lucide-react";
 
 export interface CategoryData {
@@ -140,35 +141,32 @@ export function CategoryFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="w-full max-w-lg bg-neo-rice border border-neo-line p-6 space-y-5 shadow-xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto">
+      <div className="relative w-full max-w-lg border border-neo-line/60 rounded-2xl bg-neo-rice shadow-2xl p-6 md:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-neo-line pb-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun shrink-0">
-              <FolderTree className="w-5 h-5" />
+        <div className="flex items-center justify-between border-b border-neo-line/40 pb-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
+              <Edit3 className="w-3.5 h-3.5" />
+              {category ? "Update Category" : "Create Category"}
             </div>
-            <div>
-              <span className="text-[10px] font-label tracking-widest text-neo-sun uppercase font-bold block">
-                CATALOG ARCHITECTURE // {category ? "UPDATE" : "CREATE"}
-              </span>
-              <h3 className="font-heading font-bold text-xl text-neo-ink">
-                {category ? "Edit Global Category" : "Add New Global Category"}
-              </h3>
-            </div>
+            <h3 className="font-heading font-bold text-xl md:text-2xl text-neo-ink">
+              {category ? "Edit Global Category" : "Add New Global Category"}
+            </h3>
           </div>
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1 text-neo-ash hover:text-neo-ink transition-colors"
+            aria-label="Close Modal"
+            className="p-2 rounded-full border border-neo-line/60 bg-neo-bg text-neo-ink hover:text-neo-sun hover:border-neo-sun transition-all cursor-pointer shadow-sm"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="p-3 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun text-xs font-label flex items-start gap-2.5">
+          <div className="p-4 rounded-xl bg-neo-sun/15 text-neo-sun border border-neo-sun/30 text-xs font-body flex items-start gap-2 shadow-sm font-medium">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
@@ -178,7 +176,7 @@ export function CategoryFormModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Category Name */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Category Name <span className="text-neo-sun">*</span>
             </label>
             <div className="relative">
@@ -192,18 +190,18 @@ export function CategoryFormModal({
                 placeholder="e.g. Medical Supplies, Non-Perishable Foods..."
                 maxLength={100}
                 required
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors placeholder:text-neo-ash/60"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
           </div>
 
           {/* Preset Icon Selector */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Select Icon Symbol <span className="text-neo-sun">*</span>
             </label>
 
-            <div className="grid grid-cols-5 gap-2 p-2.5 bg-neo-bg border border-neo-line max-h-36 overflow-y-auto">
+            <div className="grid grid-cols-5 gap-2 p-3 rounded-xl bg-neo-bg border border-neo-line/60 max-h-36 overflow-y-auto shadow-sm">
               {PRESET_ICONS.map((p) => {
                 const IconComponent = p.icon;
                 const isSelected = icon === p.name;
@@ -212,14 +210,14 @@ export function CategoryFormModal({
                     key={p.name}
                     type="button"
                     onClick={() => setIcon(p.name)}
-                    className={`flex flex-col items-center justify-center p-2 border transition-all text-center gap-1 ${
+                    className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all text-center gap-1 cursor-pointer ${
                       isSelected
-                        ? "bg-neo-sun text-neo-rice border-neo-sun font-semibold"
-                        : "bg-neo-rice text-neo-ink border-neo-line hover:border-neo-sun/60"
+                        ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                        : "bg-neo-rice text-neo-ink border-neo-line/60 hover:border-neo-sun"
                     }`}
                   >
                     <IconComponent className="w-4 h-4 shrink-0" />
-                    <span className="text-[9px] font-label truncate max-w-full">
+                    <span className="text-[10px] font-heading font-semibold truncate max-w-full">
                       {p.name}
                     </span>
                   </button>
@@ -229,7 +227,7 @@ export function CategoryFormModal({
 
             {/* Custom Icon Tag Override */}
             <div className="pt-1">
-              <span className="text-[10px] font-label text-neo-ash">
+              <span className="text-xs font-body text-neo-ash">
                 Or type custom icon identifier tag:
               </span>
               <input
@@ -238,15 +236,15 @@ export function CategoryFormModal({
                 onChange={(e) => setIcon(e.target.value)}
                 placeholder="Icon Identifier Tag"
                 maxLength={200}
-                className="w-full mt-1 bg-neo-bg border border-neo-line text-neo-ink px-3 py-1.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors"
+                className="w-full mt-1 bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink px-3 py-2 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
           </div>
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-label tracking-wider text-neo-ash uppercase">
-              Description <span className="text-neo-ash text-[10px] lowercase">(optional)</span>
+            <label className="block text-xs font-body font-semibold text-neo-ink">
+              Description <span className="text-neo-ash text-xs font-normal">(optional)</span>
             </label>
             <div className="relative">
               <div className="absolute top-3 left-0 pl-3.5 pointer-events-none text-neo-ash">
@@ -258,21 +256,21 @@ export function CategoryFormModal({
                 placeholder="Brief summary of items classified under this category..."
                 rows={3}
                 maxLength={200}
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors placeholder:text-neo-ash/60"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
-            <span className="text-[10px] font-label text-neo-ash text-right block">
+            <span className="text-[11px] font-body text-neo-ash text-right block">
               {description.length}/200 chars
             </span>
           </div>
 
           {/* Submit Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-neo-line">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-neo-line/40">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2.5 bg-neo-bg text-neo-ink font-label text-xs uppercase border border-neo-line hover:border-neo-ink transition-all disabled:opacity-50"
+              className="px-5 py-2.5 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun transition-colors cursor-pointer shadow-sm disabled:opacity-50"
             >
               Cancel
             </button>
@@ -280,7 +278,7 @@ export function CategoryFormModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 bg-neo-sun text-neo-rice font-label text-xs uppercase tracking-wider border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-md shadow-neo-sun/20 disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <>

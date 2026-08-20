@@ -9,13 +9,12 @@ import { ProfileEditModal } from "@/components/profile/ProfileEditModal";
 import { DonorSheltersCard } from "@/components/profile/DonorSheltersCard";
 import { ShelterInfoCard } from "@/components/profile/ShelterInfoCard";
 import { AdminControlCard } from "@/components/profile/AdminControlCard";
-import { AccountSecurityCard } from "@/components/profile/AccountSecurityCard";
 import {
   ShieldCheck,
   LogIn,
   ArrowLeft,
   AlertTriangle,
-  ShieldAlert,
+  UserCheck,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -26,27 +25,28 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="h-screen w-screen overflow-hidden flex flex-col items-center justify-center p-6 bg-neo-bg text-neo-ink">
-        <div className="w-full max-w-md border border-neo-line bg-neo-rice p-8 text-center space-y-6 shadow-md">
-          <div className="w-16 h-16 border-2 border-neo-line bg-neo-bg text-neo-sun flex items-center justify-center mx-auto">
+        <div className="w-full max-w-md border border-neo-line/60 rounded-2xl bg-neo-rice p-8 text-center space-y-6 shadow-xl">
+          <div className="w-16 h-16 rounded-2xl border border-neo-line/60 bg-neo-bg text-neo-sun flex items-center justify-center mx-auto shadow-sm">
             <ShieldCheck className="w-8 h-8" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-[10px] font-label tracking-widest text-neo-ash uppercase">
-              AUTHENTICATION REQUIRED // USER DOSSIER
-            </span>
-            <h1 className="font-heading font-bold text-2xl text-neo-ink">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide">
+              <UserCheck className="w-3.5 h-3.5" />
+              Authentication Required
+            </div>
+            <h1 className="font-heading font-bold text-2xl text-neo-ink pt-1">
               Access Restricted
             </h1>
-            <p className="text-xs font-body text-neo-ash">
-              Please sign in to view your user dossier, donation records, and administrative controls.
+            <p className="text-xs font-body text-neo-ash leading-relaxed">
+              Please sign in to view your user profile, donation records, and administrative controls.
             </p>
           </div>
 
           <div className="pt-2 flex flex-col gap-3">
             <Link
               href="/login"
-              className="w-full py-3 bg-neo-sun text-neo-rice font-label text-xs uppercase tracking-wider border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-3.5 bg-neo-sun text-neo-rice font-heading font-semibold text-xs rounded-xl border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-md shadow-neo-sun/20"
             >
               <LogIn className="w-4 h-4" />
               <span>Sign In to Access Profile</span>
@@ -54,7 +54,7 @@ export default function ProfilePage() {
 
             <Link
               href="/"
-              className="w-full py-2.5 bg-neo-bg text-neo-ink font-label text-xs uppercase border border-neo-line hover:border-neo-sun transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-neo-bg text-neo-ink font-body text-xs rounded-xl border border-neo-line/60 hover:border-neo-sun transition-all flex items-center justify-center gap-1.5 shadow-sm"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to Homepage</span>
@@ -67,22 +67,22 @@ export default function ProfilePage() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-neo-bg text-neo-ink flex flex-col md:flex-row">
-      {/* Left Panel: Universal Sidebar with Dummy Routes & Logout Button */}
+      {/* Left Panel: Universal Sidebar */}
       <Sidebar user={user} />
 
-      {/* Right Main Workspace (Non-scrollable outer container, inner pane handles scrolling) */}
+      {/* Right Main Workspace */}
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-neo-bg">
-        {/* Top Warning Banner: "Small Warning if user is reported" (Matches Wireframe) */}
+        {/* Top Warning Banner if user is reported */}
         {user.isReported && (
-          <div className="bg-red-900/20 text-red-600 dark:text-red-400 border-b border-red-500/40 px-6 py-3 text-xs font-label flex items-center justify-between gap-3 shrink-0">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
-              <span>
-                <strong>Account Status Warning:</strong> Your account has been reported or flagged for review. Contact support if you believe this is an error.
+          <div className="rounded-xl bg-neo-sun/15 text-neo-sun border border-neo-sun/30 px-5 py-3.5 text-xs font-body flex items-center justify-between gap-3 shadow-sm mx-4 md:mx-6 lg:mx-8 mt-4 shrink-0">
+            <div className="flex items-center gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-neo-sun shrink-0" />
+              <span className="leading-relaxed">
+                <strong className="font-heading font-semibold">Account Status Warning:</strong> Your account has been reported or flagged for administrative review. Contact support if you believe this is an error.
               </span>
             </div>
-            <span className="px-2 py-0.5 text-[10px] bg-red-900/30 border border-red-500/50 uppercase font-semibold">
-              FLAGGED
+            <span className="px-2.5 py-0.5 text-[10px] rounded-full bg-neo-sun/20 border border-neo-sun/40 uppercase font-semibold shrink-0">
+              Flagged
             </span>
           </div>
         )}
@@ -90,25 +90,26 @@ export default function ProfilePage() {
         {/* Inner Scrollable Workspace Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 space-y-6">
           {/* Top Workspace Header Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neo-line pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neo-line/40 pb-4">
             <div>
-              <span className="text-[10px] font-label tracking-widest text-neo-sun uppercase font-bold">
-                OPERATOR PROFILE DOSSIER
-              </span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                User Dashboard
+              </div>
               <h1 className="font-heading font-bold text-2xl md:text-3xl text-neo-ink tracking-tight">
-                User Dashboard & Settings
+                Profile & Settings
               </h1>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-label px-3 py-1.5 border border-neo-line bg-neo-rice text-neo-ink flex items-center gap-2 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span>ONLINE</span>
+              <span className="text-xs font-body px-3.5 py-1.5 rounded-full border border-neo-line/60 bg-neo-rice text-neo-ink flex items-center gap-2 shadow-sm font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Active Member</span>
               </span>
             </div>
           </div>
 
-          {/* Top Block: "All User Info" (Matches Wireframe Top Block) */}
+          {/* Top Block: Profile Information & User Summary */}
           <section>
             <ProfileHeaderCard
               user={user}
@@ -116,7 +117,7 @@ export default function ProfilePage() {
             />
           </section>
 
-          {/* Bottom Block: "Role Specific Content" (Matches Wireframe Bottom Block) */}
+          {/* Bottom Block: Role Specific Content */}
           <section className="space-y-6">
             {/* DONOR: Shelters previously donated */}
             {user.role === "DONOR" && <DonorSheltersCard user={user} />}

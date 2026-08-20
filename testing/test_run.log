@@ -1,0 +1,161 @@
+[2026-08-18T14:41:40.493Z] [INFO] Starting Heimdall integration and security verification tests...
+[2026-08-18T14:41:40.498Z] [INFO] Registering temporary Super Admin to clean up target database tables...
+[2026-08-18T14:41:40.537Z] [INFO] Test server successfully listening on http://localhost:5001
+[2026-08-18T14:41:42.037Z] [INFO] Purging database records...
+[2026-08-18T14:41:43.211Z] [SUCCESS] Database successfully cleaned up.
+[2026-08-18T14:41:43.212Z] [INFO] 
+--- PHASE 1: Full CRUD Testing for Every Model ---
+[2026-08-18T14:41:43.212Z] [INFO] Registering Super Admin: super.admin.1787064103212@example.com
+[2026-08-18T14:41:44.163Z] [SUCCESS] Super Admin registered.
+[2026-08-18T14:41:44.165Z] [INFO] Registering Donor A: donor.a.1787064104165@example.com
+[2026-08-18T14:41:45.132Z] [SUCCESS] Donor A registered. ID: 6a846f2856d1039b01d51698
+[2026-08-18T14:41:45.132Z] [INFO] 
+[User Model CRUD]
+[2026-08-18T14:41:46.068Z] [SUCCESS] Temporary user created. ID: 6a846f2956d1039b01d51699
+[2026-08-18T14:41:46.106Z] [SUCCESS] Read user details by ID (Self) succeeded.
+[2026-08-18T14:41:46.297Z] [SUCCESS] Update user profile succeeded.
+[2026-08-18T14:41:46.500Z] [SUCCESS] Delete user by ID succeeded.
+[2026-08-18T14:41:46.539Z] [SUCCESS] Verified deleted user cannot login.
+[2026-08-18T14:41:46.540Z] [INFO] 
+[Category Model CRUD]
+[2026-08-18T14:41:46.714Z] [SUCCESS] Category created. ID: 6a846f2a56d1039b01d5169a
+[2026-08-18T14:41:46.792Z] [SUCCESS] Read all categories succeeded.
+[2026-08-18T14:41:46.862Z] [SUCCESS] Read category by ID succeeded.
+[2026-08-18T14:41:46.939Z] [SUCCESS] Read category by Name succeeded.
+[2026-08-18T14:41:47.187Z] [SUCCESS] Update category succeeded.
+[2026-08-18T14:41:47.445Z] [SUCCESS] Delete category succeeded.
+[2026-08-18T14:41:47.446Z] [INFO] 
+[GlobalItem Model CRUD]
+[2026-08-18T14:41:47.820Z] [SUCCESS] GlobalItem created. ID: 6a846f2b56d1039b01d5169c
+[2026-08-18T14:41:47.894Z] [SUCCESS] Read all global items succeeded.
+[2026-08-18T14:41:47.964Z] [SUCCESS] Read global item by ID succeeded.
+[2026-08-18T14:41:48.224Z] [SUCCESS] Update global item succeeded.
+[2026-08-18T14:41:48.501Z] [SUCCESS] Delete global item succeeded.
+[2026-08-18T14:41:48.765Z] [INFO] 
+[Shelter Model CRUD]
+[2026-08-18T14:41:49.644Z] [SUCCESS] Shelter created & user promoted to SHELTER_ADMIN. Shelter ID: 6a846f2c56d1039b01d5169d
+[2026-08-18T14:41:51.818Z] [SUCCESS] Read all shelters succeeded.
+[2026-08-18T14:41:51.855Z] [SUCCESS] Read shelter by ID succeeded. Status is VERIFIED.
+[2026-08-18T14:41:51.894Z] [SUCCESS] Read shelter by organization ID succeeded.
+[2026-08-18T14:41:52.117Z] [SUCCESS] Update shelter details succeeded.
+[2026-08-18T14:41:52.496Z] [SUCCESS] Super Admin shelter verification override (REJECTED/VERIFIED) succeeded.
+[2026-08-18T14:41:53.685Z] [SUCCESS] Super Admin direct shelter creation with role preservation succeeded.
+[2026-08-18T14:41:53.686Z] [INFO] 
+[ShelterRequest & RequestedItem Model CRUD]
+[2026-08-18T14:41:54.837Z] [SUCCESS] ShelterRequest created. ID: 6a846f3256d1039b01d516a1. RequestedItem ID: 6a846f3256d1039b01d516a2
+[2026-08-18T14:41:55.057Z] [SUCCESS] Read all shelter requests succeeded.
+[2026-08-18T14:41:55.271Z] [SUCCESS] Read request by ID succeeded.
+[2026-08-18T14:41:55.944Z] [SUCCESS] Update request succeeded.
+[2026-08-18T14:41:55.983Z] [SUCCESS] Read requested item details succeeded.
+[2026-08-18T14:41:56.448Z] [SUCCESS] Created requested item. ID: 6a846f3456d1039b01d516a4
+[2026-08-18T14:41:56.721Z] [SUCCESS] Update requested item quantity succeeded.
+[2026-08-18T14:41:56.987Z] [SUCCESS] Delete requested item succeeded.
+[2026-08-18T14:41:57.907Z] [SUCCESS] Delete shelter request succeeded.
+[2026-08-18T14:41:58.782Z] [INFO] 
+[Pledge & PledgedItem Model CRUD]
+[2026-08-18T14:42:01.349Z] [SUCCESS] Pledge created. ID: 6a846f3956d1039b01d516aa. Code: PLG-DIV1C3. PledgedItem ID: 6a846f3956d1039b01d516ab
+[2026-08-18T14:42:01.535Z] [SUCCESS] Read donor's own pledges succeeded.
+[2026-08-18T14:42:01.752Z] [SUCCESS] Read shelter pledges succeeded.
+[2026-08-18T14:42:01.977Z] [SUCCESS] Read pledge by ID succeeded.
+[2026-08-18T14:42:02.155Z] [SUCCESS] Read pledge by Code succeeded.
+[2026-08-18T14:42:02.231Z] [SUCCESS] Read pledged item details succeeded.
+[2026-08-18T14:42:02.603Z] [SUCCESS] Update pledged item quantity succeeded.
+[2026-08-18T14:42:03.315Z] [SUCCESS] Delete pledged item succeeded.
+[2026-08-18T14:42:03.422Z] [SUCCESS] Verified parent pledge auto-cancelled successfully on last item deletion.
+[2026-08-18T14:42:05.730Z] [SUCCESS] 
+Phase 1 CRUD verification completed successfully!
+[2026-08-18T14:42:05.730Z] [INFO] 
+--- PHASE 2: Full Website Experience Test Scenario ---
+[2026-08-18T14:42:05.731Z] [INFO] [Step 0] Super Admin creating Categories 'Medical Supplies' & 'Winter Clothing'...
+[2026-08-18T14:42:06.082Z] [INFO] [Step 0] Super Admin creating Global Items 'Bandages', 'Antiseptic Wipes' & 'Thermal Blankets'...
+[2026-08-18T14:42:06.709Z] [SUCCESS] Global catalog initialized.
+[2026-08-18T14:42:06.709Z] [INFO] [Step 1] Registering and logging in User A: user.a.1787064126709@example.com
+[2026-08-18T14:42:07.769Z] [SUCCESS] User A registered. ID: 6a846f3f56d1039b01d516b1
+[2026-08-18T14:42:07.770Z] [INFO] [Step 2] User A creating Shelter 'Safe Haven Shelter' (EIN bypass)...
+[2026-08-18T14:42:08.959Z] [SUCCESS] Shelter A registered. Verification Status: PENDING
+[2026-08-18T14:42:09.582Z] [SUCCESS] Verified Shelter A successfully transitioned to VERIFIED.
+[2026-08-18T14:42:09.583Z] [INFO] [Step 2] Shelter Admin A creating ShelterRequest for Bandages and Thermal Blankets...
+[2026-08-18T14:42:10.680Z] [SUCCESS] Shelter Request created. ID: 6a846f4156d1039b01d516b3. Items: Bandages (6a846f4256d1039b01d516b4), Blankets (6a846f4256d1039b01d516b5)
+[2026-08-18T14:42:10.681Z] [INFO] [Step 3] Registering and logging in User B: user.b.1787064130681@example.com
+[2026-08-18T14:42:11.689Z] [SUCCESS] User B registered. ID: 6a846f4356d1039b01d516b6
+[2026-08-18T14:42:11.689Z] [INFO] [Step 4] User B creating Pledge B1 for 15 Bandages and 8 Thermal Blankets...
+[2026-08-18T14:42:12.500Z] [SUCCESS] Pledge B1 created successfully. Code: PLG-0J8D7B
+[2026-08-18T14:42:12.501Z] [INFO] Verifying inventory updates (quantityReserved) for Pledge B1...
+[2026-08-18T14:42:12.604Z] [SUCCESS] Bandages - Reserved: 15/20
+[2026-08-18T14:42:12.605Z] [SUCCESS] Blankets - Reserved: 8/10
+[2026-08-18T14:42:12.605Z] [INFO] [Step 5] User B updating Pledge B1 item quantities (10 Bandages, 5 Thermal Blankets)...
+[2026-08-18T14:42:13.391Z] [SUCCESS] Pledge B1 quantities updated successfully.
+[2026-08-18T14:42:13.436Z] [INFO] [Step 5] Shelter Admin A verifying and delivering Pledge B1...
+[2026-08-18T14:42:14.242Z] [SUCCESS] Pledge B1 verified and marked as DELIVERED.
+[2026-08-18T14:42:14.319Z] [SUCCESS] Bandages delivered: 10, reserved: 0
+[2026-08-18T14:42:14.320Z] [SUCCESS] Blankets delivered: 5, reserved: 0
+[2026-08-18T14:42:14.357Z] [SUCCESS] User B trust metrics - pledgesCompleted: 1
+[2026-08-18T14:42:14.357Z] [INFO] [Step 7] Registering and logging in User C: user.c.1787064134357@example.com
+[2026-08-18T14:42:15.376Z] [SUCCESS] User C registered. ID: 6a846f4656d1039b01d516ba
+[2026-08-18T14:42:15.377Z] [INFO] [Step 8] User C creating Pledge C1 for 6 Bandages and 3 Thermal Blankets...
+[2026-08-18T14:42:15.982Z] [SUCCESS] Pledge C1 created. Code: PLG-4R2EOP
+[2026-08-18T14:42:15.983Z] [INFO] [Step 8] Shelter Admin A verifying and delivering Pledge C1...
+[2026-08-18T14:42:16.799Z] [SUCCESS] Pledge C1 delivered successfully.
+[2026-08-18T14:42:16.873Z] [SUCCESS] Total Delivered Bandages: 16/20
+[2026-08-18T14:42:16.874Z] [SUCCESS] Total Delivered Blankets: 8/10
+[2026-08-18T14:42:16.874Z] [INFO] [Step 9] User B creating Pledge B2 for the remaining 4 Bandages and 2 Thermal Blankets...
+[2026-08-18T14:42:17.464Z] [SUCCESS] Pledge B2 created. Code: PLG-DI67L1
+[2026-08-18T14:42:17.465Z] [INFO] [Step 9] Shelter Admin A verifying and delivering Pledge B2...
+[2026-08-18T14:42:18.407Z] [SUCCESS] Pledge B2 delivered successfully.
+[2026-08-18T14:42:18.616Z] [SUCCESS] Final Request Status: FULFILLED
+[2026-08-18T14:42:18.694Z] [SUCCESS] Final Bandages - Delivered: 20/20
+[2026-08-18T14:42:18.694Z] [SUCCESS] Final Blankets - Delivered: 10/10
+[2026-08-18T14:42:18.695Z] [SUCCESS] 
+Phase 2 website experience lifecycle scenario completed successfully!
+[2026-08-18T14:42:18.695Z] [INFO] 
+--- PHASE 3: Deep Edge Case and Security Validations ---
+[2026-08-18T14:42:18.695Z] [INFO] Registering secondary Shelter B under India NGO Darpan bypass...
+[2026-08-18T14:42:19.610Z] [SUCCESS] Shelter B registered successfully.
+[2026-08-18T14:42:22.355Z] [INFO] Edge Case 1: Pledging more than needed (Pledging 6, capacity 5) (Expected: 400)...
+[2026-08-18T14:42:22.528Z] [INTENDED_ERROR] Successfully blocked over-capacity pledge.
+[2026-08-18T14:42:22.528Z] [INFO] Edge Case 2: Double Fulfillment validation...
+[2026-08-18T14:42:22.529Z] [INFO] User C pledges 3 wipes...
+[2026-08-18T14:42:23.067Z] [INFO] Shelter B Admin fulfills pledge first time (Expected: 200 OK)...
+[2026-08-18T14:42:23.751Z] [SUCCESS] First fulfillment succeeded.
+[2026-08-18T14:42:23.752Z] [INFO] Shelter B Admin attempts to fulfill same pledge second time (Expected: 400 Bad Request)...
+[2026-08-18T14:42:23.969Z] [INTENDED_ERROR] Successfully blocked duplicate fulfillment attempt.
+[2026-08-18T14:42:23.970Z] [INFO] Edge Case 3: Pledge Expiration testing...
+[2026-08-18T14:42:23.970Z] [INFO] User C pledges 2 wipes...
+[2026-08-18T14:42:24.526Z] [INFO] Artificially expiring Pledge in database...
+[2026-08-18T14:42:24.677Z] [INFO] Triggering check and expiration of expired reservations...
+[2026-08-18T14:42:25.304Z] [SUCCESS] Expiry trigger job completed.
+[2026-08-18T14:42:25.342Z] [SUCCESS] Wipes Reserved post-expiry: 0 (Expected: 0)
+[2026-08-18T14:42:25.381Z] [SUCCESS] User C trust metrics - pledgesExpired: 1 (Expected: 1)
+[2026-08-18T14:42:25.381Z] [INFO] Edge Case 4: Ghost Pledge Cancellation testing...
+[2026-08-18T14:42:25.861Z] [INFO] Deleting pledged item to verify auto-cancellation...
+[2026-08-18T14:42:26.433Z] [SUCCESS] Pledge C4 status: CANCELLED (Expected: CANCELLED)
+[2026-08-18T14:42:26.434Z] [INFO] 
+[RBAC & IDOR Security Checks]
+[2026-08-18T14:42:26.434Z] [INFO] User C (DONOR) attempts GET /api/users (Expected: 403)...
+[2026-08-18T14:42:26.438Z] [INTENDED_ERROR] Blocked DONOR from listing users.
+[2026-08-18T14:42:26.438Z] [INFO] User C (DONOR) attempts to modify User B profile (Expected: 403)...
+[2026-08-18T14:42:26.442Z] [INTENDED_ERROR] Blocked IDOR profile modification.
+[2026-08-18T14:42:26.443Z] [INFO] User C (DONOR) attempts to delete Category (Expected: 403)...
+[2026-08-18T14:42:26.445Z] [INTENDED_ERROR] Blocked DONOR from deleting category.
+[2026-08-18T14:42:26.446Z] [INFO] User C (DONOR) attempts to view Pledge B1 details (Expected: 403 or 404)...
+[2026-08-18T14:42:26.631Z] [INTENDED_ERROR] Blocked IDOR reading of another user's pledge details.
+[2026-08-18T14:42:26.632Z] [INFO] Shelter Admin A attempts to modify Shelter B Request (Expected: 403)...
+[2026-08-18T14:42:26.877Z] [INTENDED_ERROR] Blocked Shelter Admin A from modifying Shelter B's request.
+[2026-08-18T14:42:27.856Z] [INFO] Registering Shelter C with mock rejection EIN '999999999'...
+[2026-08-18T14:42:30.902Z] [SUCCESS] Shelter C Verification Status: REJECTED (Expected: REJECTED)
+[2026-08-18T14:42:30.902Z] [INFO] Attempting to create shelter request for unverified/rejected shelter (Expected: 403)...
+[2026-08-18T14:42:30.980Z] [INTENDED_ERROR] Successfully blocked unverified/rejected shelter request creation.
+[2026-08-18T14:42:30.980Z] [INFO] 
+[Unique Constraint Blocks]
+[2026-08-18T14:42:30.980Z] [INFO] Registering duplicate user email (Expected: 409 or 400)...
+[2026-08-18T14:42:31.059Z] [INTENDED_ERROR] Blocked duplicate user registration email.
+[2026-08-18T14:42:31.060Z] [INFO] Registering duplicate shelter organization ID (Expected: 409 or 400)...
+[2026-08-18T14:42:31.099Z] [INTENDED_ERROR] Blocked duplicate organizationId shelter registration.
+[2026-08-18T14:42:31.100Z] [INFO] Creating duplicate category name (Expected: 409 or 400)...
+[2026-08-18T14:42:31.210Z] [INTENDED_ERROR] Blocked duplicate category creation.
+[2026-08-18T14:42:31.211Z] [INFO] Creating duplicate global item title (Expected: 409 or 400)...
+[2026-08-18T14:42:31.285Z] [INTENDED_ERROR] Blocked duplicate global item creation.
+[2026-08-18T14:42:31.286Z] [SUCCESS] 
+Phase 3 Edge Cases & Security verification completed successfully!
+[2026-08-18T14:42:31.286Z] [INFO] Shutting down the test server...
+[2026-08-18T14:42:31.289Z] [SUCCESS] ALL INTEGRATION AND SECURITY VERIFICATION TESTS COMPLETED SUCCESSFULLY! No actual errors found.

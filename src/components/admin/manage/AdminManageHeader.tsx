@@ -11,6 +11,7 @@ import {
   Building2,
   UserCheck,
   AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 
 export type AdminViewTab = "USERS" | "ALL" | "CATEGORIES" | "ITEMS";
@@ -46,23 +47,23 @@ export function AdminManageHeader({
 }: AdminManageHeaderProps) {
   return (
     <div className="space-y-6">
-
       {/* Main Banner Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-neo-line pb-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-label tracking-widest text-neo-sun uppercase font-bold">
-              SUPER ADMIN // CONTROL CENTER
-            </span>
-            <span className="px-2 py-0.5 text-[10px] font-label bg-neo-sun/10 text-neo-sun border border-neo-sun/30 font-semibold">
-              CRUD ACTIVE
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-neo-line/40 pb-4">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Super Admin Command Center
+            </div>
+            <span className="px-3 py-1 text-xs font-heading font-semibold rounded-full bg-neo-gold/15 text-neo-gold border border-neo-gold/30">
+              System Control Active
             </span>
           </div>
 
           <h1 className="font-heading font-bold text-2xl md:text-3xl text-neo-ink tracking-tight">
             System Administration & Management
           </h1>
-          <p className="text-xs font-body text-neo-ash max-w-2xl">
+          <p className="text-xs font-body text-neo-ash max-w-2xl leading-relaxed">
             Manage system users across all roles (Donors, Shelter Admins, Super Admins) and standardize global catalog categories & items.
           </p>
         </div>
@@ -72,11 +73,11 @@ export function AdminManageHeader({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="px-3.5 py-2 bg-neo-rice border border-neo-line text-neo-ink hover:border-neo-sun transition-all font-label text-xs uppercase flex items-center gap-2 disabled:opacity-50"
+            className="px-4 py-2 rounded-xl bg-neo-rice border border-neo-line/60 text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all font-heading font-semibold text-xs flex items-center gap-2 disabled:opacity-50 shadow-sm cursor-pointer"
             title="Refresh All System Data"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-neo-sun ${isRefreshing ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
+            <span>Refresh System Data</span>
           </button>
         </div>
       </div>
@@ -86,19 +87,19 @@ export function AdminManageHeader({
         {/* Metric 1: Total Users Roster */}
         <div
           onClick={() => onTabChange("USERS")}
-          className={`p-3.5 border transition-all cursor-pointer flex items-center justify-between ${
+          className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between shadow-sm ${
             activeTab === "USERS"
-              ? "bg-neo-rice border-neo-sun shadow-sm"
-              : "bg-neo-bg border-neo-line hover:border-neo-sun/60"
+              ? "bg-neo-rice border-neo-sun shadow-md"
+              : "bg-neo-bg border-neo-line/60 hover:border-neo-sun/60"
           }`}
         >
           <div className="space-y-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-label tracking-wider text-neo-ash uppercase block font-bold">
-                USER ROSTER
+              <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
+                User Roster
               </span>
               {reportedUserCount > 0 && (
-                <span className="text-[9px] font-label bg-red-900/20 text-red-500 border border-red-500/30 px-1 py-0.2 font-bold">
+                <span className="text-[10px] font-heading font-semibold bg-neo-sun/15 text-neo-sun border border-neo-sun/30 px-2 py-0.5 rounded-full">
                   {reportedUserCount} Flagged
                 </span>
               )}
@@ -107,7 +108,7 @@ export function AdminManageHeader({
               {userCount}
             </div>
           </div>
-          <div className="p-2.5 bg-neo-sun/10 text-neo-sun border border-neo-sun/30">
+          <div className="p-2.5 rounded-xl bg-neo-sun/10 text-neo-sun border border-neo-sun/30 shadow-sm">
             <Users className="w-5 h-5" />
           </div>
         </div>
@@ -115,21 +116,21 @@ export function AdminManageHeader({
         {/* Metric 2: Donors */}
         <div
           onClick={() => onTabChange("USERS")}
-          className={`p-3.5 border transition-all cursor-pointer flex items-center justify-between ${
+          className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between shadow-sm ${
             activeTab === "USERS"
-              ? "bg-neo-rice border-neo-sun shadow-sm"
-              : "bg-neo-bg border-neo-line hover:border-neo-sun/60"
+              ? "bg-neo-rice border-neo-sun shadow-md"
+              : "bg-neo-bg border-neo-line/60 hover:border-neo-sun/60"
           }`}
         >
           <div className="space-y-1">
-            <span className="text-[10px] font-label tracking-wider text-neo-ash uppercase block font-bold">
-              REGISTERED DONORS
+            <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
+              Registered Donors
             </span>
             <div className="font-heading font-bold text-2xl text-neo-ink">
               {donorCount}
             </div>
           </div>
-          <div className="p-2.5 bg-neo-ash/10 text-neo-ash border border-neo-line">
+          <div className="p-2.5 rounded-xl bg-neo-ash/10 text-neo-ash border border-neo-line/60 shadow-sm">
             <UserCheck className="w-5 h-5" />
           </div>
         </div>
@@ -137,21 +138,21 @@ export function AdminManageHeader({
         {/* Metric 3: Shelter Admins */}
         <div
           onClick={() => onTabChange("USERS")}
-          className={`p-3.5 border transition-all cursor-pointer flex items-center justify-between ${
+          className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between shadow-sm ${
             activeTab === "USERS"
-              ? "bg-neo-rice border-neo-sun shadow-sm"
-              : "bg-neo-bg border-neo-line hover:border-neo-sun/60"
+              ? "bg-neo-rice border-neo-sun shadow-md"
+              : "bg-neo-bg border-neo-line/60 hover:border-neo-sun/60"
           }`}
         >
           <div className="space-y-1">
-            <span className="text-[10px] font-label tracking-wider text-neo-ash uppercase block font-bold">
-              SHELTER ADMINS
+            <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
+              Shelter Admins
             </span>
             <div className="font-heading font-bold text-2xl text-neo-ink">
               {shelterAdminCount}
             </div>
           </div>
-          <div className="p-2.5 bg-amber-900/20 text-amber-500 border border-amber-500/40">
+          <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-sm">
             <Building2 className="w-5 h-5" />
           </div>
         </div>
@@ -159,34 +160,34 @@ export function AdminManageHeader({
         {/* Metric 4: Global Categories & Items */}
         <div
           onClick={() => onTabChange("ALL")}
-          className={`p-3.5 border transition-all cursor-pointer flex items-center justify-between ${
+          className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between shadow-sm ${
             activeTab === "ALL" || activeTab === "CATEGORIES" || activeTab === "ITEMS"
-              ? "bg-neo-rice border-neo-sun shadow-sm"
-              : "bg-neo-bg border-neo-line hover:border-neo-sun/60"
+              ? "bg-neo-rice border-neo-sun shadow-md"
+              : "bg-neo-bg border-neo-line/60 hover:border-neo-sun/60"
           }`}
         >
           <div className="space-y-1">
-            <span className="text-[10px] font-label tracking-wider text-neo-ash uppercase block font-bold">
-              CATALOG POOLS
+            <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
+              Catalog Pools
             </span>
             <div className="font-heading font-bold text-2xl text-neo-ink">
               {categoryCount} / {itemCount}
             </div>
           </div>
-          <div className="p-2.5 bg-neo-sun/10 text-neo-sun border border-neo-sun/30">
+          <div className="p-2.5 rounded-xl bg-neo-sun/10 text-neo-sun border border-neo-sun/30 shadow-sm">
             <FolderTree className="w-5 h-5" />
           </div>
         </div>
       </div>
 
       {/* Tab Filter Switcher */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-neo-line pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-neo-line/40 pb-3">
         <button
           onClick={() => onTabChange("USERS")}
-          className={`px-4 py-2 font-label text-xs uppercase tracking-wider transition-all border ${
+          className={`px-4 py-2 rounded-xl font-heading text-xs font-semibold tracking-wide transition-all border cursor-pointer ${
             activeTab === "USERS"
-              ? "bg-neo-sun text-neo-rice border-neo-sun font-bold shadow-xs"
-              : "bg-neo-rice text-neo-ink border-neo-line hover:border-neo-sun"
+              ? "bg-neo-sun text-neo-rice border-neo-sun shadow-md shadow-neo-sun/20"
+              : "bg-neo-rice text-neo-ink border-neo-line/60 hover:border-neo-sun"
           }`}
         >
           User Accounts Roster ({userCount})
@@ -194,10 +195,10 @@ export function AdminManageHeader({
 
         <button
           onClick={() => onTabChange("ALL")}
-          className={`px-4 py-2 font-label text-xs uppercase tracking-wider transition-all border ${
+          className={`px-4 py-2 rounded-xl font-heading text-xs font-semibold tracking-wide transition-all border cursor-pointer ${
             activeTab === "ALL"
-              ? "bg-neo-sun text-neo-rice border-neo-sun font-bold shadow-xs"
-              : "bg-neo-rice text-neo-ink border-neo-line hover:border-neo-sun"
+              ? "bg-neo-sun text-neo-rice border-neo-sun shadow-md shadow-neo-sun/20"
+              : "bg-neo-rice text-neo-ink border-neo-line/60 hover:border-neo-sun"
           }`}
         >
           All Catalog Pools
@@ -205,10 +206,10 @@ export function AdminManageHeader({
 
         <button
           onClick={() => onTabChange("CATEGORIES")}
-          className={`px-4 py-2 font-label text-xs uppercase tracking-wider transition-all border ${
+          className={`px-4 py-2 rounded-xl font-heading text-xs font-semibold tracking-wide transition-all border cursor-pointer ${
             activeTab === "CATEGORIES"
-              ? "bg-neo-sun text-neo-rice border-neo-sun font-bold shadow-xs"
-              : "bg-neo-rice text-neo-ink border-neo-line hover:border-neo-sun"
+              ? "bg-neo-sun text-neo-rice border-neo-sun shadow-md shadow-neo-sun/20"
+              : "bg-neo-rice text-neo-ink border-neo-line/60 hover:border-neo-sun"
           }`}
         >
           Categories Pool ({categoryCount})
@@ -216,10 +217,10 @@ export function AdminManageHeader({
 
         <button
           onClick={() => onTabChange("ITEMS")}
-          className={`px-4 py-2 font-label text-xs uppercase tracking-wider transition-all border ${
+          className={`px-4 py-2 rounded-xl font-heading text-xs font-semibold tracking-wide transition-all border cursor-pointer ${
             activeTab === "ITEMS"
-              ? "bg-neo-sun text-neo-rice border-neo-sun font-bold shadow-xs"
-              : "bg-neo-rice text-neo-ink border-neo-line hover:border-neo-sun"
+              ? "bg-neo-sun text-neo-rice border-neo-sun shadow-md shadow-neo-sun/20"
+              : "bg-neo-rice text-neo-ink border-neo-line/60 hover:border-neo-sun"
           }`}
         >
           Global Items Pool ({itemCount})
@@ -228,4 +229,3 @@ export function AdminManageHeader({
     </div>
   );
 }
-

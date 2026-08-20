@@ -21,7 +21,7 @@ export class ShelterService {
       select: { shelterId: true, role: true },
     });
 
-    if (user && (user.shelterId || user.role === "SHELTER_ADMIN")) {
+    if (user && user.role !== "SUPER_ADMIN" && (user.shelterId || user.role === "SHELTER_ADMIN")) {
       throw new ApiError(
         400,
         "You are already associated with a shelter as an admin. Please delete your current shelter before registering a new one."
@@ -48,8 +48,9 @@ export class ShelterService {
       console.error(`Background verification error for shelter ${shelter.id}:`, err);
     });
 
-    // Generate new session tokens for the promoted shelter admin
-    const payload = { id: userId, role: Role.SHELTER_ADMIN };
+    // Generate new session tokens preserving role
+    const payloadRole = user?.role === Role.SUPER_ADMIN ? Role.SUPER_ADMIN : Role.SHELTER_ADMIN;
+    const payload = { id: userId, role: payloadRole };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
     const refreshTokenHash = await hashPassword(refreshToken);

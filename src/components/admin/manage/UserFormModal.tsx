@@ -16,6 +16,7 @@ import {
   Upload,
   Camera,
   Trash2,
+  Edit3,
 } from "lucide-react";
 
 interface ShelterOption {
@@ -217,33 +218,30 @@ export function UserFormModal({
       console.error("User form submit error:", err);
       const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
       setErrorMsg(msg);
-    } fontFinally: {
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neo-night/80 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="w-full max-w-lg border border-neo-line bg-neo-rice p-6 md:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto">
+      <div className="relative w-full max-w-lg border border-neo-line/60 rounded-2xl bg-neo-rice shadow-2xl p-6 md:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-neo-line pb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun">
-              <User className="w-5 h-5" />
+        <div className="flex items-center justify-between border-b border-neo-line/40 pb-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
+              <Edit3 className="w-3.5 h-3.5" />
+              {isEditing ? "Update User Entry" : "Create User Entry"}
             </div>
-            <div>
-              <span className="text-[10px] font-label tracking-widest text-neo-sun uppercase font-bold">
-                {isEditing ? "UPDATE USER DOSSIER" : "CREATE NEW USER"}
-              </span>
-              <h3 className="font-heading font-bold text-xl text-neo-ink">
-                {isEditing ? `Edit User: ${user?.name}` : "Add New User Entry"}
-              </h3>
-            </div>
+            <h3 className="font-heading font-bold text-xl md:text-2xl text-neo-ink">
+              {isEditing ? `Edit User: ${user?.name}` : "Add New User Account"}
+            </h3>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1 border border-neo-line text-neo-ash hover:text-neo-sun hover:border-neo-sun transition-colors"
+            aria-label="Close Modal"
+            className="p-2 rounded-full border border-neo-line/60 bg-neo-bg text-neo-ink hover:text-neo-sun hover:border-neo-sun transition-all cursor-pointer shadow-sm"
           >
             <X className="w-5 h-5" />
           </button>
@@ -251,8 +249,8 @@ export function UserFormModal({
 
         {/* Error Alert Box */}
         {errorMsg && (
-          <div className="p-3 bg-neo-sun/10 border border-neo-sun/40 text-neo-sun text-xs font-body flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-xl bg-neo-sun/15 text-neo-sun border border-neo-sun/30 text-xs font-body flex items-start gap-2 shadow-sm font-medium">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-neo-sun" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -260,8 +258,8 @@ export function UserFormModal({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name Field */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Full Name <span className="text-neo-sun">*</span>
             </label>
             <div className="relative">
@@ -272,9 +270,9 @@ export function UserFormModal({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Kenji Takahashi"
+                placeholder="e.g. Jane Takahashi"
                 required
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
           </div>
@@ -282,8 +280,8 @@ export function UserFormModal({
           {/* Email & Password Fields (Shown ONLY when creating new user) */}
           {!isEditing && (
             <>
-              <div className="space-y-1">
-                <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-body font-semibold text-neo-ink">
                   Email Address <span className="text-neo-sun">*</span>
                 </label>
                 <div className="relative">
@@ -296,13 +294,13 @@ export function UserFormModal({
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. user@heimdall.org"
                     required
-                    className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors"
+                    className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-body font-semibold text-neo-ink">
                   Password <span className="text-neo-sun">*</span>
                 </label>
                 <div className="relative">
@@ -316,7 +314,7 @@ export function UserFormModal({
                     placeholder="Minimum 8 characters"
                     required
                     minLength={8}
-                    className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors"
+                    className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
                   />
                 </div>
               </div>
@@ -324,18 +322,18 @@ export function UserFormModal({
           )}
 
           {/* Role Selection Radio Group */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               User System Role <span className="text-neo-sun">*</span>
             </label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setRole("DONOR")}
-                className={`py-2 px-3 border text-xs font-label uppercase text-center transition-all ${
+                className={`py-2.5 px-3 rounded-xl border text-xs font-heading font-semibold text-center transition-all cursor-pointer ${
                   role === "DONOR"
-                    ? "bg-neo-sun/15 border-neo-sun text-neo-sun font-bold"
-                    : "bg-neo-bg border-neo-line text-neo-ink hover:border-neo-sun"
+                    ? "bg-neo-sun/15 border-neo-sun/30 text-neo-sun shadow-sm"
+                    : "bg-neo-bg border-neo-line/60 text-neo-ink hover:border-neo-sun"
                 }`}
               >
                 Donor
@@ -344,10 +342,10 @@ export function UserFormModal({
               <button
                 type="button"
                 onClick={() => setRole("SHELTER_ADMIN")}
-                className={`py-2 px-3 border text-xs font-label uppercase text-center transition-all ${
+                className={`py-2.5 px-3 rounded-xl border text-xs font-heading font-semibold text-center transition-all cursor-pointer ${
                   role === "SHELTER_ADMIN"
-                    ? "bg-amber-900/20 border-amber-500 text-amber-500 font-bold"
-                    : "bg-neo-bg border-neo-line text-neo-ink hover:border-neo-sun"
+                    ? "bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400 shadow-sm"
+                    : "bg-neo-bg border-neo-line/60 text-neo-ink hover:border-neo-sun"
                 }`}
               >
                 Shelter Admin
@@ -356,10 +354,10 @@ export function UserFormModal({
               <button
                 type="button"
                 onClick={() => setRole("SUPER_ADMIN")}
-                className={`py-2 px-3 border text-xs font-label uppercase text-center transition-all ${
+                className={`py-2.5 px-3 rounded-xl border text-xs font-heading font-semibold text-center transition-all cursor-pointer ${
                   role === "SUPER_ADMIN"
-                    ? "bg-neo-sun text-neo-rice border-neo-sun font-bold"
-                    : "bg-neo-bg border-neo-line text-neo-ink hover:border-neo-sun"
+                    ? "bg-neo-sun text-neo-rice border-neo-sun shadow-md shadow-neo-sun/20"
+                    : "bg-neo-bg border-neo-line/60 text-neo-ink hover:border-neo-sun"
                 }`}
               >
                 Super Admin
@@ -368,8 +366,8 @@ export function UserFormModal({
           </div>
 
           {/* Phone Number Field */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Phone Number (Optional)
             </label>
             <div className="relative">
@@ -381,14 +379,14 @@ export function UserFormModal({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="e.g. +1 (555) 019-2834"
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm"
               />
             </div>
           </div>
 
           {/* Shelter Assignment Dropdown */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Associated Shelter (Recommended for Shelter Admins)
             </label>
             <div className="relative">
@@ -399,7 +397,7 @@ export function UserFormModal({
                 value={shelterId}
                 onChange={(e) => setShelterId(e.target.value)}
                 disabled={loadingShelters}
-                className="w-full bg-neo-bg border border-neo-line text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:border-neo-sun transition-colors disabled:opacity-50"
+                className="w-full bg-neo-bg border border-neo-line/70 rounded-xl text-neo-ink pl-11 pr-3 py-2.5 text-xs font-body focus:outline-none focus:ring-2 focus:ring-neo-sun/20 focus:border-neo-sun transition-all shadow-sm cursor-pointer disabled:opacity-50"
               >
                 <option value="">-- No Shelter Attached --</option>
                 {shelters.map((s) => (
@@ -413,13 +411,13 @@ export function UserFormModal({
 
           {/* Cloudinary Profile Photo Upload Section */}
           <div className="space-y-1.5 pt-1">
-            <label className="text-[11px] font-label text-neo-ink uppercase tracking-wider block font-bold">
+            <label className="block text-xs font-body font-semibold text-neo-ink">
               Profile Photo (Cloudinary Upload)
             </label>
 
-            <div className="flex items-center gap-4 p-3 bg-neo-bg border border-neo-line">
-              {/* Preview Thumbnail */}
-              <div className="w-14 h-14 border border-neo-line bg-neo-rice flex items-center justify-center overflow-hidden shrink-0 relative shadow-inner">
+            <div className="flex items-center gap-4 p-3.5 rounded-xl bg-neo-bg border border-neo-line/60 shadow-sm">
+              {/* Circular Preview Thumbnail */}
+              <div className="w-14 h-14 rounded-full border border-neo-line/60 bg-neo-rice flex items-center justify-center overflow-hidden shrink-0 relative shadow-sm">
                 {profileImageUrl ? (
                   /* eslint-disable-next-next/no-img-element */
                   <img
@@ -453,7 +451,7 @@ export function UserFormModal({
                     type="button"
                     disabled={isUploadingImage}
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3 py-1.5 bg-neo-sun text-neo-rice font-label text-xs uppercase border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-3.5 py-1.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-sm"
                   >
                     {isUploadingImage ? (
                       <>
@@ -472,7 +470,7 @@ export function UserFormModal({
                     <button
                       type="button"
                       onClick={() => setProfileImageUrl("")}
-                      className="px-2.5 py-1.5 border border-neo-line bg-neo-rice text-neo-ink font-label text-xs uppercase hover:border-neo-sun hover:text-neo-sun transition-colors flex items-center gap-1 cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun hover:text-neo-sun transition-colors flex items-center gap-1 cursor-pointer shadow-sm"
                     >
                       <Trash2 className="w-3.5 h-3.5 text-neo-sun" />
                       <span>Remove</span>
@@ -480,8 +478,8 @@ export function UserFormModal({
                   )}
                 </div>
 
-                <p className="text-[10px] font-label text-neo-ash">
-                  Upload directly to Cloudinary storage.
+                <p className="text-[11px] font-body text-neo-ash">
+                  Direct device upload to Cloudinary storage.
                 </p>
               </div>
             </div>
@@ -489,20 +487,20 @@ export function UserFormModal({
 
           {/* Is Reported Checkbox (Only for edit) */}
           {isEditing && (
-            <div className="pt-2">
-              <label className="p-3 bg-neo-bg border border-neo-line flex items-center gap-3 cursor-pointer hover:border-neo-sun transition-colors">
+            <div className="pt-1">
+              <label className="p-3.5 rounded-xl bg-neo-bg border border-neo-line/60 flex items-center gap-3 cursor-pointer hover:border-neo-sun transition-colors shadow-sm">
                 <input
                   type="checkbox"
                   checked={isReported}
                   onChange={(e) => setIsReported(e.target.checked)}
-                  className="w-4 h-4 accent-neo-sun rounded-none"
+                  className="w-4 h-4 accent-neo-sun rounded-md"
                 />
                 <div className="space-y-0.5">
-                  <span className="text-xs font-label uppercase font-bold text-neo-ink flex items-center gap-1.5">
+                  <span className="text-xs font-heading font-semibold text-neo-ink flex items-center gap-1.5">
                     <ShieldAlert className="w-3.5 h-3.5 text-neo-sun" />
                     <span>Flag Account as Reported / Suspended</span>
                   </span>
-                  <p className="text-[11px] font-body text-neo-ash">
+                  <p className="text-xs font-body text-neo-ash">
                     Check this box if the user has been reported for policy violations.
                   </p>
                 </div>
@@ -511,11 +509,11 @@ export function UserFormModal({
           )}
 
           {/* Submit Actions */}
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-neo-line">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-neo-line/40">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 bg-neo-bg text-neo-ink font-label text-xs uppercase border border-neo-line hover:border-neo-sun transition-all"
+              className="px-5 py-2.5 rounded-xl border border-neo-line/60 bg-neo-bg text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun transition-colors cursor-pointer shadow-sm"
             >
               Cancel
             </button>
@@ -523,7 +521,7 @@ export function UserFormModal({
             <button
               type="submit"
               disabled={isSubmitting || isUploadingImage}
-              className="px-6 py-2.5 bg-neo-sun text-neo-rice font-label text-xs uppercase tracking-wider border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all flex items-center justify-center gap-2 shadow-md shadow-neo-sun/20 disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <>

@@ -6,13 +6,10 @@ import {
   Star,
   Quote,
   CheckCircle2,
-  Building2,
-  User,
-  ShieldCheck,
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  QrCode,
+  Heart,
 } from "lucide-react";
 
 export function ReviewsSection() {
@@ -24,53 +21,53 @@ export function ReviewsSection() {
       title: "Operations Director",
       organization: "Hope Harbor Crisis Center",
       location: "San Francisco, CA",
-      badge: "VERIFIED 501(c)(3) SHELTER",
+      badge: "VERIFIED SHELTER DIRECTOR",
       rating: 5,
       quote:
-        "Heimdall completely eliminated double-donations and phone tag. When winter hit, we published a need for 50 heavy sleeping bags and received exact counts before the first freeze.",
-      stats: "142 Items Received // 100% Fulfilled",
+        "Heimdall completely eliminated donation black holes and phone tag. When winter hit, we listed 50 heavy sleeping bags and received exact counts before the first freeze.",
+      stats: "142 Essential Items Received · 100% Fulfilled",
       avatarInitials: "ER",
     },
     {
       id: "review-2",
       role: "DONOR",
       name: "Marcus Chen",
-      title: "Frequent Community Donor",
+      title: "Community Donor",
       organization: "Bay Area Resident",
       location: "Oakland, CA",
-      badge: "VERIFIED DONOR // 18 PLEDGES",
+      badge: "ACTIVE DONOR · 18 PLEDGES",
       rating: 5,
       quote:
-        "Receiving a notification when my pledged goods were scanned at drop-off—along with a photo proof of families receiving them—changed how I view charity.",
-      stats: "18 Drop-offs Completed // \$2,400 Impact",
+        "Knowing my pledged goods were scanned upon drop-off—along with a photo thank-you note showing families receiving them—completely changed how I view community giving.",
+      stats: "18 Drop-offs Completed · 100% Verified",
       avatarInitials: "MC",
     },
     {
       id: "review-3",
-      role: "AUDITOR",
-      name: "Dr. Aris Thorne",
-      title: "Non-Profit Audit Officer",
-      organization: "Urban Logistics Watch",
+      role: "VOLUNTEER",
+      name: "Sarah Jenkins",
+      title: "Community Outreach Lead",
+      organization: "Urban Community Watch",
       location: "San Jose, CA",
-      badge: "LOGISTICS AUDITOR",
+      badge: "COMMUNITY VOLUNTEER",
       rating: 5,
       quote:
-        "The atomic 3-stage inventory protocol is the first platform that mathematically guarantees zero donation leakage. It provides 100% auditability for donors and shelters.",
-      stats: "Audited 48 Shelter Accounts",
-      avatarInitials: "AT",
+        "The step-by-step reservation system guarantees zero wasted effort. Shelters get exactly what they need, and donors know their items are directly making a difference.",
+      stats: "Helped Coordinate 48 Local Wishlists",
+      avatarInitials: "SJ",
     },
     {
       id: "review-4",
       role: "SHELTER_ADMIN",
       name: "Aisha Patel",
-      title: "Supply Chain Lead",
+      title: "Supply Coordinator",
       organization: "St. Jude Family Sanctuary",
       location: "San Jose, CA",
-      badge: "VERIFIED 501(c)(3) SHELTER",
+      badge: "VERIFIED SHELTER ADMIN",
       rating: 5,
       quote:
-        "Scanning QR code passes on arrival takes 3 seconds per drop-off. Inventory status updates automatically, so our team spends time serving families instead of doing paperwork.",
-      stats: "310 Kits Scanned // Zero Discrepancy",
+        "Scanning the digital pass when donors arrive takes less than 5 seconds. Our team spends time helping families instead of filling out paper receipts.",
+      stats: "310 Kits Scanned · Zero Discrepancy",
       avatarInitials: "AP",
     },
   ];
@@ -90,7 +87,7 @@ export function ReviewsSection() {
   return (
     <section
       id="reviews"
-      className="w-full py-20 bg-neo-bg text-neo-ink border-b border-neo-line/40 relative overflow-hidden"
+      className="w-full py-16 lg:py-24 bg-neo-bg text-neo-ink border-b border-neo-line/40 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -102,28 +99,28 @@ export function ReviewsSection() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto space-y-4 mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-neo-line bg-neo-rice text-neo-ash font-label text-xs uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neo-line/60 bg-neo-rice text-neo-sun font-heading text-xs font-semibold shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-neo-sun" />
-            <span>TRANSPARENCY REVIEWS</span>
+            <span>COMMUNITY STORIES</span>
           </div>
 
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight text-neo-ink">
-            Trusted by Shelters & Community Donors
+            Loved by Donors & Shelter Teams
           </h2>
 
           <p className="font-body text-base sm:text-lg text-neo-ash leading-relaxed">
-            See how non-profit shelters, active donors, and independent auditors rely on Heimdall's transparent inventory pipeline.
+            See how non-profit shelters and active community donors rely on Heimdall to bring direct help where it&apos;s needed most.
           </p>
         </motion.div>
 
         {/* Carousel / Interactive Review Card */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-neo-rice border border-neo-line p-6 sm:p-10 relative shadow-lg">
+          <div className="rounded-2xl bg-neo-rice border border-neo-line/60 p-6 sm:p-10 relative shadow-xl">
             
-            {/* Top Bar Navigation & Badges */}
+            {/* Top Bar Info & Badges */}
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neo-line/40 pb-6 mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-neo-night text-neo-gold font-heading font-bold text-lg flex items-center justify-center border border-neo-line">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-neo-gold to-neo-sun text-neo-rice font-heading font-bold text-lg flex items-center justify-center border border-neo-line/60 shadow-sm">
                   {current.avatarInitials}
                 </div>
                 <div>
@@ -131,13 +128,13 @@ export function ReviewsSection() {
                     {current.name}
                   </h3>
                   <p className="font-body text-xs text-neo-ash">
-                    {current.title} • <span className="text-neo-ink font-semibold">{current.organization}</span>
+                    {current.title} · <span className="text-neo-ink font-semibold">{current.organization}</span>
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="font-label text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 border bg-neo-bg text-neo-sun border-neo-sun">
+                <span className="font-heading text-xs font-semibold px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun border border-neo-sun/30">
                   {current.badge}
                 </span>
               </div>
@@ -158,40 +155,40 @@ export function ReviewsSection() {
                   {[...Array(current.rating)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-neo-gold text-neo-gold" />
                   ))}
-                  <span className="font-label text-xs text-neo-ash ml-2">
-                    5.0 / 5.0 VERIFIED RATING
+                  <span className="font-body text-xs text-neo-ash ml-2 font-medium">
+                    5.0 / 5.0 Verified Community Experience
                   </span>
                 </div>
 
                 <div className="relative">
                   <Quote className="absolute -top-3 -left-3 w-8 h-8 text-neo-line/30 -z-0" />
                   <p className="font-body text-lg sm:text-xl text-neo-ink italic leading-relaxed relative z-10 pl-4 border-l-2 border-neo-sun">
-                    "{current.quote}"
+                    &ldquo;{current.quote}&rdquo;
                   </p>
                 </div>
 
-                {/* Stat Pill */}
-                <div className="pt-4 flex flex-wrap items-center justify-between text-xs font-label border-t border-neo-line/30 text-neo-ash">
-                  <span className="flex items-center gap-1.5 text-neo-ink">
-                    <CheckCircle2 className="w-4 h-4 text-neo-sun" />
+                {/* Stat Line */}
+                <div className="pt-4 flex flex-wrap items-center justify-between text-xs font-body border-t border-neo-line/40 text-neo-ash">
+                  <span className="flex items-center gap-1.5 text-neo-ink font-semibold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     {current.stats}
                   </span>
-                  <span>LOCATION :: {current.location}</span>
+                  <span>LOCATION: {current.location}</span>
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {/* Carousel Controls */}
             <div className="mt-8 pt-6 border-t border-neo-line/40 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-label text-xs">
+              <div className="flex items-center gap-2">
                 {reviews.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentIndex(i)}
-                    className={`w-2.5 h-2.5 transition-all ${
+                    className={`h-2.5 rounded-full transition-all cursor-pointer ${
                       i === currentIndex
-                        ? "bg-neo-sun w-6"
-                        : "bg-neo-line/50 hover:bg-neo-line"
+                        ? "bg-neo-sun w-7"
+                        : "bg-neo-line/50 w-2.5 hover:bg-neo-line"
                     }`}
                     aria-label={`Go to review ${i + 1}`}
                   />
@@ -201,17 +198,17 @@ export function ReviewsSection() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={prevReview}
-                  className="p-2 border border-neo-line bg-neo-bg hover:border-neo-sun text-neo-ink transition-colors cursor-pointer"
-                  aria-label="Previous Review"
+                  className="p-2.5 rounded-full border border-neo-line/60 bg-neo-bg hover:border-neo-sun text-neo-ink transition-colors cursor-pointer shadow-sm"
+                  aria-label="Previous Story"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-5 h-5 text-neo-sun" />
                 </button>
                 <button
                   onClick={nextReview}
-                  className="p-2 border border-neo-line bg-neo-bg hover:border-neo-sun text-neo-ink transition-colors cursor-pointer"
-                  aria-label="Next Review"
+                  className="p-2.5 rounded-full border border-neo-line/60 bg-neo-bg hover:border-neo-sun text-neo-ink transition-colors cursor-pointer shadow-sm"
+                  aria-label="Next Story"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-5 h-5 text-neo-sun" />
                 </button>
               </div>
             </div>

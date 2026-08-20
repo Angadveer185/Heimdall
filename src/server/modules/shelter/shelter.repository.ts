@@ -28,6 +28,20 @@ const defaultShelterSelect = Prisma.validator<Prisma.ShelterSelect>()({
 
 export class ShelterRepository {
     async create(data: Omit<Prisma.ShelterCreateInput, "admins">, userId: string) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { role: true },
+        });
+
+        const isSuperAdmin = user?.role === Role.SUPER_ADMIN;
+
+        if (isSuperAdmin) {
+            return prisma.shelter.create({
+                data,
+                select: defaultShelterSelect,
+            });
+        }
+
         const [shelter] = await prisma.$transaction([
             prisma.shelter.create({
                 data: {

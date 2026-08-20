@@ -4,8 +4,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useUserStore } from "@/store/useUserStore";
 import { Sidebar } from "@/components/ui/Sidebar";
-import { UserPoolCard, FullUserData } from "@/components/admin/manage/UserPoolCard";
-import { UserFormModal } from "@/components/admin/manage/UserFormModal";
+import { ShelterMetricsBar, ShelterMetrics } from "@/components/admin/shelters/ShelterMetricsBar";
+import { ShelterPoolCard } from "@/components/admin/shelters/ShelterPoolCard";
+import { ShelterFormModal } from "@/components/admin/shelters/ShelterFormModal";
+import { ShelterDetailModal, FullShelterData } from "@/components/admin/shelters/ShelterDetailModal";
 import { DeleteConfirmModal } from "@/components/admin/manage/DeleteConfirmModal";
 import {
   ShieldAlert,
@@ -15,18 +17,17 @@ import {
   Loader2,
   CheckCircle2,
   AlertTriangle,
-  Users,
+  Building2,
   RefreshCw,
   UserCheck,
-  Building2,
   Shield,
 } from "lucide-react";
 
-export default function AdminUsersPage() {
+export default function AdminSheltersPage() {
   const user = useUserStore((state) => state.user);
 
-  // User Roster State
-  const [users, setUsers] = useState<FullUserData[]>([]);
+  // Shelters State
+  const [shelters, setShelters] = useState<FullShelterData[]>([]);
 
   // Loading & Error States
   const [isLoading, setIsLoading] = useState(true);
@@ -37,36 +38,36 @@ export default function AdminUsersPage() {
     message: string;
   } | null>(null);
 
-  // User Modal States
-  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<FullUserData | null>(null);
+  // Modal States
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [editingShelter, setEditingShelter] = useState<FullShelterData | null>(null);
 
-  // Delete Target Modal State
+  const [detailShelter, setDetailShelter] = useState<FullShelterData | null>(null);
+
   const [deleteTarget, setDeleteTarget] = useState<{
-    type: "User";
     id: string;
-    title: string;
-    warningMessage?: string;
+    name: string;
+    organizationId: string;
   } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Fetch Users Roster ONLY
-  const fetchUserData = useCallback(async (showRefreshSpinner = false) => {
+  // Fetch Shelters
+  const fetchShelterData = useCallback(async (showRefreshSpinner = false) => {
     if (showRefreshSpinner) setIsRefreshing(true);
     setFetchError(null);
 
     try {
-      const res = await fetch("/api/users", { credentials: "include" });
+      const res = await fetch("/api/shelters", { credentials: "include" });
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setUsers(data.data || []);
+        setShelters(data.data || []);
       } else {
-        throw new Error(data.message || "Failed to load user roster");
+        throw new Error(data.message || "Failed to load shelter registry.");
       }
     } catch (err: unknown) {
-      console.error("Error fetching user roster:", err);
-      const msg = err instanceof Error ? err.message : "Failed to load user roster";
+      console.error("Error fetching shelters:", err);
+      const msg = err instanceof Error ? err.message : "Failed to load shelter registry.";
       setFetchError(msg);
     } finally {
       setIsLoading(false);
@@ -76,77 +77,48 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     if (user && user.role === "SUPER_ADMIN") {
-      fetchUserData();
+      fetchShelterData();
     } else {
       setIsLoading(false);
     }
-  }, [user, fetchUserData]);
+  }, [user, fetchShelterData]);
 
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
     setTimeout(() => {
       setNotification(null);
-    }, 4000);
+    }, 4500);
   };
 
-  // User CRUD Handlers
-  const handleOpenAddUser = () => {
-    setEditingUser(null);
-    setIsUserModalOpen(true);
+  // CRUD Handlers
+  const handleOpenAddShelter = () => {
+    setEditingShelter(null);
+    setIsFormModalOpen(true);
   };
 
-  const handleOpenEditUser = (u: FullUserData) => {
-    setEditingUser(u);
-    setIsUserModalOpen(true);
+  const handleOpenEditShelter = (s: FullShelterData) => {
+    setEditingShelter(s);
+    setIsFormModalOpen(true);
   };
 
-  const handleOpenDeleteUser = (u: FullUserData) => {
-    let warning: string | undefined;
-    if (u.id === user?.id) {
-      warning = "Caution: You are attempting to delete your own Super Admin account!";
-    }
+  const handleOpenViewShelter = (s: FullShelterData) => {
+    setDetailShelter(s);
+  };
 
+  const handleOpenDeleteShelter = (s: FullShelterData) => {
     setDeleteTarget({
-      type: "User",
-      id: u.id,
-      title: `${u.name} (${u.email})`,
-      warningMessage: warning,
+      id: s.id,
+      name: s.name,
+      organizationId: `${s.organizationIdType}: ${s.organizationId}`,
     });
   };
 
-  const handleToggleReportedUser = async (u: FullUserData) => {
-    try {
-      const res = await fetch(`/api/users/${u.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ isReported: !u.isReported }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to update user reported status.");
-      }
-
-      showNotification(
-        "success",
-        `User "${u.name}" was ${!u.isReported ? "flagged as reported" : "cleared from reported status"}.`
-      );
-      fetchUserData();
-    } catch (err: unknown) {
-      console.error("Reported toggle error:", err);
-      const msg = err instanceof Error ? err.message : "Failed to toggle reported status";
-      showNotification("error", msg);
-    }
-  };
-
-  // Confirm Delete User
-  const handleConfirmDelete = async () => {
+  const handleConfirmDeleteShelter = async () => {
     if (!deleteTarget) return;
 
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/users/${deleteTarget.id}`, {
+      const res = await fetch(`/api/shelters/${deleteTarget.id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -154,26 +126,33 @@ export default function AdminUsersPage() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to delete user account.");
+        throw new Error(data.message || "Failed to delete shelter record.");
       }
 
       showNotification(
         "success",
-        `User account "${deleteTarget.title}" was successfully deleted.`
+        `Shelter "${deleteTarget.name}" was successfully removed from the registry.`
       );
-
       setDeleteTarget(null);
-      fetchUserData();
+      fetchShelterData();
     } catch (err: unknown) {
-      console.error("Delete user error:", err);
-      const msg = err instanceof Error ? err.message : "Failed to delete user account";
+      console.error("Delete shelter error:", err);
+      const msg = err instanceof Error ? err.message : "Failed to delete shelter.";
       showNotification("error", msg);
     } finally {
       setIsDeleting(false);
     }
   };
 
-  // Guard Screens
+  // Calculate Metrics
+  const metrics: ShelterMetrics = {
+    total: shelters.length,
+    verified: shelters.filter((s) => s.verificationStatus === "VERIFIED").length,
+    pending: shelters.filter((s) => s.verificationStatus === "PENDING").length,
+    rejected: shelters.filter((s) => s.verificationStatus === "REJECTED").length,
+  };
+
+  // Auth Guards
   if (!user) {
     return (
       <div className="h-screen w-screen overflow-hidden flex flex-col items-center justify-center p-6 bg-neo-bg text-neo-ink">
@@ -191,7 +170,7 @@ export default function AdminUsersPage() {
               Access Restricted
             </h1>
             <p className="text-xs font-body text-neo-ash leading-relaxed">
-              Please sign in with a Super Admin account to access user directory management.
+              Please sign in with a Super Admin account to access shelter pool management.
             </p>
           </div>
 
@@ -234,7 +213,7 @@ export default function AdminUsersPage() {
               Super Admin Privileges Required
             </h1>
             <p className="text-xs font-body text-neo-ash leading-relaxed">
-              Your account current role (<strong className="font-heading font-semibold text-neo-ink">{user.role}</strong>) does not have authorization to view and manage user rosters.
+              Your account role (<strong className="font-heading font-semibold text-neo-ink">{user.role}</strong>) does not have authorization to view and manage shelter registries.
             </p>
           </div>
 
@@ -252,15 +231,12 @@ export default function AdminUsersPage() {
     );
   }
 
-  const donorCount = users.filter((u) => u.role === "DONOR").length;
-  const shelterAdminCount = users.filter((u) => u.role === "SHELTER_ADMIN").length;
-  const superAdminCount = users.filter((u) => u.role === "SUPER_ADMIN").length;
-
   return (
     <div className="h-screen w-screen overflow-hidden bg-neo-bg text-neo-ink flex flex-col md:flex-row">
       <Sidebar user={user} />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-neo-bg">
+        {/* Notification Banner */}
         {notification && (
           <div
             className={`px-6 py-3 text-xs font-body flex items-center justify-between border-b shrink-0 ${
@@ -293,150 +269,104 @@ export default function AdminUsersPage() {
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide">
-                    <UserCheck className="w-3.5 h-3.5" />
-                    User Directory Management
+                    <Building2 className="w-3.5 h-3.5" />
+                    Shelter Registry Management
                   </div>
                   <span className="px-3 py-1 text-xs font-heading font-semibold rounded-full bg-neo-gold/15 text-neo-gold border border-neo-gold/30">
-                    System Roster
+                    Non-Profit Roster
                   </span>
                 </div>
 
                 <h1 className="font-heading font-bold text-2xl md:text-3xl text-neo-ink tracking-tight">
-                  User Accounts Directory Management
+                  Shelter Registry Directory Management
                 </h1>
                 <p className="text-xs font-body text-neo-ash max-w-2xl leading-relaxed">
-                  Manage registered users across all roles (Donors, Shelter Admins, Super Admins), perform profile edits, and flag reported accounts.
+                  Display all non-profit shelters in a central pool, perform full CRUD operations (Create, Read Dossiers, Edit, Delete), and override non-profit verification statuses.
                 </p>
               </div>
 
               <button
-                onClick={() => fetchUserData(true)}
+                onClick={() => fetchShelterData(true)}
                 disabled={isRefreshing}
                 className="px-4 py-2 rounded-xl bg-neo-rice border border-neo-line/60 text-neo-ink hover:border-neo-sun hover:text-neo-sun transition-all font-heading font-semibold text-xs flex items-center gap-2 disabled:opacity-50 shrink-0 shadow-sm cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 text-neo-sun ${isRefreshing ? "animate-spin" : ""}`} />
-                <span>Refresh Directory</span>
+                <span>Refresh Registry</span>
               </button>
             </div>
 
-            {/* User Metrics Bar */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="p-4 rounded-xl bg-neo-rice border border-neo-sun flex items-center justify-between shadow-sm">
-                <div className="space-y-1">
-                  <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
-                    Total Registered Users
-                  </span>
-                  <div className="font-heading font-bold text-2xl text-neo-ink">
-                    {users.length}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-neo-sun/10 text-neo-sun border border-neo-sun/30 shadow-sm">
-                  <Users className="w-5 h-5" />
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-neo-bg border border-neo-line/60 flex items-center justify-between shadow-sm">
-                <div className="space-y-1">
-                  <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
-                    Donors
-                  </span>
-                  <div className="font-heading font-bold text-2xl text-neo-ink">
-                    {donorCount}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-neo-ash/10 text-neo-ash border border-neo-line/60 shadow-sm">
-                  <UserCheck className="w-5 h-5" />
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-neo-bg border border-neo-line/60 flex items-center justify-between shadow-sm">
-                <div className="space-y-1">
-                  <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
-                    Shelter Admins
-                  </span>
-                  <div className="font-heading font-bold text-2xl text-neo-ink">
-                    {shelterAdminCount}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-sm">
-                  <Building2 className="w-5 h-5" />
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-neo-bg border border-neo-line/60 flex items-center justify-between shadow-sm">
-                <div className="space-y-1">
-                  <span className="text-xs font-heading font-semibold text-neo-ash uppercase block">
-                    Super Admins
-                  </span>
-                  <div className="font-heading font-bold text-2xl text-neo-ink">
-                    {superAdminCount}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-neo-sun/15 text-neo-sun border border-neo-sun/30 shadow-sm">
-                  <Shield className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
+            {/* Metrics Bar */}
+            <ShelterMetricsBar metrics={metrics} />
           </div>
 
-          {/* User Pool Table */}
+          {/* Shelter Pool Card Component */}
           {isLoading ? (
             <div className="p-12 text-center rounded-2xl bg-neo-rice border border-neo-line/60 space-y-3 shadow-sm">
               <Loader2 className="w-8 h-8 text-neo-sun animate-spin mx-auto" />
               <p className="font-heading font-semibold text-sm text-neo-ink">
-                Loading User Directory...
+                Loading Shelter Registry...
               </p>
             </div>
           ) : fetchError ? (
             <div className="p-6 rounded-2xl bg-neo-sun/15 border border-neo-sun/30 text-neo-sun space-y-3 shadow-sm">
               <div className="flex items-center gap-2 font-heading font-bold text-base">
                 <AlertTriangle className="w-5 h-5" />
-                <span>Failed to Sync User Directory</span>
+                <span>Failed to Sync Shelter Registry</span>
               </div>
               <p className="text-xs font-body text-neo-ink">{fetchError}</p>
               <button
-                onClick={() => fetchUserData(true)}
+                onClick={() => fetchShelterData(true)}
                 className="px-4 py-2 rounded-xl bg-neo-sun text-neo-rice font-heading font-semibold text-xs border border-neo-sun hover:bg-neo-sun/90 transition-all shadow-md shadow-neo-sun/20 cursor-pointer"
               >
                 Retry Request
               </button>
             </div>
           ) : (
-            <UserPoolCard
-              users={users}
-              onAddUser={handleOpenAddUser}
-              onEditUser={handleOpenEditUser}
-              onDeleteUser={handleOpenDeleteUser}
-              onToggleReported={handleToggleReportedUser}
+            <ShelterPoolCard
+              shelters={shelters}
+              onAddShelter={handleOpenAddShelter}
+              onViewShelter={handleOpenViewShelter}
+              onEditShelter={handleOpenEditShelter}
+              onDeleteShelter={handleOpenDeleteShelter}
             />
           )}
         </div>
       </main>
 
       {/* Modals */}
-      <UserFormModal
-        isOpen={isUserModalOpen}
-        user={editingUser}
-        onClose={() => setIsUserModalOpen(false)}
+      <ShelterFormModal
+        isOpen={isFormModalOpen}
+        shelter={editingShelter}
+        onClose={() => setIsFormModalOpen(false)}
         onSuccess={() => {
           showNotification(
             "success",
-            `User ${editingUser ? "updated" : "created"} successfully.`
+            `Shelter record ${editingShelter ? "updated" : "created"} successfully.`
           );
-          fetchUserData();
+          fetchShelterData();
+        }}
+      />
+
+      <ShelterDetailModal
+        isOpen={Boolean(detailShelter)}
+        shelter={detailShelter}
+        onClose={() => setDetailShelter(null)}
+        onEdit={(s) => {
+          setDetailShelter(null);
+          handleOpenEditShelter(s);
         }}
       />
 
       {deleteTarget && (
         <DeleteConfirmModal
           isOpen={Boolean(deleteTarget)}
-          title={`Delete ${deleteTarget.type}`}
-          itemTitle={deleteTarget.title}
-          itemType={deleteTarget.type}
-          warningMessage={deleteTarget.warningMessage}
+          title="Delete Shelter Record"
+          itemTitle={`${deleteTarget.name} (${deleteTarget.organizationId})`}
+          itemType="Shelter"
+          warningMessage="Deleting this shelter will remove its registry entry and associated supply request dependencies!"
           isDeleting={isDeleting}
           onClose={() => setDeleteTarget(null)}
-          onConfirm={handleConfirmDelete}
+          onConfirm={handleConfirmDeleteShelter}
         />
       )}
     </div>
