@@ -1,0 +1,33 @@
+{
+  "name": "heimdall-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch --env-file=.env src/app.ts",
+    "start": "tsx --env-file=.env src/app.ts",
+    "build": "tsc",
+    "seed": "tsx --env-file=.env scripts/seed-dummy-data.ts",
+    "db:reset": "tsx --env-file=.env scripts/reset-db.ts",
+    "prisma:generate": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.10.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "google-auth-library": "^11.0.2",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
+    "@types/node": "^20",
+    "prisma": "^6.16.3",
+    "tsx": "^4.23.7",
+    "typescript": "^5"
+  }
+}

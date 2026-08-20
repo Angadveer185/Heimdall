@@ -1,0 +1,254 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  DONOR
+  SHELTER_ADMIN
+  SUPER_ADMIN
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RequestStatus {
+  ACTIVE
+  FULFILLED
+  ARCHIVED
+}
+
+enum PledgeStatus {
+  RESERVED
+  DELIVERED
+  VERIFIED_FULFILLED
+  CANCELLED
+  EXPIRED
+}
+
+enum OrganizationIdType {
+  EIN
+  NGO_DARPAN
+  SECTION8_CIN
+  SOCIETY_REGISTRATION
+  TRUST_REGISTRATION
+  CHARITY_NUMBER
+  OTHER
+}
+
+// ==========================================
+// CORE & USER MODELS
+// ==========================================
+
+model User {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  email            String   @unique
+  passwordHash     String?
+  googleId         String?  @unique
+  role             Role     @default(DONOR)
+  phone            String?
+  profileImageUrl  String?
+
+  shelterId        String?  @db.ObjectId
+  shelter          Shelter? @relation(fields: [shelterId], references: [id])
+
+  refreshTokenHash String?
+  isReported       Boolean  @default(false)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  pledges          Pledge[]
+  pledgesCompleted Int      @default(0)
+  pledgesExpired   Int      @default(0)
+
+  @@index([role])
+}
+
+model Shelter {
+  id                  String             @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  country             String
+  organizationIdType  OrganizationIdType
+  organizationId      String             @unique
+
+  verificationStatus  VerificationStatus @default(PENDING)
+  rejectionReason     String?
+
+  description         String?
+  street              String
+  city                String
+  state               String
+  zip                 String
+
+  longitude           Float
+  latitude            Float
+
+  dropOffHours        String
+  contactEmail        String
+  phone               String?
+  website             String?
+  profileImageUrl     String?
+  shelterImages       String[]
+
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  admins              User[]
+  requests            ShelterRequest[]
+  pledges             Pledge[]
+
+  @@index([verificationStatus])
+  @@index([country])
+}
+
+// ==========================================
+// GLOBAL CATALOG (Decoupled & Standardized)
+// ==========================================
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  icon        String
+  description String?
+
+  items       GlobalItem[]
+  requests    ShelterRequest[] @relation(fields: [requestIds], references: [id])
+  requestIds  String[]         @db.ObjectId
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GlobalItem {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  title          String          @unique
+  description    String?
+  defaultUnit    String          @default("units")
+
+  categoryId     String?         @db.ObjectId
+  category       Category?       @relation(fields: [categoryId], references: [id])
+
+  requestedItems RequestedItem[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([categoryId])
+}
+
+// ==========================================
+// SHELTER REQUESTS & PLEDGES
+// ==========================================
+
+model ShelterRequest {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+
+  shelterId      String          @db.ObjectId
+  shelter        Shelter         @relation(fields: [shelterId], references: [id])
+
+  title          String
+  description    String?
+  urgency        Urgency         @default(MEDIUM)
+  status         RequestStatus   @default(ACTIVE)
+
+  categoryIds    String[]        @db.ObjectId
+  categories     Category[]      @relation(fields: [categoryIds], references: [id])
+
+  items          RequestedItem[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([shelterId])
+  @@index([status])
+  @@index([urgency])
+}
+
+model RequestedItem {
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+
+  requestId         String         @db.ObjectId
+  request           ShelterRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  globalItemId      String         @db.ObjectId
+  globalItem        GlobalItem     @relation(fields: [globalItemId], references: [id])
+
+  quantityNeeded    Int
+  quantityReserved  Int            @default(0)
+  quantityDelivered Int            @default(0)
+  unit              String         @default("units")
+
+  notes             String?
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  pledges           PledgedItem[]
+
+  @@index([requestId])
+  @@index([globalItemId])
+}
+
+model Pledge {
+  id                   String        @id @default(auto()) @map("_id") @db.ObjectId
+  pledgeCode           String        @unique
+
+  donorId              String        @db.ObjectId
+  donor                User          @relation(fields: [donorId], references: [id])
+
+  shelterId            String        @db.ObjectId
+  shelter              Shelter       @relation(fields: [shelterId], references: [id])
+
+  items                PledgedItem[]
+  scheduledDropOffDate DateTime
+  status               PledgeStatus  @default(RESERVED)
+
+  impactPhotoUrl       String?
+  shelterThankYouNote  String?
+  fulfilledAt          DateTime?
+  expiresAt            DateTime
+
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([status])
+  @@index([expiresAt])
+  @@index([donorId])
+}
+
+model PledgedItem {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  pledgeId        String        @db.ObjectId
+  pledge          Pledge        @relation(fields: [pledgeId], references: [id], onDelete: Cascade)
+  requestedItemId String        @db.ObjectId
+  requestedItem   RequestedItem @relation(fields: [requestedItemId], references: [id])
+  quantityPledged Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
