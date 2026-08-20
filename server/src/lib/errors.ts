@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { Response } from "express";
 import { ZodError } from "zod";
 
 // Base API Error
@@ -73,28 +73,25 @@ export class InternalServerError extends ApiError {
   }
 }
 
-export function handleError(error: unknown) {
+export function handleError(error: unknown, res: Response) {
   if (error instanceof ZodError) {
-    return NextResponse.json(
-      { success: false, errors: error.issues },
-      { status: 400 },
-    );
+    return res.status(400).json({
+      success: false,
+      errors: error.issues,
+    });
   }
   if (error instanceof ApiError) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: error.message,
-        ...(error.errors && { errors: error.errors }),
-      },
-      { status: error.statusCode },
-    );
+    return res.status(error.statusCode).json({
+      success: false,
+      message: error.message,
+      ...(error.errors && { errors: error.errors }),
+    });
   }
 
   // Fallback for unhandled unexpected JS errors (e.g., syntax errors, network drop)
   console.error("Unhandled Error:", error);
-  return NextResponse.json(
-    { success: false, message: "Something went wrong" },
-    { status: 500 },
-  );
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong",
+  });
 }

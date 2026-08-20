@@ -14,7 +14,12 @@ export const registerSchema = z.object({
     .string()
     .min(6, "Password must be at least 6 characters")
     .max(100, "Password must be at most 100 characters"),
-    phone: z.string().optional(),
+});
+
+export const registerSuperAdminSchema = registerSchema.extend({
+  inviteToken: z
+    .string()
+    .min(1, "Super Admin invite secret is required"),
 });
 
 export const loginSchema = z.object({
@@ -29,4 +34,5 @@ export const loginSchema = z.object({
 });
 
 export type RegisterData = z.infer<typeof registerSchema>;
+export type RegisterSuperAdminData = z.infer<typeof registerSuperAdminSchema>;
 export type LoginData = z.infer<typeof loginSchema>;

@@ -8,7 +8,7 @@ import {
   User,
   Mail,
   Lock,
-  Phone,
+  KeyRound,
   Eye,
   EyeOff,
   ShieldCheck,
@@ -27,7 +27,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [inviteToken, setInviteToken] = useState("");
 
   // UI states
   const [showPassword, setShowPassword] = useState(false);
@@ -56,6 +56,10 @@ export function RegisterForm() {
       }
     }
 
+    if (!inviteToken.trim()) {
+      errors.inviteToken = "Super Admin invite secret is required";
+    }
+
     if (!password) {
       errors.password = "Password is required";
     } else if (password.length < 6) {
@@ -68,10 +72,6 @@ export function RegisterForm() {
       errors.confirmPassword = "Confirm password is required";
     } else if (confirmPassword !== password) {
       errors.confirmPassword = "Passwords do not match";
-    }
-
-    if (phone && phone.trim().length < 7) {
-      errors.phone = "Phone number is too short";
     }
 
     setValidationErrors(errors);
@@ -97,7 +97,7 @@ export function RegisterForm() {
           name: name.trim(),
           email: email.trim(),
           password,
-          phone: phone.trim() || undefined,
+          inviteToken: inviteToken.trim(),
         }),
       });
 
@@ -132,6 +132,17 @@ export function RegisterForm() {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleRegister = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!inviteToken.trim()) {
+      e.preventDefault();
+      setValidationErrors((prev) => ({
+        ...prev,
+        inviteToken: "Please enter the Super Admin invite secret before signing in with Google",
+      }));
+      setErrorMsg("Super Admin invite secret is required for Google OAuth registration.");
     }
   };
 
@@ -232,25 +243,23 @@ export function RegisterForm() {
           )}
         </div>
 
-        {/* Phone Number */}
+        {/* Super Admin Invite Secret */}
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center">
             <label className="block text-xs font-semibold tracking-wide text-neo-ink font-body">
-              Phone Number
+              Invite Secret Key
             </label>
-            <span className="text-[11px] font-normal text-neo-ink/50 italic font-body">
-              Optional
-            </span>
+            <span className="text-neo-sun text-sm font-semibold ml-1">*</span>
           </div>
           <div className="relative group">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-neo-ink/50 pointer-events-none">
-              <Phone className="w-4 h-4" />
+              <KeyRound className="w-4 h-4" />
             </span>
             <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
+              type="password"
+              value={inviteToken}
+              onChange={(e) => setInviteToken(e.target.value)}
+              placeholder="Enter Super Admin Invite Secret"
               style={{
                 paddingLeft: "2.75rem",
                 paddingRight: "1rem",
@@ -258,13 +267,13 @@ export function RegisterForm() {
                 paddingBottom: "0.75rem",
               }}
               className={`w-full font-body text-sm bg-neo-rice border ${
-                validationErrors.phone ? "border-neo-sun focus:ring-neo-sun/30" : "border-neo-line/70 focus:border-neo-sun focus:ring-neo-sun/20"
+                validationErrors.inviteToken ? "border-neo-sun focus:ring-neo-sun/30" : "border-neo-line/70 focus:border-neo-sun focus:ring-neo-sun/20"
               } text-neo-ink placeholder-neo-ink/40 rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
             />
           </div>
-          {validationErrors.phone && (
+          {validationErrors.inviteToken && (
             <p className="text-xs font-medium text-neo-sun flex items-center gap-1.5 mt-1.5 font-body">
-              <AlertCircle className="w-3.5 h-3.5" /> {validationErrors.phone}
+              <AlertCircle className="w-3.5 h-3.5" /> {validationErrors.inviteToken}
             </p>
           )}
         </div>
@@ -402,7 +411,8 @@ export function RegisterForm() {
         {/* Google OAuth Super Admin Register Button */}
         <div>
           <a
-            href="/api/auth/google?intent=register_super_admin"
+            href={`/api/auth/google?intent=register_super_admin&inviteToken=${encodeURIComponent(inviteToken.trim())}`}
+            onClick={handleGoogleRegister}
             className="w-full flex items-center justify-center gap-3 font-heading font-semibold py-3 px-6 text-sm text-neo-ink bg-neo-rice border border-neo-line/70 hover:bg-neo-rice/90 hover:border-neo-line rounded-xl shadow-sm hover:shadow transition-all duration-200 cursor-pointer"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">

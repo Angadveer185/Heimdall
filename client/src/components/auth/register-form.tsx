@@ -8,7 +8,6 @@ import {
   User,
   Mail,
   Lock,
-  Phone,
   Eye,
   EyeOff,
   Heart,
@@ -27,7 +26,6 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
 
   // UI states
   const [showPassword, setShowPassword] = useState(false);
@@ -70,10 +68,6 @@ export function RegisterForm() {
       errors.confirmPassword = "Passwords do not match";
     }
 
-    if (phone && phone.trim().length < 7) {
-      errors.phone = "Phone number is too short";
-    }
-
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -97,7 +91,6 @@ export function RegisterForm() {
           name: name.trim(),
           email: email.trim(),
           password,
-          phone: phone.trim() || undefined,
         }),
       });
 
@@ -228,43 +221,6 @@ export function RegisterForm() {
           {validationErrors.email && (
             <p className="text-xs font-medium text-neo-sun flex items-center gap-1.5 mt-1.5 font-body">
               <AlertCircle className="w-3.5 h-3.5" /> {validationErrors.email}
-            </p>
-          )}
-        </div>
-
-        {/* Phone Number */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label className="block text-xs font-semibold tracking-wide text-neo-ink font-body">
-              Phone Number
-            </label>
-            <span className="text-[11px] font-normal text-neo-ink/50 italic font-body">
-              Optional
-            </span>
-          </div>
-          <div className="relative group">
-            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-neo-ink/50 pointer-events-none">
-              <Phone className="w-4 h-4" />
-            </span>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
-              style={{
-                paddingLeft: "2.75rem",
-                paddingRight: "1rem",
-                paddingTop: "0.75rem",
-                paddingBottom: "0.75rem",
-              }}
-              className={`w-full font-body text-sm bg-neo-rice border ${
-                validationErrors.phone ? "border-neo-sun focus:ring-neo-sun/30" : "border-neo-line/70 focus:border-neo-sun focus:ring-neo-sun/20"
-              } text-neo-ink placeholder-neo-ink/40 rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
-            />
-          </div>
-          {validationErrors.phone && (
-            <p className="text-xs font-medium text-neo-sun flex items-center gap-1.5 mt-1.5 font-body">
-              <AlertCircle className="w-3.5 h-3.5" /> {validationErrors.phone}
             </p>
           )}
         </div>

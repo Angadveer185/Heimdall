@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/errors";
 import { UserRepository } from "../user/user.repository";
-import { RegisterData, LoginData } from "./auth.validation";
+import { RegisterData, RegisterSuperAdminData, LoginData } from "./auth.validation";
 import { hashPassword, comparePassword } from "@/lib/password";
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 
@@ -51,7 +51,12 @@ export class AuthService {
     };
   }
 
-  async registerSuperAdmin(data: RegisterData) {
+  async registerSuperAdmin(data: RegisterSuperAdminData) {
+    const validSecret = process.env.SUPER_ADMIN_INVITE_SECRET;
+    if (!data.inviteToken || data.inviteToken !== validSecret) {
+      throw new ApiError(403, "Invalid or missing Super Admin invite secret.");
+    }
+
     const existingUser = await this.userRepository.findByEmail(data.email);
 
     if (existingUser) {
@@ -59,7 +64,7 @@ export class AuthService {
     }
 
     const passwordHash = await hashPassword(data.password);
-    const { password, ...userData } = data;
+    const { password, inviteToken, ...userData } = data;
 
     const user = await this.userRepository.create({
       ...userData,

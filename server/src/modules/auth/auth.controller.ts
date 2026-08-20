@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { registerSchema, loginSchema } from "./auth.validation";
+import { registerSchema, registerSuperAdminSchema, loginSchema } from "./auth.validation";
 import { AuthService } from "./auth.service";
 import { verifyRefreshToken } from "@/lib/jwt";
 import { ApiError } from "@/lib/errors";
@@ -34,7 +34,7 @@ export class AuthController {
 
   async registerSuperAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const validatedData = registerSchema.parse(req.body);
+      const validatedData = registerSuperAdminSchema.parse(req.body);
       const result = await this.authService.registerSuperAdmin(validatedData);
 
       setAuthCookies(res, result.accessToken, result.refreshToken);
