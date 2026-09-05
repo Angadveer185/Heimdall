@@ -213,26 +213,77 @@ export class PledgeService {
     return this.pledgeRepository.findByDonorId(donorId);
   }
 
-  async getShelterPledges(shelterId: string, userId: string, userRole: Role) {
+  async getShelterPledges(shelterId: string | undefined, userId: string, userRole: Role) {
+    let targetShelterId = shelterId;
     // Authorization Check
     if (userRole === Role.SHELTER_ADMIN) {
       const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { shelterId: true },
       });
-      if (!user || user.shelterId !== shelterId) {
+      if (!user?.shelterId) {
+        throw new ApiError(
+          403,
+          "No shelter associated with this administrator account",
+        );
+      }
+      if (targetShelterId && user.shelterId !== targetShelterId) {
         throw new ApiError(
           403,
           "Forbidden access: You are not authorized to view this shelter's pledges",
         );
       }
+      targetShelterId = user.shelterId;
     }
 
-    return this.pledgeRepository.findByShelterId(shelterId);
+    if (!targetShelterId) {
+      throw new ApiError(400, "Shelter ID is required");
+    }
+
+    return this.pledgeRepository.findByShelterId(targetShelterId);
   }
 
   async getAllPledges() {
     return this.pledgeRepository.getAllPledges();
+  }
+
+  async verifyPledgeCode(pledgeId: string, code: string, userId: string, userRole: Role) {
+    const pledge = await this.pledgeRepository.findById(pledgeId);
+    if (!pledge) {
+      throw new ApiError(404, "Pledge not found");
+    }
+
+    if (pledge.status !== PledgeStatus.RESERVED) {
+      throw new ApiError(
+        400,
+        `Pledge cannot be verified. Current status is ${pledge.status}`,
+      );
+    }
+
+    // Authorization Check
+    if (userRole === Role.SHELTER_ADMIN) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { shelterId: true },
+      });
+      if (!user || user.shelterId !== pledge.shelterId) {
+        throw new ApiError(
+          403,
+          "Forbidden access: You are not authorized to verify pledges for this shelter",
+        );
+      }
+    }
+
+    // Check code match (case-insensitive, trimmed)
+    if (pledge.pledgeCode.trim().toUpperCase() !== code.trim().toUpperCase()) {
+      throw new ApiError(400, "Incorrect pledge code");
+    }
+
+    return {
+      valid: true,
+      message: "Pledge code verified successfully",
+      pledge,
+    };
   }
 
   async verifyAndFulfillPledge(

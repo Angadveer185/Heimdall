@@ -19,7 +19,7 @@ import {
 
 import { useUserStore } from "@/store/useUserStore";
 
-export function Navbar() {
+export function LandingNavbar() {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -74,11 +74,10 @@ export function Navbar() {
     >
       {/* Main Navbar */}
       <nav
-        className={`w-full transition-all duration-200 border-b ${
-          scrolled
+        className={`w-full transition-all duration-200 border-b ${scrolled
             ? "bg-neo-bg/95 backdrop-blur-md border-neo-line/60 shadow-md py-3"
             : "bg-neo-bg/85 backdrop-blur-sm border-neo-line/40 py-4"
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Brand Logo */}

@@ -25,6 +25,9 @@ shelterRouter.get("/organization/*organizationId", (req, res, next) =>
 shelterRouter.patch("/:id", authenticate, authorize(Role.SHELTER_ADMIN, Role.SUPER_ADMIN), (req, res, next) =>
   controller.updateById(req, res, next),
 );
+shelterRouter.post("/:id/transfer-ownership", authenticate, authorize(Role.SHELTER_ADMIN, Role.SUPER_ADMIN), (req, res, next) =>
+  controller.transferOwnership(req, res, next),
+);
 shelterRouter.delete("/:id", authenticate, authorize(Role.SHELTER_ADMIN, Role.SUPER_ADMIN), (req, res, next) =>
   controller.deleteById(req, res, next),
 );

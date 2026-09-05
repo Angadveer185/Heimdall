@@ -10,10 +10,11 @@ const controller = new UserController();
 // User Routes
 userRouter.get("/me", authenticate, (req, res, next) => controller.getMe(req, res, next));
 userRouter.patch("/me", authenticate, (req, res, next) => controller.updateMe(req, res, next));
+userRouter.delete("/me", authenticate, (req, res, next) => controller.deleteMe(req, res, next));
 
-userRouter.get("/", authenticate, authorize(Role.SUPER_ADMIN), (req, res, next) => controller.getAllUsers(req, res, next));
+userRouter.get("/", authenticate, (req, res, next) => controller.getAllUsers(req, res, next));
 userRouter.post("/", authenticate, authorize(Role.SUPER_ADMIN), (req, res, next) => controller.createUser(req, res, next));
-userRouter.get("/:id/public", authenticate, authorize(Role.DONOR), (req, res, next) => controller.getPublicProfile(req, res, next));
+userRouter.get("/:id/public", (req, res, next) => controller.getPublicProfile(req, res, next));
 userRouter.get("/:id", authenticate, authorize(Role.DONOR), (req, res, next) => controller.getById(req, res, next));
 userRouter.patch("/:id", authenticate, authorize(Role.DONOR), (req, res, next) => controller.updateById(req, res, next));
 userRouter.delete("/:id", authenticate, authorize(Role.DONOR), (req, res, next) => controller.deleteById(req, res, next));

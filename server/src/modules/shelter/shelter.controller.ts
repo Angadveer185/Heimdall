@@ -7,6 +7,7 @@ import {
   createShelterSchema,
   updateShelterSchema,
   deleteShelterSchema,
+  transferOwnershipSchema,
 } from "./shelter.validation";
 import { setAuthCookies } from "@/lib/cookies";
 
@@ -116,6 +117,33 @@ export class ShelterController {
       res
         .status(200)
         .json({ success: true, message: "All shelters purged successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async transferOwnership(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      const validatedData = transferOwnershipSchema.parse({
+        id: req.params.id,
+        targetUserEmail: req.body.targetUserEmail,
+      });
+
+      const result = await this.shelterService.transferOwnership(
+        validatedData.id,
+        validatedData.targetUserEmail,
+        req.user.id,
+        req.user.role
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Shelter facility ownership transferred successfully",
+        data: result,
+      });
     } catch (error) {
       next(error);
     }

@@ -79,7 +79,7 @@ export function ShelterInfoCard({ shelter }: ShelterInfoCardProps) {
         return {
           label: "Verification Pending",
           icon: Clock3,
-          bg: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
+          bg: "bg-neo-sun/15 text-neo-sun border-neo-sun/30",
         };
     }
   };

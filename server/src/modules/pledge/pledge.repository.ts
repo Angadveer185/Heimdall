@@ -6,6 +6,16 @@ const defaultPledgeSelect = Prisma.validator<Prisma.PledgeSelect>()({
     pledgeCode: true,
     donorId: true,
     shelterId: true,
+    donor: {
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            profileImageUrl: true,
+            pledgesCompleted: true,
+        }
+    },
     shelter: {
         select: {
             id: true,

@@ -52,5 +52,10 @@ export const verifyPledgeSchema = z.object({
     .nullable(),
 });
 
+export const verifyCodeSchema = z.object({
+  code: z.string().trim().min(1, "Pledge code must not be empty"),
+});
+
 export type CreatePledgeInput = z.infer<typeof createPledgeSchema>;
 export type VerifyPledgeInput = z.infer<typeof verifyPledgeSchema>;
+export type VerifyCodeInput = z.infer<typeof verifyCodeSchema>;

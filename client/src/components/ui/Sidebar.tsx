@@ -25,6 +25,71 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/theme/theme-context";
 
+export interface NavRoute {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+}
+
+// Role-specific route lists defined at the top
+export const COMMON_ROUTES: NavRoute[] = [
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    exact: true,
+  },
+  {
+    label: "Profile & Account",
+    href: "/profile",
+    icon: User,
+    exact: true,
+  },
+];
+
+export const SHELTER_ADMIN_ROUTES: NavRoute[] = [
+  {
+    label: "My Shelter Console",
+    href: "/shelter/manage",
+    icon: Building2,
+  },
+];
+
+export const SUPER_ADMIN_ROUTES: NavRoute[] = [
+  {
+    label: "Overview Panel",
+    href: "/admin",
+    icon: Layers,
+    exact: true,
+  },
+  {
+    label: "User Roster",
+    href: "/admin/users",
+    icon: UsersIcon,
+  },
+  {
+    label: "Catalog Pools",
+    href: "/admin/pools",
+    icon: FolderTree,
+  },
+  {
+    label: "Shelter Registry",
+    href: "/admin/shelters",
+    icon: Building2,
+  },
+];
+
+export const ROLE_ROUTES = {
+  common: COMMON_ROUTES,
+  shelterAdmin: SHELTER_ADMIN_ROUTES,
+  superAdmin: {
+    groupTitle: "Admin Control Center",
+    groupIcon: Shield,
+    routes: SUPER_ADMIN_ROUTES,
+  },
+};
+
 interface SidebarProps {
   user: UserData;
 }
@@ -58,6 +123,10 @@ export function Sidebar({ user }: SidebarProps) {
 
   const isSuperAdmin = user.role === "SUPER_ADMIN";
   const isShelterAdmin = user.role === "SHELTER_ADMIN" || isSuperAdmin;
+
+  const isRouteActive = (route: NavRoute) => {
+    return route.exact ? pathname === route.href : pathname.startsWith(route.href);
+  };
 
   return (
     <>
@@ -98,9 +167,8 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* Universal Left Sidebar Container */}
       <aside
-        className={`${
-          mobileOpen ? "flex" : "hidden"
-        } md:flex flex-col justify-between w-full md:w-64 lg:w-72 bg-neo-rice text-neo-ink border-r border-neo-line/60 p-5 h-auto md:h-full shrink-0 z-20 overflow-y-auto transition-colors duration-200`}
+        className={`${mobileOpen ? "flex" : "hidden"
+          } md:flex flex-col justify-between w-full md:w-64 lg:w-72 bg-neo-rice text-neo-ink border-r border-neo-line/60 p-5 h-auto md:h-full shrink-0 z-20 overflow-y-auto transition-colors duration-200`}
       >
         {/* Top Area: Logo Header & User Profile Header */}
         <div className="space-y-6">
@@ -161,13 +229,12 @@ export function Sidebar({ user }: SidebarProps) {
               </h3>
               <div className="flex items-center gap-1.5">
                 <span
-                  className={`text-[10px] font-body px-2.5 py-0.5 rounded-full border uppercase font-medium ${
-                    isSuperAdmin
+                  className={`text-[10px] font-body px-2.5 py-0.5 rounded-full border uppercase font-medium ${isSuperAdmin
+                    ? "bg-neo-sun/15 border-neo-sun/30 text-neo-sun font-semibold"
+                    : isShelterAdmin
                       ? "bg-neo-sun/15 border-neo-sun/30 text-neo-sun font-semibold"
-                      : isShelterAdmin
-                        ? "bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400 font-semibold"
-                        : "bg-neo-ash/15 border-neo-line/60 text-neo-ash"
-                  }`}
+                      : "bg-neo-ash/15 border-neo-line/60 text-neo-ash"
+                    }`}
                 >
                   {user.role}
                 </span>
@@ -181,72 +248,66 @@ export function Sidebar({ user }: SidebarProps) {
               Navigation Menu
             </span>
 
-            {/* Profile Dossier Link */}
-            <Link
-              href="/profile"
-              onClick={() => setMobileOpen(false)}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
-                pathname === "/profile"
-                  ? "bg-neo-sun/15 text-neo-sun border-neo-sun/30 shadow-sm"
-                  : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-              }`}
-            >
-              <User
-                className={`w-4 h-4 ${pathname === "/profile" ? "text-neo-sun" : "text-neo-ash"}`}
-              />
-              <span>Profile & Account</span>
-            </Link>
-
-            {/* Overview / Home */}
-            <Link
-              href="/"
-              onClick={() => setMobileOpen(false)}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
-                pathname === "/"
-                  ? "bg-neo-sun/15 text-neo-sun border-neo-sun/30 shadow-sm"
-                  : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-              }`}
-            >
-              <LayoutDashboard
-                className={`w-4 h-4 ${pathname === "/" ? "text-neo-sun" : "text-neo-ash"}`}
-              />
-              <span>Overview</span>
-            </Link>
-
-            {/* SHELTER ADMIN ROUTE */}
-            {isShelterAdmin && (
-              <Link
-                href="/shelter/manage"
-                onClick={() => setMobileOpen(false)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
-                  pathname.startsWith("/shelter/manage")
-                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30 shadow-sm"
+            {/* Common Routes */}
+            {ROLE_ROUTES.common.map((route) => {
+              const Icon = route.icon;
+              const active = isRouteActive(route);
+              return (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${active
+                    ? "bg-neo-sun/15 text-neo-sun border-neo-sun/30 shadow-sm"
                     : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-                }`}
-              >
-                <Building2
-                  className={`w-4 h-4 ${pathname.startsWith("/shelter/manage") ? "text-amber-500" : "text-neo-ash"}`}
-                />
-                <span>My Shelter Console</span>
-              </Link>
-            )}
+                    }`}
+                >
+                  <Icon
+                    className={`w-4 h-4 ${active ? "text-neo-sun" : "text-neo-ash"}`}
+                  />
+                  <span>{route.label}</span>
+                </Link>
+              );
+            })}
 
-            {/* SUPER ADMIN NESTED ACCORDION ROUTE GROUP */}
+            {/* Shelter Admin Routes */}
+            {isShelterAdmin &&
+              ROLE_ROUTES.shelterAdmin.map((route) => {
+                const Icon = route.icon;
+                const active = isRouteActive(route);
+                return (
+                  <Link
+                    key={route.href}
+                    href={route.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${active
+                      ? "bg-neo-sun/15 text-neo-sun border-neo-sun/30 shadow-sm"
+                      : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
+                      }`}
+                  >
+                    <Icon
+                      className={`w-4 h-4 ${active ? "text-neo-sun" : "text-neo-ash"}`}
+                    />
+                    <span>{route.label}</span>
+                  </Link>
+                );
+              })}
+
+            {/* Super Admin Nested Accordion Route Group */}
             {isSuperAdmin && (
               <div className="pt-2 space-y-1.5">
                 {/* Accordion Parent Toggle Button */}
                 <button
                   type="button"
                   onClick={() => setAdminMenuOpen(!adminMenuOpen)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${
-                    pathname.startsWith("/admin")
-                      ? "bg-neo-sun/10 text-neo-sun border-neo-sun/30 shadow-sm"
-                      : "text-neo-ink bg-neo-bg/60 border-neo-line/60 hover:border-neo-sun"
-                  }`}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-heading font-semibold rounded-xl transition-all border ${pathname.startsWith("/admin")
+                    ? "bg-neo-sun/10 text-neo-sun border-neo-sun/30 shadow-sm"
+                    : "text-neo-ink bg-neo-bg/60 border-neo-line/60 hover:border-neo-sun"
+                    }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Shield className="w-4 h-4 text-neo-sun" />
-                    <span>Admin Control Center</span>
+                    <ROLE_ROUTES.superAdmin.groupIcon className="w-4 h-4 text-neo-sun" />
+                    <span>{ROLE_ROUTES.superAdmin.groupTitle}</span>
                   </div>
                   {adminMenuOpen ? (
                     <ChevronDown className="w-3.5 h-3.5 text-neo-sun" />
@@ -258,61 +319,24 @@ export function Sidebar({ user }: SidebarProps) {
                 {/* Nested Sub-routes */}
                 {adminMenuOpen && (
                   <div className="pl-3.5 space-y-1 border-l-2 border-neo-sun/30 ml-3.5 pt-1">
-                    {/* Admin Dashboard */}
-                    <Link
-                      href="/admin"
-                      onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
-                        pathname === "/admin"
-                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-                      }`}
-                    >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>Overview Panel</span>
-                    </Link>
-
-                    {/* /admin/users -> User Roster */}
-                    <Link
-                      href="/admin/users"
-                      onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
-                        pathname.startsWith("/admin/users")
-                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-                      }`}
-                    >
-                      <UsersIcon className="w-3.5 h-3.5" />
-                      <span>User Roster</span>
-                    </Link>
-
-                    {/* /admin/pools -> Catalog Pools */}
-                    <Link
-                      href="/admin/pools"
-                      onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
-                        pathname.startsWith("/admin/pools")
-                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-                      }`}
-                    >
-                      <FolderTree className="w-3.5 h-3.5" />
-                      <span>Catalog Pools</span>
-                    </Link>
-
-                    {/* /admin/shelters -> Shelter Registry */}
-                    <Link
-                      href="/admin/shelters"
-                      onClick={() => setMobileOpen(false)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${
-                        pathname.startsWith("/admin/shelters")
-                          ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
-                          : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
-                      }`}
-                    >
-                      <Building2 className="w-3.5 h-3.5" />
-                      <span>Shelter Registry</span>
-                    </Link>
+                    {ROLE_ROUTES.superAdmin.routes.map((route) => {
+                      const Icon = route.icon;
+                      const active = isRouteActive(route);
+                      return (
+                        <Link
+                          key={route.href}
+                          href={route.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-heading font-semibold rounded-lg transition-all border ${active
+                            ? "bg-neo-sun text-neo-rice border-neo-sun shadow-sm"
+                            : "text-neo-ink border-transparent hover:bg-neo-bg hover:text-neo-sun hover:border-neo-line/60"
+                            }`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          <span>{route.label}</span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>

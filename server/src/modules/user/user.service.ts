@@ -3,6 +3,7 @@ import { UserRepository } from "./user.repository";
 import { CreateUserInput, UpdateUserInput } from "./user.validation";
 import { hashPassword } from "@/lib/password";
 import { Role } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 const repository = new UserRepository();
 
@@ -104,7 +105,67 @@ export class UserService {
       throw new ApiError(404, "User not found");
     }
 
-    return repository.deleteById(id);
+    return prisma.$transaction(async (tx) => {
+      // 1. Cascade delete all pledges made by this user as a donor
+      const userPledges = await tx.pledge.findMany({
+        where: { donorId: id },
+        select: { id: true },
+      });
+      const userPledgeIds = userPledges.map((p) => p.id);
+      if (userPledgeIds.length > 0) {
+        await tx.pledgedItem.deleteMany({
+          where: { pledgeId: { in: userPledgeIds } },
+        });
+        await tx.pledge.deleteMany({
+          where: { donorId: id },
+        });
+      }
+
+      // 2. Cascade delete shelter facility if this user is the only admin
+      if (existingUser.shelterId) {
+        const otherAdmins = await tx.user.count({
+          where: {
+            shelterId: existingUser.shelterId,
+            id: { not: id },
+          },
+        });
+
+        if (otherAdmins === 0) {
+          // Cascade delete shelter pledges
+          const shelterPledges = await tx.pledge.findMany({
+            where: { shelterId: existingUser.shelterId },
+            select: { id: true },
+          });
+          const shelterPledgeIds = shelterPledges.map((p) => p.id);
+          if (shelterPledgeIds.length > 0) {
+            await tx.pledgedItem.deleteMany({
+              where: { pledgeId: { in: shelterPledgeIds } },
+            });
+            await tx.pledge.deleteMany({
+              where: { shelterId: existingUser.shelterId },
+            });
+          }
+
+          // Cascade delete shelter requests and items
+          await tx.requestedItem.deleteMany({
+            where: { request: { shelterId: existingUser.shelterId } },
+          });
+          await tx.shelterRequest.deleteMany({
+            where: { shelterId: existingUser.shelterId },
+          });
+
+          // Delete the shelter itself
+          await tx.shelter.delete({
+            where: { id: existingUser.shelterId },
+          });
+        }
+      }
+
+      // 3. Delete the user
+      return tx.user.delete({
+        where: { id },
+      });
+    });
   }
 
   async purgeAllUsers() {

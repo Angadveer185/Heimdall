@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+export type Role = 'DONOR' | 'SHELTER_ADMIN' | 'SUPER_ADMIN';
 
 export interface JwtPayload {
   id: string;

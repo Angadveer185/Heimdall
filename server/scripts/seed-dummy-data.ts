@@ -1,4 +1,12 @@
-import { PrismaClient, Role, VerificationStatus, Urgency, RequestStatus, PledgeStatus, OrganizationIdType } from "@prisma/client";
+import {
+  PrismaClient,
+  Role,
+  VerificationStatus,
+  Urgency,
+  RequestStatus,
+  PledgeStatus,
+  OrganizationIdType,
+} from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -29,9 +37,11 @@ async function seedDatabase() {
       name: "Heimdall System Admin",
       email: "admin@heimdall.org",
       passwordHash: defaultPasswordHash,
+      googleId: "google-superadmin-001",
       role: Role.SUPER_ADMIN,
       phone: "+1 (555) 000-9999",
-      profileImageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
     },
   });
   console.log(`✔ Super Admin created: ${superAdmin.email}`);
@@ -42,32 +52,44 @@ async function seedDatabase() {
     {
       name: "Food & Emergency Nutrition",
       icon: "Utensils",
-      description: "Non-perishable canned goods, potable water, baby formula, and emergency meal rations.",
+      description:
+        "Non-perishable canned goods, potable water, baby formula, and emergency meal rations.",
     },
     {
       name: "Medical & Healthcare",
       icon: "HeartPulse",
-      description: "First-aid kits, over-the-counter medication, sterile bandages, and basic diagnostic kits.",
+      description:
+        "First-aid kits, over-the-counter medication, sterile bandages, and basic diagnostic kits.",
     },
     {
       name: "Clothing & Footwear",
       icon: "Shirt",
-      description: "Weatherproof jackets, thermal underwear, socks, boots, and seasonal apparel.",
+      description:
+        "Weatherproof jackets, thermal underwear, socks, boots, and seasonal apparel.",
     },
     {
       name: "Shelter & Bedding",
       icon: "Home",
-      description: "Sleeping bags, thermal blankets, pop-up tents, cots, and emergency tarps.",
+      description:
+        "Sleeping bags, thermal blankets, pop-up tents, cots, and emergency tarps.",
     },
     {
       name: "Education & Children",
       icon: "BookOpen",
-      description: "School stationery, backpacks, children's storybooks, and early development toys.",
+      description:
+        "School stationery, backpacks, children's storybooks, and early development toys.",
     },
     {
       name: "Hygiene & Sanitation",
       icon: "Droplet",
-      description: "Soaps, shampoo, toothbrushes, feminine hygiene products, and disinfectant wipes.",
+      description:
+        "Soaps, shampoo, toothbrushes, feminine hygiene products, and disinfectant wipes.",
+    },
+    {
+      name: "Emergency Power & Tools",
+      icon: "ShieldAlert",
+      description:
+        "Flashlights, portable batteries, power stations, multi-tools, and emergency radios.",
     },
   ];
 
@@ -78,7 +100,7 @@ async function seedDatabase() {
   }
   console.log(`✔ Created ${Object.keys(categories).length} categories.`);
 
-  // 4. Create Global Items
+  // 4. Create Global Items Pool
   console.log("\n🏷️ Creating Global Items Pool...");
   const globalItemsData = [
     {
@@ -147,6 +169,12 @@ async function seedDatabase() {
       defaultUnit: "kits",
       categoryId: categories["Hygiene & Sanitation"].id,
     },
+    {
+      title: "Heavy-Duty LED Flashlights & Batteries",
+      description: "High-lumen rechargeable emergency flashlights with AA battery backups.",
+      defaultUnit: "boxes",
+      categoryId: categories["Emergency Power & Tools"].id,
+    },
   ];
 
   const globalItems: Record<string, any> = {};
@@ -162,32 +190,40 @@ async function seedDatabase() {
     {
       name: "Alex Rivera",
       email: "alex.rivera@example.com",
+      googleId: "google-donor-001",
       phone: "+1 (555) 234-5678",
-      profileImageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
       pledgesCompleted: 3,
       pledgesExpired: 0,
     },
     {
       name: "Priya Sharma",
       email: "priya.sharma@example.com",
+      googleId: "google-donor-002",
       phone: "+1 (555) 345-6789",
-      profileImageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       pledgesCompleted: 5,
       pledgesExpired: 1,
     },
     {
       name: "Michael Chen",
       email: "m.chen@example.com",
+      googleId: "google-donor-003",
       phone: "+1 (555) 456-7890",
-      profileImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
       pledgesCompleted: 2,
       pledgesExpired: 0,
     },
     {
       name: "Jordan Taylor",
       email: "jordan.taylor@example.com",
+      googleId: "google-donor-004",
       phone: "+1 (555) 567-8901",
-      profileImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
       pledgesCompleted: 1,
       pledgesExpired: 0,
     },
@@ -216,7 +252,8 @@ async function seedDatabase() {
       organizationIdType: OrganizationIdType.EIN,
       organizationId: "94-3281940",
       verificationStatus: VerificationStatus.VERIFIED,
-      description: "Providing warm shelter, hot meals, and emergency aid to families in San Francisco.",
+      description:
+        "Providing warm shelter, hot meals, and emergency aid to families in San Francisco.",
       street: "1050 Mission Street",
       city: "San Francisco",
       state: "CA",
@@ -227,8 +264,17 @@ async function seedDatabase() {
       contactEmail: "contact@stvincenthaven.org",
       phone: "+1 (415) 555-0144",
       website: "https://www.stvincenthaven.org",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&auto=format&fit=crop&q=80",
+      shelterImages: [
+        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&auto=format&fit=crop&q=80",
+      ],
       adminName: "Sarah Connor",
       adminEmail: "sarah.admin@stvincenthaven.org",
+      adminGoogleId: "google-admin-001",
+      adminProfileImageUrl:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
     },
     {
       name: "Hope City Youth & Family Shelter",
@@ -236,7 +282,8 @@ async function seedDatabase() {
       organizationIdType: OrganizationIdType.EIN,
       organizationId: "47-9201948",
       verificationStatus: VerificationStatus.VERIFIED,
-      description: "Dedicated to housing and empowering homeless youth and single parents in Central Texas.",
+      description:
+        "Dedicated to housing and empowering homeless youth and single parents in Central Texas.",
       street: "800 Congress Ave",
       city: "Austin",
       state: "TX",
@@ -247,8 +294,17 @@ async function seedDatabase() {
       contactEmail: "info@hopecityshelter.org",
       phone: "+1 (512) 555-0188",
       website: "https://www.hopecityshelter.org",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1518391846015-55a9cc003b25?w=500&auto=format&fit=crop&q=80",
+      shelterImages: [
+        "https://images.unsplash.com/photo-1518391846015-55a9cc003b25?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&auto=format&fit=crop&q=80",
+      ],
       adminName: "Marcus Vance",
       adminEmail: "marcus@hopecityshelter.org",
+      adminGoogleId: "google-admin-002",
+      adminProfileImageUrl:
+        "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80",
     },
     {
       name: "Seattle Urban Relief Center",
@@ -256,7 +312,8 @@ async function seedDatabase() {
       organizationIdType: OrganizationIdType.EIN,
       organizationId: "91-0482019",
       verificationStatus: VerificationStatus.VERIFIED,
-      description: "Winter warming station and year-round emergency relief center for vulnerable unhoused individuals.",
+      description:
+        "Winter warming station and year-round emergency relief center for vulnerable unhoused individuals.",
       street: "1200 3rd Ave",
       city: "Seattle",
       state: "WA",
@@ -267,8 +324,16 @@ async function seedDatabase() {
       contactEmail: "relief@seattlerelief.org",
       phone: "+1 (206) 555-0123",
       website: "https://www.seattlerelief.org",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=500&auto=format&fit=crop&q=80",
+      shelterImages: [
+        "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&auto=format&fit=crop&q=80",
+      ],
       adminName: "Elena Rostova",
       adminEmail: "elena@seattlerelief.org",
+      adminGoogleId: "google-admin-003",
+      adminProfileImageUrl:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
     },
     {
       name: "Pratham Child Welfare Foundation",
@@ -276,7 +341,8 @@ async function seedDatabase() {
       organizationIdType: OrganizationIdType.NGO_DARPAN,
       organizationId: "DL/2021/029384",
       verificationStatus: VerificationStatus.PENDING,
-      description: "Supporting underprivileged children with nutrition, healthcare, and educational kits in New Delhi.",
+      description:
+        "Supporting underprivileged children with nutrition, healthcare, and educational kits in New Delhi.",
       street: "42 Connaught Place",
       city: "New Delhi",
       state: "Delhi",
@@ -287,8 +353,16 @@ async function seedDatabase() {
       contactEmail: "admin@prathamchild.org",
       phone: "+91 11 5555 0199",
       website: "https://www.prathamchild.org",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500&auto=format&fit=crop&q=80",
+      shelterImages: [
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&auto=format&fit=crop&q=80",
+      ],
       adminName: "Rajesh Kumar",
       adminEmail: "rajesh@prathamchild.org",
+      adminGoogleId: "google-admin-004",
+      adminProfileImageUrl:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
     },
     {
       name: "Brooklyn Night Shelter Alliance",
@@ -296,7 +370,8 @@ async function seedDatabase() {
       organizationIdType: OrganizationIdType.EIN,
       organizationId: "11-3920194",
       verificationStatus: VerificationStatus.REJECTED,
-      rejectionReason: "Official Tax EIN registration document failed verification checks.",
+      rejectionReason:
+        "Official Tax EIN registration document failed verification checks.",
       description: "Overnight shelter network serving the greater Brooklyn borough.",
       street: "350 Atlantic Ave",
       city: "Brooklyn",
@@ -308,14 +383,22 @@ async function seedDatabase() {
       contactEmail: "support@brooklynnightshelter.org",
       phone: "+1 (718) 555-0177",
       website: "https://www.brooklynnightshelter.org",
+      profileImageUrl:
+        "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=500&auto=format&fit=crop&q=80",
+      shelterImages: [
+        "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80",
+      ],
       adminName: "Diana Prince",
       adminEmail: "diana@brooklynnightshelter.org",
+      adminGoogleId: "google-admin-005",
+      adminProfileImageUrl:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
     },
   ];
 
   const createdShelters: any[] = [];
   for (const cfg of shelterConfigs) {
-    const { adminName, adminEmail, ...shelterData } = cfg;
+    const { adminName, adminEmail, adminGoogleId, adminProfileImageUrl, ...shelterData } = cfg;
 
     const shelter = await prisma.shelter.create({
       data: shelterData,
@@ -325,10 +408,12 @@ async function seedDatabase() {
       data: {
         name: adminName,
         email: adminEmail,
+        googleId: adminGoogleId,
         passwordHash: defaultPasswordHash,
         role: Role.SHELTER_ADMIN,
         shelterId: shelter.id,
         phone: "+1 (555) 111-2222",
+        profileImageUrl: adminProfileImageUrl,
       },
     });
 
@@ -347,7 +432,8 @@ async function seedDatabase() {
     data: {
       shelterId: sfShelter.id,
       title: "Urgent Winter Food & Warmth Drive",
-      description: "Critical shortage of canned foods, thermal blankets, and baby formula for winter emergency intake.",
+      description:
+        "Critical shortage of canned foods, thermal blankets, and baby formula for winter emergency intake.",
       urgency: Urgency.CRITICAL,
       status: RequestStatus.ACTIVE,
       categoryIds: [
@@ -362,7 +448,7 @@ async function seedDatabase() {
       requestId: req1.id,
       globalItemId: globalItems["Canned Soups & Vegetables (12-Pack)"].id,
       quantityNeeded: 50,
-      quantityReserved: 15,
+      quantityReserved: 10,
       quantityDelivered: 10,
       unit: "packs",
       notes: "High demand for vegetarian and low-sodium soups.",
@@ -374,7 +460,7 @@ async function seedDatabase() {
       requestId: req1.id,
       globalItemId: globalItems["Fleece Thermal Emergency Blankets"].id,
       quantityNeeded: 30,
-      quantityReserved: 10,
+      quantityReserved: 5,
       quantityDelivered: 5,
       unit: "blankets",
       notes: "Clean, new thermal blankets required.",
@@ -386,7 +472,8 @@ async function seedDatabase() {
     data: {
       shelterId: atxShelter.id,
       title: "Family Hygiene & Healthcare Support Drive",
-      description: "Gathering hygiene kits, first aid trauma supplies, and pain relief bottles for incoming families.",
+      description:
+        "Gathering hygiene kits, first aid trauma supplies, and pain relief bottles for incoming families.",
       urgency: Urgency.HIGH,
       status: RequestStatus.ACTIVE,
       categoryIds: [
@@ -413,7 +500,7 @@ async function seedDatabase() {
       requestId: req2.id,
       globalItemId: globalItems["Antibacterial Soap & Hygiene Kits"].id,
       quantityNeeded: 40,
-      quantityReserved: 20,
+      quantityReserved: 10,
       quantityDelivered: 10,
       unit: "kits",
       notes: "Family-sized hygiene kits preferred.",
@@ -481,8 +568,10 @@ async function seedDatabase() {
       expiresAt: new Date(Date.now() + 86400000 * 5),
       fulfilledAt: new Date(Date.now() - 86400000 * 1),
       status: PledgeStatus.VERIFIED_FULFILLED,
-      impactPhotoUrl: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=500&auto=format&fit=crop&q=80",
-      shelterThankYouNote: "Thank you so much Priya! Your generous delivery of hygiene kits helped 10 families today.",
+      impactPhotoUrl:
+        "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=500&auto=format&fit=crop&q=80",
+      shelterThankYouNote:
+        "Thank you so much Priya! Your generous delivery of hygiene kits helped 10 families today.",
     },
   });
 
@@ -491,6 +580,27 @@ async function seedDatabase() {
       pledgeId: pledge2.id,
       requestedItemId: reqItem2_2.id,
       quantityPledged: 10,
+    },
+  });
+
+  // Pledge 3: Donor Michael -> SF Shelter (DELIVERED state)
+  const pledge3 = await prisma.pledge.create({
+    data: {
+      pledgeCode: "PLG-SF-1044",
+      donorId: donors[2].id,
+      shelterId: sfShelter.id,
+      scheduledDropOffDate: new Date(Date.now() - 86400000 * 1),
+      expiresAt: new Date(Date.now() + 86400000 * 4),
+      fulfilledAt: new Date(Date.now() - 86400000 * 0.5),
+      status: PledgeStatus.DELIVERED,
+    },
+  });
+
+  await prisma.pledgedItem.create({
+    data: {
+      pledgeId: pledge3.id,
+      requestedItemId: reqItem1_2.id,
+      quantityPledged: 5,
     },
   });
 
@@ -516,3 +626,4 @@ seedDatabase()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

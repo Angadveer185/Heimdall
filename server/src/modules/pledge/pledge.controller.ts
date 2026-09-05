@@ -5,6 +5,7 @@ import {
   getPledgeSchema,
   getPledgeByCodeSchema,
   verifyPledgeSchema,
+  verifyCodeSchema,
 } from "./pledge.validation";
 import { ApiError } from "@/lib/errors";
 
@@ -71,8 +72,8 @@ export class PledgeController {
       if (!req.user) {
         throw new ApiError(401, "Unauthorized: User not authenticated");
       }
-      const { shelterId } = req.params as { shelterId: string };
-      if (!shelterId || !/^[0-9a-fA-F]{24}$/.test(shelterId)) {
+      const { shelterId } = req.params as { shelterId?: string };
+      if (shelterId && !/^[0-9a-fA-F]{24}$/.test(shelterId)) {
         throw new ApiError(400, "Invalid shelter ID format");
       }
       const pledges = await this.pledgeService.getShelterPledges(
@@ -81,6 +82,25 @@ export class PledgeController {
         req.user.role
       );
       res.status(200).json({ success: true, data: pledges });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async verifyCode(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized: User not authenticated");
+      }
+      const { id } = getPledgeSchema.parse({ id: req.params.id });
+      const { code } = verifyCodeSchema.parse(req.body);
+      const result = await this.pledgeService.verifyPledgeCode(
+        id,
+        code,
+        req.user.id,
+        req.user.role
+      );
+      res.status(200).json({ success: true, ...result });
     } catch (error) {
       next(error);
     }

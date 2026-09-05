@@ -49,6 +49,7 @@ const publicUserSelect = Prisma.validator<Prisma.UserSelect>()({
   googleId: true,
   role: true,
   phone: true,
+  profileImageUrl: true,
   createdAt: true,
   pledgesCompleted: true,
   pledgesExpired: true,
@@ -58,6 +59,16 @@ const publicUserSelect = Prisma.validator<Prisma.UserSelect>()({
     select: {
       id: true,
       name: true,
+      city: true,
+      state: true,
+      country: true,
+      description: true,
+      profileImageUrl: true,
+      verificationStatus: true,
+      dropOffHours: true,
+      contactEmail: true,
+      phone: true,
+      website: true,
     },
   },
 });
@@ -70,6 +81,8 @@ const createWithOAuthSelect = Prisma.validator<Prisma.UserSelect>()({
   role: true,
   profileImageUrl: true,
   passwordHash: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export class UserRepository {
@@ -133,6 +146,17 @@ export class UserRepository {
   async getAllUsers() {
     return prisma.user.findMany({
       select: defaultUserSelect,
+    });
+  }
+
+  async getDonors() {
+    return prisma.user.findMany({
+      where: {
+        role: {
+          in: ["DONOR", "SHELTER_ADMIN"],
+        },
+      },
+      select: publicUserSelect,
     });
   }
 

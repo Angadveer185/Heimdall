@@ -9,6 +9,7 @@ import { ProfileEditModal } from "@/components/profile/ProfileEditModal";
 import { DonorSheltersCard } from "@/components/profile/DonorSheltersCard";
 import { ShelterInfoCard } from "@/components/profile/ShelterInfoCard";
 import { AdminControlCard } from "@/components/profile/AdminControlCard";
+import { ProfileDangerZone } from "@/components/profile/ProfileDangerZone";
 import {
   ShieldCheck,
   LogIn,
@@ -129,6 +130,11 @@ export default function ProfilePage() {
 
             {/* SUPER_ADMIN: Manage global items, users, categories */}
             {user.role === "SUPER_ADMIN" && <AdminControlCard user={user} />}
+          </section>
+
+          {/* Account Danger Zone */}
+          <section className="pt-2">
+            <ProfileDangerZone user={user} />
           </section>
         </div>
       </main>

@@ -11,19 +11,19 @@ import {
   UserCheck,
 } from "lucide-react";
 
+import { formatDate } from "@/lib/utils";
+
 interface ProfileHeaderCardProps {
   user: UserData;
   onEditClick: () => void;
 }
 
 export function ProfileHeaderCard({ user, onEditClick }: ProfileHeaderCardProps) {
-  const formattedDate = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "Member";
+  const formattedDate = formatDate(user.createdAt, "Active Member", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   const getRoleBadge = (role: UserData["role"]) => {
     switch (role) {
@@ -35,7 +35,7 @@ export function ProfileHeaderCard({ user, onEditClick }: ProfileHeaderCardProps)
       case "SHELTER_ADMIN":
         return {
           label: "Shelter Admin",
-          bg: "text-amber-600 dark:text-amber-400 bg-amber-500/15 border-amber-500/30",
+          bg: "text-neo-sun bg-neo-sun/15 border-neo-sun/30",
         };
       case "DONOR":
       default:

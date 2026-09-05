@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Compass,
 } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 export interface FullShelterData {
   id: string;
@@ -224,7 +225,7 @@ export function ShelterDetailModal({
                 </div>
                 <div className="flex items-center gap-1.5 text-neo-ash text-[11px] pt-1">
                   <Calendar className="w-3.5 h-3.5" />
-                  <span>Registered: {new Date(shelter.createdAt).toLocaleDateString()}</span>
+                  <span>Registered: {formatDate(shelter.createdAt)}</span>
                 </div>
               </div>
             </div>

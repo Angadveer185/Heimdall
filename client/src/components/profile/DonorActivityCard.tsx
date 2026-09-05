@@ -69,7 +69,7 @@ export function DonorActivityCard({ user }: DonorActivityCardProps) {
         <div className="p-4 rounded-xl bg-neo-bg border border-neo-line/60 space-y-1 shadow-sm">
           <div className="flex items-center justify-between text-xs font-body text-neo-ash font-medium">
             <span>Expired Reservations</span>
-            <AlertCircle className="w-4 h-4 text-amber-500" />
+            <AlertCircle className="w-4 h-4 text-neo-sun" />
           </div>
           <div className="font-heading font-bold text-2xl md:text-3xl text-neo-ink">
             {expired}

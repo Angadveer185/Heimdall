@@ -5,7 +5,7 @@ import { Role, PledgeStatus, VerificationStatus, RequestStatus, OrganizationIdTy
 // Set Node Env to test to prevent automatic app.listen inside app.ts
 (process.env as any).NODE_ENV = "test";
 
-import app from "../src/server/app";
+import app from "../src/app";
 import { prisma } from "../src/lib/prisma";
 
 const LOG_FILE = path.join(__dirname, "test_run.log");
@@ -800,9 +800,38 @@ async function runTests() {
       throw new Error(`Expected reserved bandages to decrease to 10, got ${checkRI_B1_Bandages_Post.data.data.quantityReserved}`);
     }
 
-    // Shelter Admin A scans/verifies drop off
+    // Shelter Admin A tests GET /api/pledges/shelter and POST /api/pledges/:id/verify-code
     switchUser(userAAdminCookies);
-    log("[Step 5] Shelter Admin A verifying and delivering Pledge B1...");
+    log("[Step 5] Shelter Admin A fetching shelter pledges via /api/pledges/shelter...");
+    const shelterPledgesCheck = await apiRequest("GET", "/api/pledges/shelter");
+    if (shelterPledgesCheck.status !== 200 || !Array.isArray(shelterPledgesCheck.data.data)) {
+      throw new Error(`Failed to fetch shelter pledges via /api/pledges/shelter: ${JSON.stringify(shelterPledgesCheck.data)}`);
+    }
+    const foundPledgeB1 = shelterPledgesCheck.data.data.find((p: any) => p.id === pledgeB1.id);
+    if (!foundPledgeB1 || !foundPledgeB1.donor) {
+      throw new Error("Pledge B1 not found in shelter pledges or donor details missing from defaultPledgeSelect.");
+    }
+    log(`Fetched shelter pledges successfully. Found Pledge B1 with donor: ${foundPledgeB1.donor.name}`, "SUCCESS");
+
+    log("[Step 5b] Testing verify-code with INCORRECT pledge code...");
+    const wrongCodeTest = await apiRequest("POST", `/api/pledges/${pledgeB1.id}/verify-code`, {
+      code: "INCORRECT-CODE-123",
+    });
+    if (wrongCodeTest.status !== 400) {
+      throw new Error(`Expected status 400 for incorrect code, got ${wrongCodeTest.status}`);
+    }
+    log("Incorrect pledge code correctly rejected with 400 Bad Request.", "SUCCESS");
+
+    log("[Step 5c] Testing verify-code with CORRECT pledge code...");
+    const correctCodeTest = await apiRequest("POST", `/api/pledges/${pledgeB1.id}/verify-code`, {
+      code: pledgeB1.pledgeCode,
+    });
+    if (correctCodeTest.status !== 200 || !correctCodeTest.data.valid) {
+      throw new Error(`Failed to verify correct code: ${JSON.stringify(correctCodeTest.data)}`);
+    }
+    log("Correct pledge code successfully validated.", "SUCCESS");
+
+    log("[Step 5d] Shelter Admin A fulfilling and completing drop-off for Pledge B1...");
     const fulfillPledgeB1 = await apiRequest("POST", "/api/pledges/verify", {
       pledgeCode: pledgeB1.pledgeCode,
       impactPhotoUrl: "https://example.com/donor_b1_impact.jpg",

@@ -21,9 +21,17 @@ pledgeRouter.get("/my", authenticate, authorize(Role.DONOR), (req, res, next) =>
   controller.getMyPledges(req, res, next)
 );
 
-// View shelter-specific pledges
+// View shelter-specific pledges (by param or authenticated shelter admin's shelter)
+pledgeRouter.get("/shelter", authenticate, authorize(Role.SHELTER_ADMIN), (req, res, next) =>
+  controller.getShelterPledges(req, res, next)
+);
 pledgeRouter.get("/shelter/:shelterId", authenticate, authorize(Role.SHELTER_ADMIN), (req, res, next) =>
   controller.getShelterPledges(req, res, next)
+);
+
+// Verify pledge code before completing drop-off
+pledgeRouter.post("/:id/verify-code", authenticate, authorize(Role.SHELTER_ADMIN), (req, res, next) =>
+  controller.verifyCode(req, res, next)
 );
 
 // Verify and fulfill drop-off via QR code or manual input

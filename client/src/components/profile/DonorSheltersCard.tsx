@@ -229,7 +229,7 @@ export function DonorSheltersCard({ user }: DonorSheltersCardProps) {
                   </span>
 
                   <Link
-                    href={`/shelter/${shelter.id}`}
+                    href={`/s/${shelter.id}`}
                     className="text-neo-sun hover:underline flex items-center gap-1 font-semibold font-heading"
                   >
                     <span>View Wishlist</span>

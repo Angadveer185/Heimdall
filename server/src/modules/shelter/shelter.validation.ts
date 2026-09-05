@@ -180,5 +180,17 @@ export const deleteShelterSchema = z.object({
     .trim(),
 });
 
+export const transferOwnershipSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[0-9a-fA-F]{24}$/, "Invalid shelter ID format")
+    .trim(),
+  targetUserEmail: z
+    .string()
+    .email("Please provide a valid target user email address")
+    .trim(),
+});
+
 export type CreateShelterInput = z.infer<typeof createShelterSchema>;
 export type UpdateShelterInput = z.infer<typeof updateShelterSchema>;
+export type TransferOwnershipInput = z.infer<typeof transferOwnershipSchema>;

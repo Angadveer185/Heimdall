@@ -152,11 +152,113 @@ export class ShelterService {
     if (!existingShelter) {
       throw new ApiError(404, "Shelter not found");
     }
-    const deletedShelter = await this.shelterRepository.deleteById(id);
-    return deletedShelter;
+
+    return prisma.$transaction(async (tx) => {
+      // 1. Revert all shelter admins associated with this shelter to DONOR role and clear shelterId
+      await tx.user.updateMany({
+        where: { shelterId: id },
+        data: {
+          shelterId: null,
+          role: Role.DONOR,
+        },
+      });
+
+      // 2. Cascade delete pledges associated with this shelter
+      await tx.pledgedItem.deleteMany({
+        where: {
+          pledge: { shelterId: id },
+        },
+      });
+      await tx.pledge.deleteMany({
+        where: { shelterId: id },
+      });
+
+      // 3. Cascade delete requested items and shelter requests for this shelter
+      await tx.requestedItem.deleteMany({
+        where: {
+          request: { shelterId: id },
+        },
+      });
+      await tx.shelterRequest.deleteMany({
+        where: { shelterId: id },
+      });
+
+      // 4. Delete the shelter itself
+      return tx.shelter.delete({
+        where: { id },
+      });
+    });
   }
 
   async purgeAllShelters() {
     return this.shelterRepository.purgeAllShelters();
+  }
+
+  async transferOwnership(
+    shelterId: string,
+    targetUserEmail: string,
+    currentUserId: string,
+    currentUserRole: Role
+  ) {
+    if (currentUserRole !== Role.SUPER_ADMIN) {
+      const currentUser = await prisma.user.findUnique({
+        where: { id: currentUserId },
+        select: { shelterId: true },
+      });
+      if (!currentUser || currentUser.shelterId !== shelterId) {
+        throw new ApiError(403, "Forbidden access: You are not authorized to transfer ownership of this shelter");
+      }
+    }
+
+    const shelter = await this.shelterRepository.findById(shelterId);
+    if (!shelter) {
+      throw new ApiError(404, "Shelter not found");
+    }
+
+    const targetUser = await prisma.user.findUnique({
+      where: { email: targetUserEmail.toLowerCase().trim() },
+    });
+    if (!targetUser) {
+      throw new ApiError(404, `No registered user found with email "${targetUserEmail}"`);
+    }
+
+    if (targetUser.id === currentUserId) {
+      throw new ApiError(400, "Cannot transfer ownership to yourself");
+    }
+
+    if (targetUser.shelterId && targetUser.shelterId !== shelterId) {
+      throw new ApiError(400, "The specified user is already an administrator of another shelter facility");
+    }
+
+    return prisma.$transaction(async (tx) => {
+      // 1. Promote target user to SHELTER_ADMIN and assign shelterId
+      const updatedTarget = await tx.user.update({
+        where: { id: targetUser.id },
+        data: {
+          role: Role.SHELTER_ADMIN,
+          shelterId: shelterId,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          shelterId: true,
+        },
+      });
+
+      // 2. Revert current user to DONOR and clear shelterId (unless SUPER_ADMIN)
+      if (currentUserRole !== Role.SUPER_ADMIN) {
+        await tx.user.update({
+          where: { id: currentUserId },
+          data: {
+            role: Role.DONOR,
+            shelterId: null,
+          },
+        });
+      }
+
+      return updatedTarget;
+    });
   }
 }

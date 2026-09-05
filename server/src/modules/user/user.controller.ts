@@ -7,6 +7,7 @@ import {
 } from "./user.validation";
 import { UserService } from "./user.service";
 import { ApiError } from "@/lib/errors";
+import { clearAuthCookies } from "@/lib/cookies";
 
 const service = new UserService();
 
@@ -125,6 +126,24 @@ export class UserController {
   }
 
   /**
+   * Delete currently authenticated user's profile
+   */
+  async deleteMe(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      await service.deleteUserById(req.user.id, req.user.id, req.user.role);
+      clearAuthCookies(res);
+      res
+        .status(200)
+        .json({ success: true, message: "Profile and all associated records deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Delete a user by ID
    */
   async deleteById(req: Request, res: Response, next: NextFunction) {
@@ -134,6 +153,10 @@ export class UserController {
       }
       const validatedData = deleteUserSchema.parse({ id: req.params.id });
       await service.deleteUserById(validatedData.id, req.user.id, req.user.role);
+
+      if (validatedData.id === req.user.id) {
+        clearAuthCookies(res);
+      }
 
       res
         .status(200)

@@ -148,7 +148,7 @@ export class AuthController {
 
       // Redirect client based on user role
       const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-      const redirectPath = result.user.role === "SUPER_ADMIN" ? "/admin/dashboard" : "/profile";
+      const redirectPath = "/profile";
 
       res.redirect(`${clientUrl}${redirectPath}`);
     } catch (error) {
