@@ -38,12 +38,25 @@ export default function PublicProfilePage() {
           const data = await res.json();
           if (data.success && data.data) {
             setUser(data.data);
-          } else {
-            setError(data.message || "User profile not found");
+            return;
           }
-        } else {
-          setError("User profile not found or unavailable.");
         }
+
+        // If user profile is not found, check if this is actually a shelter ID
+        try {
+          const shelterRes = await fetch(`/api/shelters/${userId}`);
+          if (shelterRes.ok) {
+            const shelterData = await shelterRes.json();
+            if (shelterData.success && shelterData.data) {
+              router.replace(`/s/${userId}`);
+              return;
+            }
+          }
+        } catch {
+          // Continue to error state
+        }
+
+        setError("User profile not found or unavailable.");
       } catch (err) {
         console.error("Error fetching public user profile:", err);
         setError("Failed to load user profile");
@@ -53,7 +66,7 @@ export default function PublicProfilePage() {
     }
 
     fetchPublicProfile();
-  }, [userId]);
+  }, [userId, router]);
 
   return (
     <div className="min-h-screen bg-neo-bg text-neo-ink selection:bg-neo-sun selection:text-neo-rice flex flex-col font-body transition-colors duration-200">

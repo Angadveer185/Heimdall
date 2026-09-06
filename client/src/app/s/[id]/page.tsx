@@ -3,10 +3,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import {
   PublicShelterData,
   ShelterHeaderCard,
 } from "@/components/public-shelter/ShelterHeaderCard";
+import { ShelterImagesGallery } from "@/components/public-shelter/ShelterImagesGallery";
 import {
   ShelterWishlistGrid,
   WishlistItemDetail,
@@ -21,6 +23,20 @@ import {
   Home,
   LayoutDashboard,
 } from "lucide-react";
+
+// Dynamically import map with SSR disabled
+const ShelterLocationMap = dynamic(
+  () => import("@/components/maps/ShelterLocationMap"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-64 sm:h-72 w-full rounded-2xl bg-neo-rice border border-neo-line/60 flex items-center justify-center gap-2 text-neo-ash text-xs">
+        <Loader2 className="w-5 h-5 animate-spin text-neo-sun" />
+        <span>Loading facility map & directions...</span>
+      </div>
+    ),
+  }
+);
 
 interface RawShelterRequest {
   id: string;
@@ -246,6 +262,26 @@ export default function ShelterPublicProfilePage() {
           <>
             {/* Public Shelter Metadata Header */}
             <ShelterHeaderCard shelter={shelter} />
+
+            {/* Facility Showcase Images Gallery */}
+            {shelter.shelterImages && shelter.shelterImages.length > 0 && (
+              <ShelterImagesGallery
+                images={shelter.shelterImages}
+                shelterName={shelter.name}
+              />
+            )}
+
+            {/* Physical Facility Map & Google Maps Directions */}
+            <ShelterLocationMap
+              shelterName={shelter.name}
+              latitude={shelter.latitude}
+              longitude={shelter.longitude}
+              street={shelter.street}
+              city={shelter.city}
+              state={shelter.state}
+              zip={shelter.zip}
+              dropOffHours={shelter.dropOffHours}
+            />
 
             {/* Wishlist Grid & Needs */}
             <ShelterWishlistGrid

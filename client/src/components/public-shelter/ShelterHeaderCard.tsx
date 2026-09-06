@@ -12,6 +12,7 @@ import {
   Award,
   Sparkles,
 } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/cloudinary";
 
 export interface PublicShelterData {
   id: string;
@@ -30,6 +31,9 @@ export interface PublicShelterData {
   phone?: string | null;
   website?: string | null;
   profileImageUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  shelterImages?: string[];
   createdAt?: string;
 }
 
@@ -49,7 +53,11 @@ export function ShelterHeaderCard({ shelter }: ShelterHeaderCardProps) {
             {shelter.profileImageUrl ? (
               /* eslint-disable-next-next/no-img-element */
               <img
-                src={shelter.profileImageUrl}
+                src={getOptimizedImageUrl(shelter.profileImageUrl, {
+                  width: 300,
+                  height: 300,
+                  crop: "fill",
+                })}
                 alt={shelter.name}
                 className="w-full h-full object-cover"
               />

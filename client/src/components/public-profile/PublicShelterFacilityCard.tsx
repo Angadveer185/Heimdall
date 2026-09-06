@@ -13,7 +13,10 @@ import {
   Phone,
   Globe,
   Sparkles,
+  Navigation,
+  ExternalLink,
 } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/cloudinary";
 
 interface PublicShelterFacilityCardProps {
   shelter: NonNullable<PublicUserData["shelter"]>;
@@ -29,7 +32,11 @@ export function PublicShelterFacilityCard({ shelter }: PublicShelterFacilityCard
             {shelter.profileImageUrl ? (
               /* eslint-disable-next-next/no-img-element */
               <img
-                src={shelter.profileImageUrl}
+                src={getOptimizedImageUrl(shelter.profileImageUrl, {
+                  width: 200,
+                  height: 200,
+                  crop: "fill",
+                })}
                 alt={shelter.name}
                 className="w-full h-full object-cover"
               />
@@ -86,9 +93,22 @@ export function PublicShelterFacilityCard({ shelter }: PublicShelterFacilityCard
           <div className="flex items-center gap-1.5 text-xs font-body text-neo-ink pt-1">
             <MapPin className="w-4 h-4 text-neo-sun shrink-0" />
             <span>
+              {shelter.street ? `${shelter.street}, ` : ""}
               {shelter.city}, {shelter.state} {shelter.country ? `(${shelter.country})` : ""}
             </span>
           </div>
+          {typeof shelter.latitude === "number" && typeof shelter.longitude === "number" && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${shelter.latitude},${shelter.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[11px] font-heading font-semibold text-neo-sun hover:underline pt-1"
+            >
+              <Navigation className="w-3 h-3" />
+              <span>Get Directions (Google Maps)</span>
+              <ExternalLink className="w-2.5 h-2.5" />
+            </a>
+          )}
         </div>
 
         {/* Operating Drop-off Hours */}
@@ -138,6 +158,45 @@ export function PublicShelterFacilityCard({ shelter }: PublicShelterFacilityCard
           </div>
         </div>
       </div>
+
+      {/* Shelter Showcase Photos Preview */}
+      {shelter.shelterImages && shelter.shelterImages.length > 0 && (
+        <div className="space-y-3 pt-2 border-t border-neo-line/40">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-heading font-semibold uppercase tracking-wider text-neo-ash">
+              Shelter Facility Photos ({shelter.shelterImages.length})
+            </span>
+            <Link
+              href={`/s/${shelter.id}`}
+              className="text-xs font-heading font-semibold text-neo-sun hover:underline flex items-center gap-1"
+            >
+              <span>View full gallery</span>
+              <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
+            {shelter.shelterImages.slice(0, 6).map((imgUrl, i) => (
+              <Link
+                key={i}
+                href={`/s/${shelter.id}`}
+                className="group aspect-4/3 rounded-xl overflow-hidden border border-neo-line/60 bg-neo-bg hover:border-neo-sun transition-all"
+              >
+                {/* eslint-disable-next-next/no-img-element */}
+                <img
+                  src={getOptimizedImageUrl(imgUrl, {
+                    width: 250,
+                    height: 180,
+                    crop: "fill",
+                  })}
+                  alt={`Shelter photo ${i + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

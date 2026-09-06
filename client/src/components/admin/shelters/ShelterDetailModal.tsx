@@ -37,6 +37,7 @@ export interface FullShelterData {
   phone?: string | null;
   website?: string | null;
   profileImageUrl?: string | null;
+  shelterImages?: string[];
   createdAt: string;
   updatedAt: string;
 }

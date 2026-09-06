@@ -22,6 +22,8 @@ const defaultShelterSelect = Prisma.validator<Prisma.ShelterSelect>()({
   contactEmail: true,
   phone: true,
   website: true,
+  profileImageUrl: true,
+  shelterImages: true,
   createdAt: true,
   updatedAt: true,
 });

@@ -40,13 +40,25 @@ interface DonorEntity {
   pledgesCompleted?: number;
 }
 
+interface DashboardEntitySearchProps {
+  initialType?: EntityType;
+}
+
 const ITEMS_PER_PAGE = 6;
 
-export function DashboardEntitySearch() {
-  const [entityType, setEntityType] = useState<EntityType>("shelters");
+export function DashboardEntitySearch({
+  initialType = "shelters",
+}: DashboardEntitySearchProps = {}) {
+  const [entityType, setEntityType] = useState<EntityType>(initialType);
   const [inputQuery, setInputQuery] = useState("");
   const [activeSearchQuery, setActiveSearchQuery] = useState("");
   const [hasSearchedDonors, setHasSearchedDonors] = useState(false);
+
+  useEffect(() => {
+    if (initialType) {
+      setEntityType(initialType);
+    }
+  }, [initialType]);
 
   const [shelters, setShelters] = useState<ShelterEntity[]>([]);
   const [donors, setDonors] = useState<DonorEntity[]>([]);

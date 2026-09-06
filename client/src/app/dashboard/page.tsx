@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { useUserStore } from "@/store/useUserStore";
 import { Sidebar } from "@/components/ui/Sidebar";
-import { DashboardEntitySearch } from "@/components/dashboard/DashboardEntitySearch";
 import { PledgeHistoryCard } from "@/components/dashboard/PledgeHistoryCard";
 import { ShelterAdminInfoCard } from "@/components/dashboard/ShelterAdminInfoCard";
 import { DonorSheltersCard } from "@/components/profile/DonorSheltersCard";
@@ -80,9 +79,6 @@ export default function DashboardPage() {
 
         {/* Shelter Admin Info Banner (Conditional) */}
         {isShelterAdmin && <ShelterAdminInfoCard user={user} />}
-
-        {/* Top Entity Explorer & Searchbar */}
-        <DashboardEntitySearch />
 
         {/* Pledge History Ledger */}
         <PledgeHistoryCard />

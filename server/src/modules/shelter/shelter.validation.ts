@@ -80,6 +80,8 @@ export const createShelterSchema = z.object({
     .trim()
     .max(200, "Website must be at most 200 characters")
     .optional(),
+  profileImageUrl: z.string().trim().url("Invalid profile image URL").optional().or(z.literal("")),
+  shelterImages: z.array(z.string().trim().url("Invalid image URL")).optional(),
 });
 
 export const updateShelterSchema = z.object({
@@ -163,6 +165,9 @@ export const updateShelterSchema = z.object({
     .trim()
     .max(200, "Website must be at most 200 characters")
     .optional(),
+  profileImageUrl: z.string().trim().url("Invalid profile image URL").nullable().optional().or(z.literal("")),
+  shelterImages: z.array(z.string().trim().url("Invalid image URL")).optional(),
+  appendShelterImage: z.string().trim().url("Invalid image URL").optional(),
   verificationStatus: z.enum(VerificationStatus, {
     message: "Invalid Verification Status",
   }).optional(),

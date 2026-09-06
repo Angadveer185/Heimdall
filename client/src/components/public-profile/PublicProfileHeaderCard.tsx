@@ -27,11 +27,16 @@ export interface PublicUserData {
   shelter?: {
     id: string;
     name: string;
+    street?: string;
     city: string;
     state: string;
+    zip?: string;
     country?: string;
+    latitude?: number | null;
+    longitude?: number | null;
     description?: string | null;
     profileImageUrl?: string | null;
+    shelterImages?: string[];
     verificationStatus?: string;
     dropOffHours?: string;
     contactEmail?: string;

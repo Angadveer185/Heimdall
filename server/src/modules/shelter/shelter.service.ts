@@ -132,7 +132,14 @@ export class ShelterService {
     if (!existingShelter) {
       throw new ApiError(404, "Shelter not found");
     }
-    const updatedShelter = await this.shelterRepository.updateById(id, data);
+
+    const { appendShelterImage, ...restData } = data;
+    const updatePayload: any = { ...restData };
+    if (appendShelterImage) {
+      updatePayload.shelterImages = { push: appendShelterImage };
+    }
+
+    const updatedShelter = await this.shelterRepository.updateById(id, updatePayload);
     return updatedShelter;
   }
 
