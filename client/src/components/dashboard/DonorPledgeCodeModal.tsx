@@ -31,7 +31,8 @@ export interface DonorPledgeData {
   id: string;
   pledgeCode: string;
   status: string;
-  scheduledDropOffDate: string;
+  scheduledDropOffDate?: string | null;
+  createdAt?: string | null;
   shelter?: {
     id: string;
     name: string;
@@ -161,7 +162,7 @@ export function DonorPledgeCodeModal({
             <span>
               Scheduled Drop-Off:{" "}
               <strong className="text-neo-ink font-heading">
-                {formatDate(pledge.scheduledDropOffDate)}
+                {formatDate(pledge.scheduledDropOffDate || pledge.createdAt)}
               </strong>
             </span>
           </div>

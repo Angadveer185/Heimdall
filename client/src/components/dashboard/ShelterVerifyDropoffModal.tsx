@@ -32,7 +32,8 @@ export interface ShelterPledgeData {
   id: string;
   pledgeCode: string;
   status: string;
-  scheduledDropOffDate: string;
+  scheduledDropOffDate?: string | null;
+  createdAt?: string | null;
   donor?: {
     id: string;
     name: string;
@@ -196,7 +197,7 @@ export function ShelterVerifyDropoffModal({
                 </div>
                 <div className="flex items-center gap-1 text-neo-ash">
                   <Calendar className="w-3.5 h-3.5 text-neo-sun shrink-0" />
-                  <span>{formatDate(pledge.scheduledDropOffDate)}</span>
+                  <span>{formatDate(pledge.scheduledDropOffDate || pledge.createdAt)}</span>
                 </div>
               </div>
 

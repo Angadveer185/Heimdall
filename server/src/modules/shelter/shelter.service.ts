@@ -14,6 +14,14 @@ export class ShelterService {
     this.shelterRepository = shelterRepository;
   }
 
+  async verifyShelterCredentials(
+    country: string,
+    organizationIdType: OrganizationIdType,
+    organizationId: string
+  ) {
+    return verifyShelter(country, organizationIdType, organizationId);
+  }
+
   async createShelter(data: CreateShelterInput, userId: string) {
     // Check if the user is already associated with a shelter or has shelter admin privileges
     const user = await prisma.user.findUnique({
@@ -36,17 +44,35 @@ export class ShelterService {
       throw new ApiError(409, "Shelter already exists");
     }
 
-    const shelter = await this.shelterRepository.create(data, userId);
+    // Verify shelter prior to creation
+    let verificationStatus: VerificationStatus = VerificationStatus.PENDING;
+    let rejectionReason: string | null = null;
+    try {
+      const result = await verifyShelter(
+        data.country,
+        data.organizationIdType,
+        data.organizationId
+      );
+      if (result.verified) {
+        verificationStatus = VerificationStatus.VERIFIED;
+        rejectionReason = null;
+      } else {
+        verificationStatus = VerificationStatus.REJECTED;
+        rejectionReason = result.rejectionReason || "Verification failed";
+      }
+    } catch (error: any) {
+      console.error("Verification engine lookup failed during creation:", error);
+      verificationStatus = VerificationStatus.REJECTED;
+      rejectionReason = error?.message || "Failed to verify organization credentials";
+    }
 
-    // Run verification asynchronously in the background
-    this.verifyShelterBackground(
-      shelter.id,
-      data.country,
-      data.organizationIdType,
-      data.organizationId
-    ).catch((err) => {
-      console.error(`Background verification error for shelter ${shelter.id}:`, err);
-    });
+    // Create shelter and promote user to SHELTER_ADMIN
+    const shelter = await this.shelterRepository.create(
+      data,
+      userId,
+      verificationStatus,
+      rejectionReason
+    );
 
     // Generate new session tokens preserving role
     const payloadRole = user?.role === Role.SUPER_ADMIN ? Role.SUPER_ADMIN : Role.SHELTER_ADMIN;

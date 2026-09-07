@@ -93,10 +93,6 @@ export default function ProfilePage() {
           {/* Top Workspace Header Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neo-line/40 pb-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neo-sun/10 text-neo-sun text-xs font-semibold tracking-wide mb-1">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                User Dashboard
-              </div>
               <h1 className="font-heading font-bold text-2xl md:text-3xl text-neo-ink tracking-tight">
                 Profile & Settings
               </h1>

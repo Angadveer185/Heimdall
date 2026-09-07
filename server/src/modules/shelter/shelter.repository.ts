@@ -29,7 +29,12 @@ const defaultShelterSelect = Prisma.validator<Prisma.ShelterSelect>()({
 });
 
 export class ShelterRepository {
-    async create(data: Omit<Prisma.ShelterCreateInput, "admins">, userId: string) {
+    async create(
+        data: Omit<Prisma.ShelterCreateInput, "admins">,
+        userId: string,
+        verificationStatus: VerificationStatus = VerificationStatus.PENDING,
+        rejectionReason?: string | null
+    ) {
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: { role: true },
@@ -37,31 +42,29 @@ export class ShelterRepository {
 
         const isSuperAdmin = user?.role === Role.SUPER_ADMIN;
 
-        if (isSuperAdmin) {
-            return prisma.shelter.create({
-                data,
-                select: defaultShelterSelect,
-            });
-        }
-
-        const [shelter] = await prisma.$transaction([
-            prisma.shelter.create({
+        return prisma.$transaction(async (tx) => {
+            const shelter = await tx.shelter.create({
                 data: {
                     ...data,
+                    verificationStatus,
+                    rejectionReason: rejectionReason ?? null,
                     admins: {
                         connect: { id: userId },
                     },
                 },
                 select: defaultShelterSelect,
-            }),
-            prisma.user.update({
+            });
+
+            await tx.user.update({
                 where: { id: userId },
                 data: {
-                    role: Role.SHELTER_ADMIN,
+                    shelterId: shelter.id,
+                    ...(isSuperAdmin ? {} : { role: Role.SHELTER_ADMIN }),
                 },
-            }),
-        ]);
-        return shelter;
+            });
+
+            return shelter;
+        });
     }
 
     async findById(id: string) {

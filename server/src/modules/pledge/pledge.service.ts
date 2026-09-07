@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/errors";
 import { PledgeRepository } from "./pledge.repository";
-import { CreatePledgeInput, VerifyPledgeInput } from "./pledge.validation";
+import { CreatePledgeInput, VerifyPledgeInput, UpdatePledgeInput } from "./pledge.validation";
 import { prisma } from "@/lib/prisma";
 import { PledgeStatus, Role } from "@prisma/client";
 
@@ -443,6 +443,51 @@ export class PledgeService {
         },
       });
     });
+  }
+
+  async updatePledge(
+    id: string,
+    userId: string,
+    userRole: Role,
+    data: UpdatePledgeInput,
+  ) {
+    const pledge = await this.pledgeRepository.findById(id);
+    if (!pledge) {
+      throw new ApiError(404, "Pledge not found");
+    }
+
+    // Authorization check: SUPER_ADMIN or SHELTER_ADMIN belonging to this shelter
+    if (userRole === Role.SHELTER_ADMIN) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { shelterId: true },
+      });
+      if (!user || user.shelterId !== pledge.shelterId) {
+        throw new ApiError(
+          403,
+          "Forbidden access: You are not authorized to update pledges for this shelter",
+        );
+      }
+    } else if (userRole !== Role.SUPER_ADMIN) {
+      throw new ApiError(
+        403,
+        "Forbidden access: Insufficient permissions to update pledge",
+      );
+    }
+
+    const updateData: {
+      shelterThankYouNote?: string | null;
+      impactPhotoUrl?: string | null;
+    } = {};
+
+    if (data.shelterThankYouNote !== undefined) {
+      updateData.shelterThankYouNote = data.shelterThankYouNote;
+    }
+    if (data.impactPhotoUrl !== undefined) {
+      updateData.impactPhotoUrl = data.impactPhotoUrl;
+    }
+
+    return this.pledgeRepository.updateById(id, updateData);
   }
 
   /**

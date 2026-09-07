@@ -251,6 +251,13 @@ export function DonorSheltersCard({ user }: DonorSheltersCardProps) {
 
         <div className="flex items-center gap-3">
           <Link
+            href="/shelter/register"
+            className="px-4 py-2 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun hover:text-neo-sun transition-all shadow-sm flex items-center gap-1.5"
+          >
+            <Building2 className="w-3.5 h-3.5 text-neo-sun" />
+            <span>Register Shelter</span>
+          </Link>
+          <Link
             href="/donor/pledges"
             className="px-4 py-2 rounded-xl border border-neo-line/60 bg-neo-rice text-neo-ink font-heading font-semibold text-xs hover:border-neo-sun hover:text-neo-sun transition-all shadow-sm"
           >

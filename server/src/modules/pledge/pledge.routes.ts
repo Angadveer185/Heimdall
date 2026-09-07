@@ -44,6 +44,11 @@ pledgeRouter.post("/:id/cancel", authenticate, authorize(Role.DONOR), (req, res,
   controller.cancel(req, res, next)
 );
 
+// Update pledge details (thank you note, impact photo)
+pledgeRouter.patch("/:id", authenticate, authorize(Role.SHELTER_ADMIN), (req, res, next) =>
+  controller.update(req, res, next)
+);
+
 // Get pledge details by ID
 pledgeRouter.get("/:id", authenticate, authorize(Role.DONOR), (req, res, next) =>
   controller.getById(req, res, next)

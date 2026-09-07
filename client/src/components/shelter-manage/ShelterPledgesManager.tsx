@@ -17,8 +17,17 @@ import {
   PackageCheck,
   Mail,
   Phone,
+  Heart,
+  Camera,
+  Edit3,
+  Eye,
+  X,
+  ImageIcon,
+  MessageSquareHeart,
+  Upload,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 interface PledgedItemDetail {
   id: string;
@@ -36,9 +45,9 @@ export interface PledgeRecord {
   id: string;
   pledgeCode: string;
   status: "RESERVED" | "DELIVERED" | "VERIFIED_FULFILLED" | "CANCELLED" | "EXPIRED" | string;
-  scheduledDropOffDate: string;
-  expiresAt: string;
-  createdAt: string;
+  scheduledDropOffDate?: string | null;
+  expiresAt?: string | null;
+  createdAt?: string | null;
   impactPhotoUrl?: string | null;
   shelterThankYouNote?: string | null;
   fulfilledAt?: string | null;
@@ -66,6 +75,57 @@ export function ShelterPledgesManager({
 }: ShelterPledgesManagerProps) {
   const [filter, setFilter] = useState<"ALL" | "ACTIVE" | "DELIVERED" | "EXPIRED">("ALL");
   const [selectedPledge, setSelectedPledge] = useState<PledgeRecord | null>(null);
+
+  // Thank You Note & Cloudinary Impact Photo management state
+  const [uploadingPledgeId, setUploadingPledgeId] = useState<string | null>(null);
+  const [editingNotePledge, setEditingNotePledge] = useState<PledgeRecord | null>(null);
+  const [noteInput, setNoteInput] = useState("");
+  const [savingNote, setSavingNote] = useState(false);
+  const [noteError, setNoteError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [selectedImpactPreview, setSelectedImpactPreview] = useState<string | null>(null);
+
+  const handleImpactPhotoUpload = async (pledgeId: string, file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setUploadError("Please choose a valid image file (JPEG, PNG, WebP).");
+      return;
+    }
+    setUploadingPledgeId(pledgeId);
+    setUploadError(null);
+    try {
+      await uploadImageToCloudinary(file, "impact", pledgeId);
+      onRefresh();
+    } catch (err: any) {
+      console.error("Failed to upload impact photo:", err);
+      setUploadError(err.message || "Failed to upload impact photo. Please try again.");
+    } finally {
+      setUploadingPledgeId(null);
+    }
+  };
+
+  const handleSaveThankYouNote = async () => {
+    if (!editingNotePledge) return;
+    setSavingNote(true);
+    setNoteError(null);
+    try {
+      const res = await fetch(`/api/pledges/${editingNotePledge.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shelterThankYouNote: noteInput.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to update thank you note");
+      }
+      setEditingNotePledge(null);
+      onRefresh();
+    } catch (err: any) {
+      console.error("Error saving thank you note:", err);
+      setNoteError(err.message || "Failed to save thank you note");
+    } finally {
+      setSavingNote(false);
+    }
+  };
 
   const activePledges = pledges.filter((p) => p.status === "RESERVED");
   const deliveredPledges = pledges.filter(
@@ -218,6 +278,9 @@ export function ShelterPledgesManager({
         <div className="space-y-3">
           {displayedPledges.map((pledge) => {
             const isOngoing = pledge.status === "RESERVED";
+            const isCompleted =
+              pledge.status === "DELIVERED" ||
+              pledge.status === "VERIFIED_FULFILLED";
 
             return (
               <div
@@ -291,6 +354,145 @@ export function ShelterPledgesManager({
                   </div>
                 </div>
 
+                {/* Completed Pledge Feedback: Shelter Thank-You Note & Impact Photo */}
+                {isCompleted && (
+                  <div className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/5 via-amber-500/10 to-transparent border border-amber-500/20 space-y-3">
+                    {/* Thank You Note */}
+                    {pledge.shelterThankYouNote ? (
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 text-xs font-body">
+                        <div className="flex items-start gap-2.5">
+                          <Heart className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0 mt-0.5" />
+                          <div>
+                            <span className="font-heading font-bold text-[11px] uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                              Thank-You Note to {pledge.donor?.name || "Donor"}
+                            </span>
+                            <p className="italic text-neo-ink/90 font-serif text-[13px] leading-relaxed mt-0.5">
+                              &ldquo;{pledge.shelterThankYouNote}&rdquo;
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingNotePledge(pledge);
+                            setNoteInput(pledge.shelterThankYouNote || "");
+                            setNoteError(null);
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-neo-rice border border-neo-line/60 text-neo-ink hover:text-neo-sun text-[11px] font-heading font-semibold flex items-center gap-1 shrink-0 cursor-pointer shadow-xs transition-colors self-start sm:self-auto"
+                        >
+                          <Edit3 className="w-3 h-3" />
+                          <span>Edit Note</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-body">
+                        <div className="flex items-center gap-2 text-neo-ash">
+                          <MessageSquareHeart className="w-4 h-4 text-amber-500 shrink-0" />
+                          <span>No thank-you note shared yet with {pledge.donor?.name || "donor"}.</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingNotePledge(pledge);
+                            setNoteInput("");
+                            setNoteError(null);
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-heading font-bold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs transition-colors self-start sm:self-auto"
+                        >
+                          <Heart className="w-3.5 h-3.5" />
+                          <span>Add Thank-You Note</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Impact Photo */}
+                    {pledge.impactPhotoUrl ? (
+                      <div className="pt-2.5 border-t border-amber-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedImpactPreview(pledge.impactPhotoUrl!)}
+                            className="relative group rounded-lg overflow-hidden border border-amber-500/30 shrink-0 cursor-pointer shadow-xs bg-neo-charcoal/5"
+                          >
+                            <img
+                              src={pledge.impactPhotoUrl}
+                              alt="Impact proof"
+                              className="w-16 h-12 object-cover group-hover:scale-105 transition-transform duration-200"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                              <Eye className="w-3.5 h-3.5 text-white" />
+                            </div>
+                          </button>
+                          <div className="text-xs font-body">
+                            <span className="font-heading font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Impact Photo Verified
+                            </span>
+                            <span className="text-[11px] text-neo-ash">
+                              Donor can view this on their pledge history card.
+                            </span>
+                          </div>
+                        </div>
+
+                        <label className="px-3 py-1.5 rounded-lg bg-neo-rice border border-neo-line/60 text-neo-ink hover:text-neo-sun text-xs font-heading font-semibold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs transition-colors self-start sm:self-auto">
+                          {uploadingPledgeId === pledge.id ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-neo-sun" />
+                              <span>Uploading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Camera className="w-3.5 h-3.5 text-neo-sun" />
+                              <span>Replace Photo</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            disabled={uploadingPledgeId === pledge.id}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleImpactPhotoUpload(pledge.id, file);
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="pt-2.5 border-t border-amber-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-body">
+                        <div className="flex items-center gap-2 text-neo-ash">
+                          <Camera className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          <span>Show the impact of this donation with a proof photo.</span>
+                        </div>
+                        <label className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-heading font-bold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs transition-colors self-start sm:self-auto">
+                          {uploadingPledgeId === pledge.id ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                              <span>Uploading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-3.5 h-3.5" />
+                              <span>Upload Impact Photo</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            disabled={uploadingPledgeId === pledge.id}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleImpactPhotoUpload(pledge.id, file);
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Bottom Row: Scheduled Drop-off & Action */}
                 <div className="pt-2 border-t border-neo-line/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-body">
                   <div className="flex items-center gap-3 text-neo-ash">
@@ -299,13 +501,13 @@ export function ShelterPledgesManager({
                       <span>
                         Scheduled Drop-Off:{" "}
                         <strong className="text-neo-ink font-heading">
-                          {formatDate(pledge.scheduledDropOffDate)}
+                          {formatDate(pledge.scheduledDropOffDate || pledge.createdAt)}
                         </strong>
                       </span>
                     </span>
                     {pledge.fulfilledAt && (
                       <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                        • Verified at {formatDate(pledge.fulfilledAt)}
+                        • Verified at {formatDate(pledge.fulfilledAt || pledge.createdAt)}
                       </span>
                     )}
                   </div>
@@ -336,6 +538,130 @@ export function ShelterPledgesManager({
           onRefresh();
         }}
       />
+
+      {/* Add / Edit Thank-You Note Modal */}
+      {editingNotePledge && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in"
+          onClick={() => {
+            if (!savingNote) setEditingNotePledge(null);
+          }}
+        >
+          <div
+            className="relative max-w-lg w-full bg-neo-rice rounded-2xl overflow-hidden border border-neo-line shadow-2xl p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Heart className="w-5 h-5 text-amber-500 fill-amber-500" />
+                <h3 className="font-heading font-bold text-lg text-neo-ink">
+                  {editingNotePledge.shelterThankYouNote ? "Edit Thank-You Note" : "Send Thank-You Note"}
+                </h3>
+              </div>
+              <button
+                type="button"
+                disabled={savingNote}
+                onClick={() => setEditingNotePledge(null)}
+                className="w-7 h-7 rounded-lg bg-neo-cream/50 text-neo-ash hover:text-neo-ink flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs font-body text-neo-ash">
+              Express your appreciation to{" "}
+              <strong className="text-neo-ink font-heading">{editingNotePledge.donor?.name || "the donor"}</strong>{" "}
+              for pledge <span className="font-mono font-semibold">#{editingNotePledge.pledgeCode}</span>. This message will appear on their dashboard.
+            </p>
+
+            {noteError && (
+              <div className="p-3 rounded-xl bg-neo-coral/10 border border-neo-coral/30 text-xs font-body text-neo-coral">
+                {noteError}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <textarea
+                value={noteInput}
+                onChange={(e) => setNoteInput(e.target.value)}
+                maxLength={1000}
+                rows={4}
+                placeholder="e.g. Thank you so much! Your generous delivery of hygiene kits and blankets helped 10 families today."
+                className="w-full p-3 text-xs font-body bg-neo-cream/40 border border-neo-line rounded-xl text-neo-ink placeholder:text-neo-ash/60 focus:outline-none focus:border-neo-sun transition-all resize-none"
+              />
+              <div className="flex justify-between items-center text-[11px] text-neo-ash font-mono">
+                <span>Maximum 1,000 characters</span>
+                <span>{noteInput.length} / 1000</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                disabled={savingNote}
+                onClick={() => setEditingNotePledge(null)}
+                className="px-4 py-2 rounded-xl border border-neo-line text-xs font-heading font-semibold text-neo-ash hover:text-neo-ink transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={savingNote || !noteInput.trim()}
+                onClick={handleSaveThankYouNote}
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-heading font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+              >
+                {savingNote ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Heart className="w-3.5 h-3.5" />
+                    <span>Save Note</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Impact Photo Lightbox Preview Modal */}
+      {selectedImpactPreview && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in"
+          onClick={() => setSelectedImpactPreview(null)}
+        >
+          <div
+            className="relative max-w-2xl w-full bg-neo-rice rounded-2xl overflow-hidden border border-neo-line shadow-2xl p-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-3 border-b border-neo-line/40">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-neo-sun" />
+                <h3 className="font-heading font-bold text-sm text-neo-ink">
+                  Impact Proof Photo
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedImpactPreview(null)}
+                className="w-7 h-7 rounded-lg bg-neo-cream/50 text-neo-ash hover:text-neo-ink flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-2 flex items-center justify-center bg-black/5 rounded-xl mt-2 overflow-hidden">
+              <img
+                src={selectedImpactPreview}
+                alt="Impact proof high resolution"
+                className="max-h-[75vh] w-auto object-contain rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

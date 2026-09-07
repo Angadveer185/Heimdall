@@ -12,6 +12,22 @@ export const getShelterByOrganizationIdSchema = z.object({
   organizationId: z.string().trim(),
 });
 
+export const verifyShelterSchema = z.object({
+  country: z
+    .string()
+    .trim()
+    .min(1, "Country is required")
+    .max(100, "Country must be at most 100 characters"),
+  organizationIdType: z.enum(OrganizationIdType, {
+    message: "Invalid Organization ID Type",
+  }),
+  organizationId: z
+    .string()
+    .trim()
+    .min(1, "Organization ID is required")
+    .max(100, "Organization ID must be at most 100 characters"),
+});
+
 export const createShelterSchema = z.object({
   name: z
     .string()
@@ -196,6 +212,7 @@ export const transferOwnershipSchema = z.object({
     .trim(),
 });
 
+export type VerifyShelterInput = z.infer<typeof verifyShelterSchema>;
 export type CreateShelterInput = z.infer<typeof createShelterSchema>;
 export type UpdateShelterInput = z.infer<typeof updateShelterSchema>;
 export type TransferOwnershipInput = z.infer<typeof transferOwnershipSchema>;

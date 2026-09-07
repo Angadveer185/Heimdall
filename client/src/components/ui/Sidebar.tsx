@@ -359,6 +359,24 @@ export function Sidebar({ user }: SidebarProps) {
               </Link>
             )}
 
+            {/* 4.1 Register Shelter (DONOR role) */}
+            {user.role === "DONOR" && (
+              <Link
+                href="/shelter/register"
+                onClick={() => setMobileOpen(false)}
+                className={`w-full flex items-center gap-3.5 px-4 py-3 text-sm font-heading font-semibold rounded-xl transition-all border shadow-xs ${isActive("/shelter/register")
+                  ? "bg-neo-sun text-neo-rice border-neo-sun shadow-md shadow-neo-sun/25 font-bold"
+                  : "bg-neo-bg text-neo-ink border-neo-line/70 hover:border-neo-sun hover:text-neo-sun hover:shadow-sm"
+                  }`}
+              >
+                <Building2
+                  className={`w-5 h-5 shrink-0 ${isActive("/shelter/register") ? "text-neo-rice" : "text-neo-sun"
+                    }`}
+                />
+                <span>Register Shelter</span>
+              </Link>
+            )}
+
             {/* 5. Admin Control Center (SUPER_ADMIN Dropdown - Opens on Hover or Click) */}
             {isSuperAdmin && (
               <div

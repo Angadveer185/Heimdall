@@ -12,6 +12,7 @@ const controller = new ShelterController(
 );
 
 // Shelter Routes
+shelterRouter.post("/verify", (req, res, next) => controller.verify(req, res, next));
 shelterRouter.post("/", authenticate, (req, res, next) => controller.create(req, res, next));
 shelterRouter.get("/", (req, res, next) =>
   controller.getAllShelters(req, res, next),

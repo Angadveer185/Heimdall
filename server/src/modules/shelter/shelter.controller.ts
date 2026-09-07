@@ -4,6 +4,7 @@ import { ShelterService } from "./shelter.service";
 import {
   getShelterSchema,
   getShelterByOrganizationIdSchema,
+  verifyShelterSchema,
   createShelterSchema,
   updateShelterSchema,
   deleteShelterSchema,
@@ -15,6 +16,20 @@ export class ShelterController {
   private shelterService: ShelterService;
   constructor(shelterService: ShelterService) {
     this.shelterService = shelterService;
+  }
+
+  async verify(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validatedData = verifyShelterSchema.parse(req.body);
+      const result = await this.shelterService.verifyShelterCredentials(
+        validatedData.country,
+        validatedData.organizationIdType,
+        validatedData.organizationId
+      );
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async create(req: Request, res: Response, next: NextFunction) {

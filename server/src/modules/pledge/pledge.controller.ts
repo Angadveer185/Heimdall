@@ -6,6 +6,7 @@ import {
   getPledgeByCodeSchema,
   verifyPledgeSchema,
   verifyCodeSchema,
+  updatePledgeSchema,
 } from "./pledge.validation";
 import { ApiError } from "@/lib/errors";
 
@@ -136,6 +137,25 @@ export class PledgeController {
         req.user.role
       );
       res.status(200).json({ success: true, data: cancelledPledge });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new ApiError(401, "Unauthorized: User not authenticated");
+      }
+      const { id } = getPledgeSchema.parse({ id: req.params.id });
+      const validatedData = updatePledgeSchema.parse(req.body);
+      const updatedPledge = await this.pledgeService.updatePledge(
+        id,
+        req.user.id,
+        req.user.role,
+        validatedData
+      );
+      res.status(200).json({ success: true, data: updatedPledge });
     } catch (error) {
       next(error);
     }

@@ -56,6 +56,27 @@ export const verifyCodeSchema = z.object({
   code: z.string().trim().min(1, "Pledge code must not be empty"),
 });
 
+export const updatePledgeSchema = z.object({
+  impactPhotoUrl: z
+    .string()
+    .url("Impact photo must be a valid URL")
+    .trim()
+    .optional()
+    .nullable(),
+  shelterThankYouNote: z
+    .string()
+    .trim()
+    .max(1000, "Thank you note must be at most 1000 characters")
+    .optional()
+    .nullable(),
+}).refine(
+  (data) => data.impactPhotoUrl !== undefined || data.shelterThankYouNote !== undefined,
+  {
+    message: "At least one of impactPhotoUrl or shelterThankYouNote must be provided",
+  }
+);
+
 export type CreatePledgeInput = z.infer<typeof createPledgeSchema>;
 export type VerifyPledgeInput = z.infer<typeof verifyPledgeSchema>;
 export type VerifyCodeInput = z.infer<typeof verifyCodeSchema>;
+export type UpdatePledgeInput = z.infer<typeof updatePledgeSchema>;

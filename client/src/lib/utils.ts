@@ -16,8 +16,26 @@ export function formatDate(
 ): string {
   if (!dateVal) return fallback;
   try {
-    const d = typeof dateVal === "string" || typeof dateVal === "number" ? new Date(dateVal) : dateVal;
-    if (!(d instanceof Date) || isNaN(d.getTime())) return fallback;
+    let d: Date;
+    if (dateVal instanceof Date) {
+      d = dateVal;
+    } else if (typeof dateVal === "number") {
+      d = new Date(dateVal);
+    } else if (typeof dateVal === "string") {
+      const trimmed = dateVal.trim();
+      if (!trimmed) return fallback;
+      if (/^\d+$/.test(trimmed)) {
+        d = new Date(parseInt(trimmed, 10));
+      } else if (trimmed.includes(" ") && !trimmed.includes("T")) {
+        d = new Date(trimmed.replace(" ", "T"));
+      } else {
+        d = new Date(trimmed);
+      }
+    } else {
+      d = new Date(dateVal as unknown as string);
+    }
+
+    if (isNaN(d.getTime())) return fallback;
     return d.toLocaleDateString("en-US", options ?? {
       year: "numeric",
       month: "short",
